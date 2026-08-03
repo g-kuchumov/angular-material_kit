@@ -1,0 +1,19 @@
+.theme-switcher {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding: 16px;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+}
+
+.theme-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.theme-label {
+  font: var(--mat-sys-label-large);
+  color: var(--mat-sys-on-surface-variant);
+}

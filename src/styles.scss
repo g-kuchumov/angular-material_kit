@@ -1,39 +1,241 @@
-// Include theming for Angular Material with `mat.theme()`.
-// This Sass mixin will define CSS variables that are used for styling Angular Material
-// components according to the Material 3 design spec.
-// Learn more about theming and how to use it for your application's
-// custom components at https://material.angular.dev/guide/theming
+@use 'sass:map';
 @use '@angular/material' as mat;
 
+@include mat.core();
+
 html {
-  height: 100%;
-  @include mat.theme(
-    (
-      color: (
-        primary: mat.$azure-palette,
-        tertiary: mat.$blue-palette,
-      ),
-      typography: Roboto,
-      density: 0,
+  color-scheme: light dark;
+
+  @include mat.theme((
+    color: (
+      //primary: mat.$orange-palette,
+      //tertiary: mat.$violet-palette,
+      primary: mat.$magenta-palette,
+      tertiary: mat.$yellow-palette,
+    ),
+    typography: Arimo
+  ));
+
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+  scroll-behavior: smooth;
+
+  font-family: "Arimo", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+html.theme-palette-green {
+  @include mat.theme((
+    color: (
+      primary: mat.$green-palette,
+      tertiary: mat.$violet-palette,
     )
-  );
+  ));
+}
+
+html.theme-palette-blue {
+  @include mat.theme((
+    color: (
+      primary: mat.$azure-palette,
+      tertiary: mat.$yellow-palette,
+    )
+  ));
 }
 
 body {
-  // Default the application to a light color theme. This can be changed to
-  // `dark` to enable the dark color theme, or to `light dark` to defer to the
-  // user's system settings.
-  color-scheme: light;
-
-  // Set a default background, font and text colors for the application using
-  // Angular Material's system-level CSS variables. Learn more about these
-  // variables at https://material.angular.dev/guide/system-variables
   background-color: var(--mat-sys-surface);
   color: var(--mat-sys-on-surface);
   font: var(--mat-sys-body-medium);
 
-  // Reset the user agent margin.
   margin: 0;
   height: 100%;
 }
-/* You can add global styles to this file, and also import other style files */
+
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+
+.non-clickable {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+[matIconButton].primary {
+  @include mat.icon-overrides((
+    color: var(--mat-sys-primary)
+  ));
+}
+
+.default-color {
+  @include mat.button-overrides((
+    filled-label-text-color:   var(--mat-sys-on-surface),
+    filled-state-layer-color:  var(--mat-sys-on-surface),
+    filled-container-color:    var(--mat-sys-surface),
+
+    protected-label-text-color: var(--mat-sys-on-surface),
+    protected-state-layer-color: var(--mat-sys-on-surface),
+    protected-container-color: var(--mat-sys-surface),
+
+    text-label-text-color: var(--mat-sys-on-surface),
+    text-state-layer-color: var(--mat-sys-on-surface),
+
+    outlined-label-text-color: var(--mat-sys-on-surface),
+    outlined-state-layer-color: var(--mat-sys-on-surface),
+    outlined-outline-color: var(--mat-sys-outline),
+  ));
+
+  @include mat.fab-overrides((
+    container-color: var(--mat-sys-surface),
+    foreground-color: var(--mat-sys-surface),
+    state-layer-color: var(--mat-sys-surface),
+
+    small-container-color: var(--mat-sys-surface),
+    small-foreground-color: var(--mat-sys-surface),
+    small-state-layer-color: var(--mat-sys-surface),
+  ));
+
+  @include mat.button-toggle-overrides((
+    selected-state-background-color: var(--mat-sys-on-surface),
+    selected-state-text-color: var(--mat-sys-surface),
+    state-layer-color: var(--mat-sys-on-surface-variant),
+  ));
+}
+
+.accent {
+  @include mat.button-overrides((
+    filled-label-text-color: var(--mat-sys-on-tertiary),
+    filled-state-layer-color: var(--mat-sys-on-tertiary),
+    filled-container-color: var(--mat-sys-tertiary),
+
+    protected-label-text-color: var(--mat-sys-tertiary),
+    protected-state-layer-color: var(--mat-sys-tertiary),
+    //protected-container-color: var(--mat-sys-tertiary-container),
+
+    tonal-label-text-color: var(--mat-sys-on-tertiary-container),
+    tonal-container-color: var(--mat-sys-tertiary-container),
+
+    text-label-text-color: var(--mat-sys-tertiary),
+    text-state-layer-color: var(--mat-sys-tertiary),
+
+    outlined-label-text-color: var(--mat-sys-tertiary),
+    outlined-state-layer-color: var(--mat-sys-tertiary),
+    outlined-outline-color: var(--mat-sys-tertiary),
+  ));
+
+  @include mat.fab-overrides((
+    container-color: var(--mat-sys-tertiary-container),
+    foreground-color: var(--mat-sys-on-tertiary-container),
+    state-layer-color: var(--mat-sys-tertiary),
+
+    small-container-color: var(--mat-sys-tertiary-container),
+    small-foreground-color: var(--mat-sys-on-tertiary-container),
+    small-state-layer-color: var(--mat-sys-tertiary),
+  ));
+
+  @include mat.button-toggle-overrides((
+    selected-state-background-color: var(--mat-sys-on-tertiary-container),
+    selected-state-text-color: var(--mat-sys-tertiary-container),
+    state-layer-color: var(--mat-sys-tertiary),
+  ));
+}
+
+[matIconButton].accent {
+  @include mat.icon-overrides((
+    color: var(--mat-sys-tertiary)
+  ));
+}
+
+.secondary {
+  @include mat.button-overrides((
+    filled-label-text-color: var(--mat-sys-on-secondary),
+    filled-state-layer-color:   var(--mat-sys-on-secondary),
+    filled-container-color: var(--mat-sys-secondary),
+
+    protected-label-text-color: var(--mat-sys-secondary),
+    protected-state-layer-color: var(--mat-sys-secondary),
+    //protected-container-color: var(--mat-sys-secondary),
+
+    tonal-label-text-color: var(--mat-sys-on-secondary-container),
+    tonal-container-color: var(--mat-sys-secondary-container),
+
+    text-label-text-color: var(--mat-sys-secondary),
+    text-state-layer-color: var(--mat-sys-secondary),
+
+    outlined-label-text-color: var(--mat-sys-secondary),
+    outlined-state-layer-color: var(--mat-sys-secondary),
+    outlined-outline-color: var(--mat-sys-secondary),
+  ));
+
+  @include mat.fab-overrides((
+    container-color: var(--mat-sys-secondary-container),
+    foreground-color: var(--mat-sys-on-secondary-container),
+    state-layer-color: var(--mat-sys-secondary),
+
+    small-container-color: var(--mat-sys-secondary-container),
+    small-foreground-color: var(--mat-sys-on-secondary-container),
+    small-state-layer-color: var(--mat-sys-secondary),
+  ));
+
+  @include mat.button-toggle-overrides((
+    selected-state-background-color: var(--mat-sys-on-secondary-container),
+    selected-state-text-color: var(--mat-sys-secondary-container),
+    state-layer-color: var(--mat-sys-secondary),
+  ));
+}
+
+[matIconButton].secondary {
+  @include mat.icon-overrides((
+    color: var(--mat-sys-secondary)
+  ));
+}
+
+.error {
+  @include mat.button-overrides((
+    filled-label-text-color: var(--mat-sys-on-error),
+    filled-state-layer-color: var(--mat-sys-on-error),
+    filled-container-color: var(--mat-sys-error),
+
+    protected-label-text-color: var(--mat-sys-error),
+    protected-state-layer-color: var(--mat-sys-error),
+    //protected-container-color: var(--mat-sys-error-container),
+
+    tonal-label-text-color: var(--mat-sys-on-error-container),
+    tonal-container-color: var(--mat-sys-error-container),
+
+    text-label-text-color: var(--mat-sys-error),
+    text-state-layer-color: var(--mat-sys-error),
+
+    outlined-label-text-color: var(--mat-sys-error),
+    outlined-state-layer-color: var(--mat-sys-error),
+    outlined-outline-color: var(--mat-sys-error),
+  ));
+
+  @include mat.fab-overrides((
+    container-color: var(--mat-sys-error-container),
+    foreground-color: var(--mat-sys-on-error-container),
+    state-layer-color: var(--mat-sys-error),
+
+    small-container-color: var(--mat-sys-error-container),
+    small-foreground-color: var(--mat-sys-on-error-container),
+    small-state-layer-color: var(--mat-sys-error),
+  ));
+
+  @include mat.button-toggle-overrides((
+    selected-state-background-color: var(--mat-sys-on-error-container),
+    selected-state-text-color: var(--mat-sys-error-container),
+    state-layer-color: var(--mat-sys-error),
+  ));
+
+  @include mat.menu-overrides((
+    item-label-text-color: var(--mat-sys-error),
+    item-icon-color: var(--mat-sys-error),
+  ));
+}
+
+[matIconButton].error {
+  @include mat.icon-overrides((
+    color: var(--mat-sys-error)
+  ));
+}
