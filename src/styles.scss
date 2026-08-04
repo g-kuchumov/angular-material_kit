@@ -8,8 +8,6 @@ html {
 
   @include mat.theme((
     color: (
-      //primary: mat.$orange-palette,
-      //tertiary: mat.$violet-palette,
       primary: mat.$magenta-palette,
       tertiary: mat.$yellow-palette,
     ),
@@ -104,6 +102,17 @@ img, picture, video, canvas, svg {
     selected-state-background-color: var(--mat-sys-on-surface),
     selected-state-text-color: var(--mat-sys-surface),
   ));
+
+  @include mat.checkbox-overrides((
+    selected-checkmark-color: var(--mat-sys-surface),
+    selected-focus-icon-color: var(--mat-sys-on-surface),
+    selected-focus-state-layer-color: var(--mat-sys-on-surface),
+    selected-hover-icon-color: var(--mat-sys-on-surface),
+    selected-hover-state-layer-color: var(--mat-sys-on-surface),
+    selected-icon-color: var(--mat-sys-on-surface),
+    selected-pressed-state-layer-color: var(--mat-sys-on-surface),
+    unselected-pressed-state-layer-color: var(--mat-sys-on-surface),
+  ));
 }
 
 [matIconButton].default-color {
@@ -149,6 +158,17 @@ img, picture, video, canvas, svg {
     selected-state-background-color: var(--mat-sys-on-tertiary-container),
     selected-state-text-color: var(--mat-sys-tertiary-container),
   ));
+
+  @include mat.checkbox-overrides((
+    selected-checkmark-color: var(--mat-sys-tertiary-container),
+    selected-focus-icon-color: var(--mat-sys-on-tertiary-container),
+    selected-focus-state-layer-color: var(--mat-sys-on-tertiary-container),
+    selected-hover-icon-color: var(--mat-sys-on-tertiary-container),
+    selected-hover-state-layer-color: var(--mat-sys-tertiary-container),
+    selected-icon-color: var(--mat-sys-on-tertiary-container),
+    selected-pressed-state-layer-color: var(--mat-sys-on-tertiary-container),
+    unselected-pressed-state-layer-color: var(--mat-sys-tertiary),
+  ));
 }
 
 [matIconButton].accent {
@@ -193,6 +213,17 @@ img, picture, video, canvas, svg {
 
     selected-state-background-color: var(--mat-sys-on-secondary-container),
     selected-state-text-color: var(--mat-sys-secondary-container),
+  ));
+
+  @include mat.checkbox-overrides((
+    selected-checkmark-color: var(--mat-sys-secondary-container),
+    selected-focus-icon-color: var(--mat-sys-on-secondary-container),
+    selected-focus-state-layer-color: var(--mat-sys-on-secondary-container),
+    selected-hover-icon-color: var(--mat-sys-on-secondary-container),
+    selected-hover-state-layer-color: var(--mat-sys-secondary-container),
+    selected-icon-color: var(--mat-sys-on-secondary-container),
+    selected-pressed-state-layer-color: var(--mat-sys-on-secondary-container),
+    unselected-pressed-state-layer-color: var(--mat-sys-secondary),
   ));
 }
 
@@ -243,6 +274,17 @@ img, picture, video, canvas, svg {
   @include mat.menu-overrides((
     item-label-text-color: var(--mat-sys-error),
     item-icon-color: var(--mat-sys-error),
+  ));
+
+  @include mat.checkbox-overrides((
+    selected-checkmark-color: var(--mat-sys-error-container),
+    selected-focus-icon-color: var(--mat-sys-on-error-container),
+    selected-focus-state-layer-color: var(--mat-sys-on-error-container),
+    selected-hover-icon-color: var(--mat-sys-on-error-container),
+    selected-hover-state-layer-color: var(--mat-sys-error-container),
+    selected-icon-color: var(--mat-sys-on-error-container),
+    selected-pressed-state-layer-color: var(--mat-sys-error),
+    unselected-pressed-state-layer-color: var(--mat-sys-error),
   ));
 }
 
