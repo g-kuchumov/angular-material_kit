@@ -1,8 +1,10 @@
 import { Routes } from '@angular/router';
 import { Card } from './shared/components/card/card';
 import { Button } from './shared/components/button/button';
+import { ButtonToggle } from './shared/components/button-toggle/button-toggle';
 
 export const routes: Routes = [
+  { path: 'button-toggle', component: ButtonToggle },
   { path: 'button', component: Button },
   { path: 'card', component: Card },
 ];
