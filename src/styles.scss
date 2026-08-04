@@ -16,6 +16,8 @@ html {
     typography: Arimo
   ));
 
+  @include mat.strong-focus-indicators();
+
   -webkit-text-size-adjust: none;
   text-size-adjust: none;
   scroll-behavior: smooth;
@@ -88,18 +90,25 @@ img, picture, video, canvas, svg {
 
   @include mat.fab-overrides((
     container-color: var(--mat-sys-surface),
-    foreground-color: var(--mat-sys-surface),
+    foreground-color: var(--mat-sys-on-surface),
     state-layer-color: var(--mat-sys-surface),
 
     small-container-color: var(--mat-sys-surface),
-    small-foreground-color: var(--mat-sys-surface),
+    small-foreground-color: var(--mat-sys-on-surface),
     small-state-layer-color: var(--mat-sys-surface),
   ));
 
   @include mat.button-toggle-overrides((
+    legacy-selected-state-text-color: var(--mat-sys-on-surface),
+
     selected-state-background-color: var(--mat-sys-on-surface),
     selected-state-text-color: var(--mat-sys-surface),
-    state-layer-color: var(--mat-sys-on-surface-variant),
+  ));
+}
+
+[matIconButton].default-color {
+  @include mat.icon-overrides((
+    color: var(--mat-sys-on-surface)
   ));
 }
 
@@ -135,9 +144,10 @@ img, picture, video, canvas, svg {
   ));
 
   @include mat.button-toggle-overrides((
+    legacy-selected-state-text-color: var(--mat-sys-on-tertiary-container),
+
     selected-state-background-color: var(--mat-sys-on-tertiary-container),
     selected-state-text-color: var(--mat-sys-tertiary-container),
-    state-layer-color: var(--mat-sys-tertiary),
   ));
 }
 
@@ -179,9 +189,10 @@ img, picture, video, canvas, svg {
   ));
 
   @include mat.button-toggle-overrides((
+    legacy-selected-state-text-color: var(--mat-sys-on-secondary-container),
+
     selected-state-background-color: var(--mat-sys-on-secondary-container),
     selected-state-text-color: var(--mat-sys-secondary-container),
-    state-layer-color: var(--mat-sys-secondary),
   ));
 }
 
@@ -223,9 +234,10 @@ img, picture, video, canvas, svg {
   ));
 
   @include mat.button-toggle-overrides((
+    legacy-selected-state-text-color: var(--mat-sys-on-error-container),
+
     selected-state-background-color: var(--mat-sys-on-error-container),
     selected-state-text-color: var(--mat-sys-error-container),
-    state-layer-color: var(--mat-sys-error),
   ));
 
   @include mat.menu-overrides((
