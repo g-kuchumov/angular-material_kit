@@ -1,0 +1,95 @@
+@if (hasChildren()) {
+  <mat-list-item
+    #item
+    #rla="routerLinkActive"
+    #tooltip="matTooltip"
+    matTooltip="{{ node().label }}"
+    class="node-row"
+    routerLinkActive
+    [matTooltipDisabled]="btnHover.value === 'true'"
+    [disabled]="disabled()"
+    [activated]="rla.isActive"
+    [routerLink]="node().route"
+    [attr.aria-current]="rla.isActive ? 'page' : null"
+    (click)="node().route ? navigate.emit() : null"
+    (keydown.enter)="$event.target === item._elementRef.nativeElement && node().route ? item._elementRef.nativeElement.click() : null"
+    (mouseenter)="checkEllipsis(labelEl, tooltip)"
+  >
+    <input #btnHover type="hidden" value="false" />
+
+    <div class="node-container" [style.padding-left.rem]="1 + depth() * .25">
+      <mat-icon matListItemIcon>{{ node().icon ?? 'folder' }}</mat-icon>
+
+      <div class="node-content">
+        <span #labelEl class="node-label">{{ node().label }}</span>
+
+        <button
+          matIconButton
+          (click)="onToggleClick($event)"
+          (mouseenter)="tooltip.hide(0)"
+          (mouseleave)="checkEllipsis(labelEl, tooltip)"
+        >
+          <mat-icon>
+            {{ isExpanded() ? 'expand_more' : 'chevron_right' }}
+          </mat-icon>
+        </button>
+      </div>
+    </div>
+  </mat-list-item>
+} @else if (node().route) {
+  <mat-list-item
+    #item
+    #rla="routerLinkActive"
+    #tooltip="matTooltip"
+    matTooltip="{{ node().label }}"
+    class="node-row"
+    routerLinkActive
+    [disabled]="disabled()"
+    [activated]="rla.isActive"
+    [routerLink]="node().route"
+    [attr.aria-current]="rla.isActive ? 'page' : null"
+    (click)="navigate.emit()"
+    (keydown.enter)="item._elementRef.nativeElement.click()"
+    (mouseenter)="checkEllipsis(labelEl, tooltip)"
+  >
+    <div class="node-container" [style.padding-left.rem]="1 + depth() * .25">
+      <mat-icon matListItemIcon>{{ node().icon ?? 'folder' }}</mat-icon>
+
+      <div class="node-content">
+        <span #labelEl class="node-label">{{ node().label }}</span>
+      </div>
+    </div>
+  </mat-list-item>
+} @else {
+  <mat-list-item
+    #tooltip="matTooltip"
+    matTooltip="{{ node().label }}"
+    class="node-row"
+    [disabled]="disabled()"
+    (mouseenter)="checkEllipsis(labelEl, tooltip)"
+  >
+    <div class="node-container" [style.padding-left.rem]="1 + depth() * .25">
+      <mat-icon matListItemIcon>{{ node().icon ?? 'folder' }}</mat-icon>
+
+      <div class="node-content">
+        <span #labelEl class="node-label" >{{ node().label }}</span>
+      </div>
+    </div>
+  </mat-list-item>
+}
+
+@if (hasChildren() && isExpanded()) {
+  <div [class]="'children-group ' + (depth() % 2 === 0 ? 'even' : 'odd')">
+    @for (child of node().children; track child.id) {
+      <amk-sidenav-node
+        [node]="child"
+        [depth]="depth() + 1"
+        [disabled]="disabled()"
+        [expandedIds]="expandedIds()"
+        [style.--node-depth]="depth() + 1"
+        (toggleNode)="toggleNode.emit($event)"
+        (navigate)="navigate.emit()"
+      />
+    }
+  </div>
+}

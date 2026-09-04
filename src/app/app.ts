@@ -1,6 +1,4 @@
 import { Component, inject } from '@angular/core';
-import { MatButton } from '@angular/material/button';
-import { RouterLink, RouterOutlet } from '@angular/router';
 
 import {
   PREFERRED_COLOR_SCHEMES,
@@ -9,10 +7,11 @@ import {
   THEME_IDS,
   ThemeService,
 } from './core/services/theme';
+import { Sidenav } from './shared/components/sidenav/sidenav';
 
 @Component({
   selector: 'amk-root',
-  imports: [MatButton, RouterOutlet, RouterLink],
+  imports: [Sidenav],
   standalone: true,
   templateUrl: './app.html',
   styleUrl: './app.scss',

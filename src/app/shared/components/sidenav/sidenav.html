@@ -1,0 +1,33 @@
+<amk-toolbar />
+
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav
+    class="sidenav"
+    [mode]="mode()"
+    [opened]="opened()"
+    [fixedInViewport]="true"
+    (closedStart)="close()"
+  >
+    @if (busy()) {
+      <mat-progress-bar mode="indeterminate" class="progress-bar" />
+    }
+
+    <mat-nav-list class="sidenav-tree smooth height-compact" style="padding: 1rem 0" >
+      @for (node of menu(); track node.id) {
+        <amk-sidenav-node
+          [node]="node"
+          [disabled]="busy()"
+          [expandedIds]="expandedIds()"
+          (toggleNode)="toggleNode($event)"
+          (navigate)="close()"
+        />
+      }
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="sidenav-content">
+    <main class="content">
+      <router-outlet />
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>

@@ -1,0 +1,36 @@
+.node-row {
+  padding: 0;
+
+  .node-container {
+    display: flex;
+    align-items: center;
+    column-gap: 1rem;
+  }
+
+  .node-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-grow: 1;
+    min-width: 0;
+
+    .node-label {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}
+
+.children-group {
+  border-bottom-right-radius: var(--mat-sidenav-container-shape, var(--mat-sys-corner-small));
+  border-bottom-left-radius: var(--mat-sidenav-container-shape, var(--mat-sys-corner-small));
+
+  &.odd {
+    background-color: var(--mat-sys-surface-container-highest);
+  }
+
+  &.even {
+    background-color: var(--mat-sys-surface-container);
+  }
+}

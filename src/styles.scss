@@ -1,6 +1,14 @@
 @use 'sass:map';
 @use '@angular/material' as mat;
 
+:root {
+  --toolbar-height: 4rem;
+
+  @include mat.sidenav-overrides((
+    content-background-color: var(--mat-sys-surface-container)
+  ));
+}
+
 @include mat.core();
 
 html {
@@ -8,7 +16,7 @@ html {
 
   @include mat.theme((
     color: (
-      primary: mat.$magenta-palette,
+      primary: mat.$azure-palette,
       tertiary: mat.$yellow-palette,
     ),
     typography: Arimo
@@ -34,22 +42,19 @@ html.theme-palette-green {
   ));
 }
 
-html.theme-palette-blue {
+html.theme-palette-magenta {
   @include mat.theme((
     color: (
-      primary: mat.$azure-palette,
+      primary: mat.$magenta-palette,
       tertiary: mat.$yellow-palette,
-    )
+    ),
   ));
 }
 
 body {
-  background-color: var(--mat-sys-surface);
-  color: var(--mat-sys-on-surface);
   font: var(--mat-sys-body-medium);
-
+  background: var(--mat-sys-surface-container);
   margin: 0;
-  height: 100%;
 }
 
 img, picture, video, canvas, svg {
@@ -70,13 +75,15 @@ img, picture, video, canvas, svg {
 
 .default-color {
   @include mat.button-overrides((
-    filled-label-text-color:   var(--mat-sys-on-surface),
-    filled-state-layer-color:  var(--mat-sys-on-surface),
-    filled-container-color:    var(--mat-sys-surface),
+    filled-label-text-color:   var(--mat-sys-surface),
+    filled-state-layer-color:  var(--mat-sys-surface),
+    filled-container-color:    var(--mat-sys-on-surface),
 
     protected-label-text-color: var(--mat-sys-on-surface),
     protected-state-layer-color: var(--mat-sys-on-surface),
-    protected-container-color: var(--mat-sys-surface),
+
+    tonal-label-text-color: var(--mat-sys-on-surface-variant),
+    tonal-container-color:  var(--mat-sys-surface-variant),
 
     text-label-text-color: var(--mat-sys-on-surface),
     text-state-layer-color: var(--mat-sys-on-surface),
@@ -123,13 +130,12 @@ img, picture, video, canvas, svg {
 
 .accent {
   @include mat.button-overrides((
-    filled-label-text-color: var(--mat-sys-on-tertiary),
-    filled-state-layer-color: var(--mat-sys-on-tertiary),
-    filled-container-color: var(--mat-sys-tertiary),
+    filled-label-text-color: var(--mat-sys-tertiary),
+    filled-state-layer-color: var(--mat-sys-tertiary),
+    filled-container-color: var(--mat-sys-tertiary-container),
 
     protected-label-text-color: var(--mat-sys-tertiary),
     protected-state-layer-color: var(--mat-sys-tertiary),
-    //protected-container-color: var(--mat-sys-tertiary-container),
 
     tonal-label-text-color: var(--mat-sys-on-tertiary-container),
     tonal-container-color: var(--mat-sys-tertiary-container),
@@ -153,10 +159,10 @@ img, picture, video, canvas, svg {
   ));
 
   @include mat.button-toggle-overrides((
-    legacy-selected-state-text-color: var(--mat-sys-on-tertiary-container),
+    legacy-selected-state-text-color: var(--mat-sys-tertiary),
 
-    selected-state-background-color: var(--mat-sys-on-tertiary-container),
-    selected-state-text-color: var(--mat-sys-tertiary-container),
+    selected-state-background-color: var(--mat-sys-tertiary-container),
+    selected-state-text-color: var(--mat-sys-on-tertiary-container),
   ));
 
   @include mat.checkbox-overrides((
@@ -209,9 +215,9 @@ img, picture, video, canvas, svg {
   ));
 
   @include mat.button-toggle-overrides((
-    legacy-selected-state-text-color: var(--mat-sys-on-secondary-container),
+    legacy-selected-state-text-color: var(--mat-sys-secondary),
 
-    selected-state-background-color: var(--mat-sys-on-secondary-container),
+    selected-state-background-color: var(--mat-sys-secondary),
     selected-state-text-color: var(--mat-sys-secondary-container),
   ));
 
@@ -265,10 +271,10 @@ img, picture, video, canvas, svg {
   ));
 
   @include mat.button-toggle-overrides((
-    legacy-selected-state-text-color: var(--mat-sys-on-error-container),
+    legacy-selected-state-text-color: var(--mat-sys-error),
 
-    selected-state-background-color: var(--mat-sys-on-error-container),
-    selected-state-text-color: var(--mat-sys-error-container),
+    selected-state-background-color: var(--mat-sys-error-container),
+    selected-state-text-color: var(--mat-sys-error),
   ));
 
   @include mat.menu-overrides((
@@ -291,5 +297,38 @@ img, picture, video, canvas, svg {
 [matIconButton].error {
   @include mat.icon-overrides((
     color: var(--mat-sys-error)
+  ));
+}
+
+.square {
+  @include mat.list-overrides((
+    active-indicator-shape: 0,
+    list-item-container-shape: 0
+  ));
+}
+
+.smooth {
+  @include mat.list-overrides((
+    active-indicator-shape: var(--mat-sys-corner-small),
+    list-item-container-shape: var(--mat-sys-corner-small)
+  ));
+}
+
+.rounded {
+  @include mat.list-overrides((
+    active-indicator-shape: var(--mat-sys-corner-medium),
+    list-item-container-shape: var(--mat-sys-corner-medium)
+  ));
+}
+
+.height-compact {
+  @include mat.list-overrides((
+    list-item-one-line-container-height: 2.5rem
+  ));
+}
+
+.height-dense {
+  @include mat.list-overrides((
+    list-item-one-line-container-height: 2rem
   ));
 }

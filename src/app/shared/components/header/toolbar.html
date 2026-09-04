@@ -1,0 +1,36 @@
+<mat-toolbar class="toolbar">
+  <button mat-icon-button class="toolbar-icon" [disabled]="busy()" (click)="toggleSidenav()">
+    <mat-icon>menu</mat-icon>
+  </button>
+
+  <span class="toolbar-logo">
+    <mat-icon>local_movies</mat-icon>
+  </span>
+
+  <span class="toolbar-title">Angular Material Kit</span>
+
+  <span class="toolbar-spacer"></span>
+
+<!--  <button mat-icon-button class="toolbar-icon" [disabled]="busy()">-->
+<!--    <mat-icon>search</mat-icon>-->
+<!--  </button>-->
+
+  <button mat-icon-button class="toolbar-icon" [matMenuTriggerFor]="notificationMenu" [disabled]="busy()">
+    <mat-icon>notifications</mat-icon>
+  </button>
+
+  <mat-menu #notificationMenu="matMenu">
+    <button mat-menu-item>Item 1</button>
+    <button mat-menu-item>Item 2</button>
+  </mat-menu>
+
+  <button mat-icon-button class="toolbar-icon" [matMenuTriggerFor]="accountMenu" [disabled]="busy()">
+    <mat-icon>account_circle</mat-icon>
+  </button>
+
+  <mat-menu #accountMenu="matMenu">
+    <button mat-menu-item>Item 1</button>
+    <button mat-menu-item>Item 2</button>
+  </mat-menu>
+
+</mat-toolbar>
