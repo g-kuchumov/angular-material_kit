@@ -20,29 +20,20 @@ function node(partial: PartialNode, children: SidenavNode[] = []): SidenavNode {
 }
 
 const DEFAULT_NODES: SidenavNode[] = [
-  node({ id: 'components', label: 'Components', icon: 'widgets', route: '#' }, [
+  node({ id: 'components', label: 'Components', icon: 'widgets', route: 'media' }, [
     node({
       id: 'button',
-      label: 'Button lkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk',
+      label: 'Button',
       icon: 'smart_button',
       route: 'button',
     }),
-    node(
-      {
-        id: 'button-toggle',
-        label: 'Button Toggle Caaaaaaaaaaaraaaaaaaaambaaaaaaaaaaaaaaaaa',
-        icon: 'toggle',
-        route: 'button-toggle',
-      },
-      [
-        node({ id: 'settings', label: 'Settings', icon: 'settings', route: 'settings' }),
-        node({ id: 'info', label: 'About', icon: 'info', route: 'about' }),
-      ],
-    ),
-    node({ id: 'card', label: 'Card', icon: 'credit_card', route: 'card' }, [
-      node({ id: 'settings', label: 'Settings', icon: 'settings', route: 'settings' }),
-      node({ id: 'info', label: 'About', icon: 'info', route: 'about' }),
-    ]),
+    node({
+      id: 'button-toggle',
+      label: 'Button Toggle',
+      icon: 'toggle',
+      route: 'button-toggle',
+    }),
+    node({ id: 'card', label: 'Card', icon: 'credit_card', route: 'card' }),
     node({ id: 'checkbox', label: 'Checkbox', icon: 'check_box', route: 'checkbox' }),
   ]),
 

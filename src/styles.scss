@@ -3,6 +3,7 @@
 
 :root {
   --toolbar-height: 4rem;
+  --breadcrumbs-height: 5rem;
 
   @include mat.sidenav-overrides((
     content-background-color: var(--mat-sys-surface-container)
@@ -128,6 +129,12 @@ img, picture, video, canvas, svg {
   ));
 }
 
+mat-icon.default-color {
+  @include mat.icon-overrides((
+    color: var(--mat-sys-on-surface)
+  ));
+}
+
 .accent {
   @include mat.button-overrides((
     filled-label-text-color: var(--mat-sys-tertiary),
@@ -178,6 +185,12 @@ img, picture, video, canvas, svg {
 }
 
 [matIconButton].accent {
+  @include mat.icon-overrides((
+    color: var(--mat-sys-tertiary)
+  ));
+}
+
+mat-icon.accent {
   @include mat.icon-overrides((
     color: var(--mat-sys-tertiary)
   ));
@@ -234,6 +247,12 @@ img, picture, video, canvas, svg {
 }
 
 [matIconButton].secondary {
+  @include mat.icon-overrides((
+    color: var(--mat-sys-secondary)
+  ));
+}
+
+mat-icon.secondary {
   @include mat.icon-overrides((
     color: var(--mat-sys-secondary)
   ));
@@ -300,6 +319,12 @@ img, picture, video, canvas, svg {
   ));
 }
 
+mat-icon.error {
+  @include mat.icon-overrides((
+    color: var(--mat-sys-error)
+  ));
+}
+
 .square {
   @include mat.list-overrides((
     active-indicator-shape: 0,
@@ -332,3 +357,42 @@ img, picture, video, canvas, svg {
     list-item-one-line-container-height: 2rem
   ));
 }
+
+.media-viewer {
+  height: calc(100vh - var(--toolbar-height) - var(--breadcrumbs-height));
+  overflow: auto;
+  padding: 1rem !important;
+  margin: .3rem 0 0 0 !important;
+  background-color: var(--mat-sys-background);
+  border-top-left-radius: var(--mat-sidenav-container-shape, var(--mat-sys-corner-large));
+  border-top-right-radius: var(--mat-sidenav-container-shape, var(--mat-sys-corner-large));
+  border-bottom-left-radius: var(--mat-sidenav-container-shape, var(--mat-sys-corner-large));
+}
+
+.corner-small {
+  @include mat.button-overrides((
+    filled-container-shape: var(--mat-sys-corner-small),
+    tonal-container-shape: var(--mat-sys-corner-small),
+    outlined-container-shape: var(--mat-sys-corner-small),
+    protected-container-shape: var(--mat-sys-corner-small),
+    text-container-shape: var(--mat-sys-corner-small)
+  ));
+}
+.corner-medium {
+  @include mat.button-overrides((
+    filled-container-shape: var(--mat-sys-corner-medium),
+    tonal-container-shape: var(--mat-sys-corner-medium),
+    outlined-container-shape: var(--mat-sys-corner-medium),
+    protected-container-shape: var(--mat-sys-corner-medium),
+    text-container-shape: var(--mat-sys-corner-medium)
+  ));
+}
+.corner-large {
+   @include mat.button-overrides((
+     filled-container-shape: var(--mat-sys-corner-large),
+     tonal-container-shape: var(--mat-sys-corner-large),
+     outlined-container-shape: var(--mat-sys-corner-large),
+     protected-container-shape: var(--mat-sys-corner-large),
+     text-container-shape: var(--mat-sys-corner-large)
+   ));
+ }

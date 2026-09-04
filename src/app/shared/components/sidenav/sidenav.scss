@@ -17,28 +17,14 @@
     flex-direction: column;
     flex-grow: 1 !important;
     flex-shrink: 1 !important;
-    min-width: 0;
-    min-height: calc(100% - var(--toolbar-height));
-    width: auto;
 
-    .content {
-      height: calc(100vh - var(--toolbar-height) - 2rem);
-      overflow: auto;
-
-      padding: 1rem;
-
-      background-color: var(--mat-sys-background);
-      border-top-left-radius: var(--mat-sidenav-container-shape, var(--mat-sys-corner-large));
-      border-top-right-radius: var(--mat-sidenav-container-shape, var(--mat-sys-corner-large));
-      border-bottom-left-radius: var(--mat-sidenav-container-shape, var(--mat-sys-corner-large));
-    }
+    height: calc(100vh - var(--toolbar-height));
+    overflow: hidden;
   }
 }
 
 .sidenav.mat-drawer-opened ~ .sidenav-content {
-  .content {
+  > * {
     margin-left: .3rem;
   }
 }
-
-

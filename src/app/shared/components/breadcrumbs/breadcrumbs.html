@@ -1,0 +1,13 @@
+@for (crumb of breadcrumbs(); track $index) {
+  @if (!$first) {
+    <mat-icon class="separator secondary">chevron_right</mat-icon>
+  }
+  <button
+    class="crumb compact secondary "
+    matButton
+    [routerLink]="crumb.route"
+    [class.active]="$last"
+  >
+    {{ crumb.label }}
+  </button>
+}

@@ -15,6 +15,7 @@ import { map } from 'rxjs';
 import { SidenavService } from '../../../core/services/sidenav/sidenav.service';
 import { SidenavNodeComponent } from './sidenav-node';
 import { Toolbar } from '../header/toolbar';
+import { Breadcrumbs } from '../breadcrumbs/breadcrumbs';
 
 const SMALL_SCREEN_QUERY = '(max-width: 959.98px)';
 
@@ -29,6 +30,7 @@ const SMALL_SCREEN_QUERY = '(max-width: 959.98px)';
     MatNavList,
     SidenavNodeComponent,
     Toolbar,
+    Breadcrumbs,
   ],
   templateUrl: './sidenav.html',
   styleUrl: './sidenav.scss',
