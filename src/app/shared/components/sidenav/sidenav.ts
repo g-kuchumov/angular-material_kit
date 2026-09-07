@@ -1,7 +1,7 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { Component, computed, effect, inject, signal, ViewEncapsulation } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { RouterOutlet } from '@angular/router';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import {
   MatDrawerMode,
   MatSidenav,
@@ -17,6 +17,8 @@ import { SidenavNodeComponent } from './sidenav-node';
 import { Toolbar } from '../header/toolbar';
 import { Breadcrumbs } from '../breadcrumbs/breadcrumbs';
 import { DatePipe } from '@angular/common';
+import { TranslocoDirective } from '@ngneat/transloco';
+import { MatButton } from '@angular/material/button';
 
 const SMALL_SCREEN_QUERY = '(max-width: 959.98px)';
 
@@ -34,6 +36,9 @@ const SMALL_SCREEN_QUERY = '(max-width: 959.98px)';
     Breadcrumbs,
     MatDivider,
     DatePipe,
+    TranslocoDirective,
+    RouterLink,
+    MatButton,
   ],
   templateUrl: './sidenav.html',
   styleUrl: './sidenav.scss',
@@ -45,8 +50,6 @@ export class Sidenav {
   private readonly breakpointObserver: BreakpointObserver = inject(BreakpointObserver);
 
   private previousSmall: boolean | null = null;
-
-  public appName = 'Angular Material Kit';
 
   public currentDate = new Date();
 

@@ -1,0 +1,71 @@
+{
+  "app": {
+    "name": "Angular Material Kit"
+  },
+  "toolbar": {
+    "notifications": {
+      "item1": "Item 1",
+      "item2": "Item 2"
+    }
+  },
+  "sidenav": {
+    "footer": {
+      "about": "About",
+      "support": "Support",
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "theme": {
+      "title": "Theme",
+      "description": "Configure color palette and color scheme",
+      "palette": "Palette",
+      "colorScheme": "Color scheme"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "description": "Configure application notifications",
+      "newComponents": "Notifications about new components",
+      "updates": "Notifications about updates",
+      "sound": "Sound notifications"
+    },
+    "language": {
+      "title": "Language and region",
+      "description": "Configure interface language and regional formats",
+      "interfaceLanguage": "Interface language",
+      "russian": "Russian",
+      "english": "English"
+    }
+  },
+  "paginator": {
+    "itemsPerPage": "Items per page:",
+    "nextPage": "Next page",
+    "previousPage": "Previous page",
+    "firstPage": "First page",
+    "lastPage": "Last page",
+    "range": "{{start}} – {{end}} of {{length}}",
+    "rangeZero": "0 of {{length}}"
+  },
+  "sidenavManager": {
+    "addItem": "Add item",
+    "removeItem": "Remove item",
+    "parent": "Parent",
+    "root": "Root",
+    "name": "Name",
+    "route": "Route",
+    "icon": "Icon",
+    "remove": "Remove",
+    "itemToRemove": "Item to remove"
+  },
+  "buttons": {
+    "settings": "Settings",
+    "logout": "Log Out",
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "material": {
+    "itemsPerPage": "Items per page:"
+  }
+}

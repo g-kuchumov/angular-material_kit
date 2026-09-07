@@ -383,6 +383,19 @@ span, p {
 }
 
 .height-dense {
+  @include mat.button-overrides((
+    text-container-height: auto,
+    text-horizontal-padding: 0.2rem,
+    filled-container-height: auto,
+    filled-horizontal-padding: 0.2rem,
+    tonal-container-height: auto,
+    tonal-horizontal-padding: 0.2rem,
+    outlined-container-height: auto,
+    outlined-horizontal-padding: 0.2rem,
+    protected-container-height: auto,
+    protected-horizontal-padding: 0.2rem,
+  ));
+
   @include mat.list-overrides((
     list-item-one-line-container-height: 2rem
   ));
@@ -408,7 +421,6 @@ span, p {
   background-color: var(--mat-sys-background);
   border-top-left-radius: var(--mat-sidenav-container-shape, var(--mat-sys-corner-large));
   border-top-right-radius: var(--mat-sidenav-container-shape, var(--mat-sys-corner-large));
-  border-bottom-left-radius: var(--mat-sidenav-container-shape, var(--mat-sys-corner-large));
 }
 
 .corner-small {

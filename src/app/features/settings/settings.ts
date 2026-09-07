@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
+import { TranslocoDirective } from '@ngneat/transloco';
 
 import { ExpressionPanel } from './expression-panel/expression-panel';
 
 @Component({
   selector: 'amk-settings',
-  imports: [ExpressionPanel],
+  imports: [ExpressionPanel, TranslocoDirective],
   templateUrl: './settings.html',
   styleUrl: './settings.scss',
 })

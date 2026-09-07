@@ -70,6 +70,9 @@
   > * {
     margin-left: .3rem;
   }
+  .media-viewer {
+    border-bottom-left-radius: var(--mat-sidenav-container-shape, var(--mat-sys-corner-large));
+  }
 }
 
 ::ng-deep .mat-drawer-inner-container {

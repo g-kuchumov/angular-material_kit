@@ -1,0 +1,75 @@
+{
+  "app": {
+    "name": "Angular Material Kit"
+  },
+  "toolbar": {
+    "notifications": {
+      "item1": "Пункт 1",
+      "item2": "Пункт 2"
+    }
+  },
+  "sidenav": {
+    "footer": {
+      "about": "О нас",
+      "support": "Обратная связь",
+      "privacy": "Политика конфиденциальности",
+      "terms": "Пользовательское соглашение"
+    }
+  },
+  "settings": {
+    "title": "Настройки",
+    "theme": {
+      "title": "Тема",
+      "description": "Настройка цветовой палитры и цветовой схемы",
+      "palette": "Палитра",
+      "colorScheme": "Цветовая схема"
+    },
+    "notifications": {
+      "title": "Уведомления",
+      "description": "Настройка уведомлений приложения",
+      "newComponents": "Уведомления о новых компонентах",
+      "updates": "Уведомления об обновлениях",
+      "sound": "Звуковые уведомления"
+    },
+    "language": {
+      "title": "Язык и регион",
+      "description": "Настройка языка интерфейса и региональных форматов",
+      "interfaceLanguage": "Язык интерфейса",
+      "russian": "Русский",
+      "english": "English"
+    }
+  },
+  "paginator": {
+    "itemsPerPage": "Элементов на странице:",
+    "nextPage": "Следующая страница",
+    "previousPage": "Предыдущая страница",
+    "firstPage": "Первая страница",
+    "lastPage": "Последняя страница",
+    "range": "{{start}} – {{end}} из {{length}}",
+    "rangeZero": "0 из {{length}}"
+  },
+  "sidenavManager": {
+    "addItem": "Добавить пункт",
+    "removeItem": "Удалить пункт",
+    "parent": "Родитель",
+    "root": "Корень",
+    "name": "Название",
+    "route": "Маршрут",
+    "icon": "Иконка",
+    "remove": "Удалить",
+    "itemToRemove": "Пункт для удаления"
+  },
+  "card": {
+    "title": "Заголовок",
+    "subtitle": "Подзаголовок"
+  },
+  "buttons": {
+    "settings": "Настройки",
+    "logout": "Выйти",
+    "save": "Сохранить",
+    "cancel": "Отмена"
+  },
+  "material": {
+    "itemsPerPage": "Элементов на странице:"
+  }
+}

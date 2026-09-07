@@ -7,6 +7,7 @@ import { SidenavService } from '../../../core/services/sidenav/sidenav.service';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatDivider } from '@angular/material/list';
 import { RouterLink } from '@angular/router';
+import { TranslocoDirective } from '@ngneat/transloco';
 
 @Component({
   selector: 'amk-toolbar',
@@ -19,6 +20,7 @@ import { RouterLink } from '@angular/router';
     MatMenuTrigger,
     MatDivider,
     RouterLink,
+    TranslocoDirective,
   ],
   templateUrl: './toolbar.html',
   styleUrl: './toolbar.scss',
