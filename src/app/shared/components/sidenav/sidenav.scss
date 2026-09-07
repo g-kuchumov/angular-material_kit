@@ -1,15 +1,58 @@
 .sidenav-container {
   .sidenav {
+    display: flex;
+    flex-direction: column;
     width: 16rem;
-
     top: var(--toolbar-height) !important;
     height: calc(100% - var(--toolbar-height));
-  }
+    overflow: hidden !important;
 
-  .progress-bar {
-    position: sticky;
-    top: 0;
-    z-index: 10;
+    .sidenav-wrapper {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    mat-nav-list {
+      overflow-y: auto;
+    }
+
+    .spacer {
+      flex-grow: 1;
+    }
+
+    footer {
+      display: flex;
+      flex-direction: column;
+      gap: .2rem;
+      padding: 0.5rem 0;
+
+      .footer-links {
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        gap: .2rem;
+
+        a {
+          text-wrap: nowrap;
+          color: var(--mat-sys-primary);
+          text-decoration: none;
+        }
+      }
+
+      .footer-copyright {
+        color: var(--mat-sys-secondary);
+        text-align: center;
+      }
+    }
   }
 
   .sidenav-content {
@@ -27,4 +70,11 @@
   > * {
     margin-left: .3rem;
   }
+}
+
+::ng-deep .mat-drawer-inner-container {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+  overflow: hidden !important; /* Убираем скролл с контейнера */
 }

@@ -17,7 +17,7 @@ html {
 
   @include mat.theme((
     color: (
-      primary: mat.$azure-palette,
+      primary: mat.$magenta-palette,
       tertiary: mat.$yellow-palette,
     ),
     typography: Arimo
@@ -43,10 +43,10 @@ html.theme-palette-green {
   ));
 }
 
-html.theme-palette-magenta {
+html.theme-palette-blue {
   @include mat.theme((
     color: (
-      primary: mat.$magenta-palette,
+      primary: mat.$azure-palette,
       tertiary: mat.$yellow-palette,
     ),
   ));
@@ -56,6 +56,10 @@ body {
   font: var(--mat-sys-body-medium);
   background: var(--mat-sys-surface-container);
   margin: 0;
+}
+
+h1 {
+  margin-top: .5rem;
 }
 
 img, picture, video, canvas, svg {
@@ -76,121 +80,121 @@ img, picture, video, canvas, svg {
 
 .default-color {
   @include mat.button-overrides((
-    filled-label-text-color:   var(--mat-sys-surface),
-    filled-state-layer-color:  var(--mat-sys-surface),
-    filled-container-color:    var(--mat-sys-on-surface),
-
+    filled-label-text-color: var(--mat-sys-surface-container),
+    filled-container-color: var(--mat-sys-on-surface-variant),
+    filled-state-layer-color: var(--mat-sys-surface),
     protected-label-text-color: var(--mat-sys-on-surface),
     protected-state-layer-color: var(--mat-sys-on-surface),
-
-    tonal-label-text-color: var(--mat-sys-on-surface-variant),
-    tonal-container-color:  var(--mat-sys-surface-variant),
-
+    tonal-label-text-color: var(--mat-sys-on-surface),
+    tonal-container-color: var(--mat-sys-surface-variant),
+    tonal-state-layer-color: var(--mat-sys-on-surface-variant),
     text-label-text-color: var(--mat-sys-on-surface),
     text-state-layer-color: var(--mat-sys-on-surface),
-
     outlined-label-text-color: var(--mat-sys-on-surface),
     outlined-state-layer-color: var(--mat-sys-on-surface),
     outlined-outline-color: var(--mat-sys-outline),
   ));
 
   @include mat.fab-overrides((
-    container-color: var(--mat-sys-surface),
-    foreground-color: var(--mat-sys-on-surface),
-    state-layer-color: var(--mat-sys-surface),
-
-    small-container-color: var(--mat-sys-surface),
-    small-foreground-color: var(--mat-sys-on-surface),
-    small-state-layer-color: var(--mat-sys-surface),
+    container-color: var(--mat-sys-surface-container),
+    foreground-color: var(--mat-sys-on-surface-variant),
+    state-layer-color: var(--mat-sys-on-surface),
+    small-container-color: var(--mat-sys-surface-container),
+    small-foreground-color: var(--mat-sys-on-surface-variant),
+    small-state-layer-color: var(--mat-sys-on-surface),
   ));
 
   @include mat.button-toggle-overrides((
     legacy-selected-state-text-color: var(--mat-sys-on-surface),
-
-    selected-state-background-color: var(--mat-sys-on-surface),
-    selected-state-text-color: var(--mat-sys-surface),
+    selected-state-background-color: var(--mat-sys-surface-variant),
+    selected-state-text-color: var(--mat-sys-on-surface),
   ));
 
   @include mat.checkbox-overrides((
-    selected-checkmark-color: var(--mat-sys-surface),
+    selected-icon-color: var(--mat-sys-surface),
+    selected-checkmark-color: var(--mat-sys-on-surface),
     selected-focus-icon-color: var(--mat-sys-on-surface),
     selected-focus-state-layer-color: var(--mat-sys-on-surface),
     selected-hover-icon-color: var(--mat-sys-on-surface),
     selected-hover-state-layer-color: var(--mat-sys-on-surface),
-    selected-icon-color: var(--mat-sys-on-surface),
     selected-pressed-state-layer-color: var(--mat-sys-on-surface),
     unselected-pressed-state-layer-color: var(--mat-sys-on-surface),
+  ));
+
+  @include mat.menu-overrides((
+    item-label-text-color: var(--mat-sys-on-surface),
+    item-icon-color: var(--mat-sys-on-surface),
   ));
 }
 
 [matIconButton].default-color {
   @include mat.icon-overrides((
-    color: var(--mat-sys-on-surface)
+    color: var(--mat-sys-on-surface-variant)
   ));
 }
 
 mat-icon.default-color {
   @include mat.icon-overrides((
-    color: var(--mat-sys-on-surface)
+    color: var(--mat-sys-on-surface-variant)
   ));
 }
 
-.accent {
+.tertiary {
   @include mat.button-overrides((
-    filled-label-text-color: var(--mat-sys-tertiary),
-    filled-state-layer-color: var(--mat-sys-tertiary),
-    filled-container-color: var(--mat-sys-tertiary-container),
-
+    filled-label-text-color: var(--mat-sys-tertiary-container),
+    filled-container-color: var(--mat-sys-tertiary),
+    filled-state-layer-color: var(--mat-sys-on-tertiary),
     protected-label-text-color: var(--mat-sys-tertiary),
     protected-state-layer-color: var(--mat-sys-tertiary),
-
     tonal-label-text-color: var(--mat-sys-on-tertiary-container),
     tonal-container-color: var(--mat-sys-tertiary-container),
-
+    tonal-state-layer-color: var(--mat-sys-on-tertiary-container),
     text-label-text-color: var(--mat-sys-tertiary),
     text-state-layer-color: var(--mat-sys-tertiary),
-
     outlined-label-text-color: var(--mat-sys-tertiary),
     outlined-state-layer-color: var(--mat-sys-tertiary),
     outlined-outline-color: var(--mat-sys-tertiary),
   ));
 
   @include mat.fab-overrides((
-    container-color: var(--mat-sys-tertiary-container),
-    foreground-color: var(--mat-sys-on-tertiary-container),
-    state-layer-color: var(--mat-sys-tertiary),
-
-    small-container-color: var(--mat-sys-tertiary-container),
-    small-foreground-color: var(--mat-sys-on-tertiary-container),
-    small-state-layer-color: var(--mat-sys-tertiary),
+    container-color: var(--mat-sys-tertiary),
+    foreground-color: var(--mat-sys-tertiary-container),
+    state-layer-color: var(--mat-sys-on-tertiary),
+    small-container-color: var(--mat-sys-tertiary),
+    small-foreground-color: var(--mat-sys-tertiary-container),
+    small-state-layer-color: var(--mat-sys-on-tertiary),
   ));
 
   @include mat.button-toggle-overrides((
     legacy-selected-state-text-color: var(--mat-sys-tertiary),
-
     selected-state-background-color: var(--mat-sys-tertiary-container),
     selected-state-text-color: var(--mat-sys-on-tertiary-container),
   ));
 
   @include mat.checkbox-overrides((
-    selected-checkmark-color: var(--mat-sys-tertiary-container),
-    selected-focus-icon-color: var(--mat-sys-on-tertiary-container),
-    selected-focus-state-layer-color: var(--mat-sys-on-tertiary-container),
-    selected-hover-icon-color: var(--mat-sys-on-tertiary-container),
-    selected-hover-state-layer-color: var(--mat-sys-tertiary-container),
-    selected-icon-color: var(--mat-sys-on-tertiary-container),
-    selected-pressed-state-layer-color: var(--mat-sys-on-tertiary-container),
+    selected-icon-color: var(--mat-sys-tertiary),
+    selected-checkmark-color: var(--mat-sys-on-tertiary),
+    selected-focus-icon-color: var(--mat-sys-tertiary),
+    selected-focus-state-layer-color: var(--mat-sys-tertiary),
+    selected-hover-icon-color: var(--mat-sys-tertiary),
+    selected-hover-state-layer-color: var(--mat-sys-tertiary),
+    selected-pressed-state-layer-color: var(--mat-sys-tertiary),
     unselected-pressed-state-layer-color: var(--mat-sys-tertiary),
+  ));
+
+  @include mat.menu-overrides((
+    item-label-text-color: var(--mat-sys-tertiary),
+    item-icon-color: var(--mat-sys-tertiary),
   ));
 }
 
-[matIconButton].accent {
+[matIconButton].tertiary {
   @include mat.icon-overrides((
     color: var(--mat-sys-tertiary)
   ));
 }
 
-mat-icon.accent {
+mat-icon.tertiary {
   @include mat.icon-overrides((
     color: var(--mat-sys-tertiary)
   ));
@@ -198,51 +202,50 @@ mat-icon.accent {
 
 .secondary {
   @include mat.button-overrides((
-    filled-label-text-color: var(--mat-sys-on-secondary),
-    filled-state-layer-color:   var(--mat-sys-on-secondary),
+    filled-label-text-color: var(--mat-sys-secondary-container),
     filled-container-color: var(--mat-sys-secondary),
-
+    filled-state-layer-color: var(--mat-sys-on-secondary),
     protected-label-text-color: var(--mat-sys-secondary),
     protected-state-layer-color: var(--mat-sys-secondary),
-    //protected-container-color: var(--mat-sys-secondary),
-
     tonal-label-text-color: var(--mat-sys-on-secondary-container),
     tonal-container-color: var(--mat-sys-secondary-container),
-
+    tonal-state-layer-color: var(--mat-sys-on-secondary-container),
     text-label-text-color: var(--mat-sys-secondary),
     text-state-layer-color: var(--mat-sys-secondary),
-
     outlined-label-text-color: var(--mat-sys-secondary),
     outlined-state-layer-color: var(--mat-sys-secondary),
     outlined-outline-color: var(--mat-sys-secondary),
   ));
 
   @include mat.fab-overrides((
-    container-color: var(--mat-sys-secondary-container),
-    foreground-color: var(--mat-sys-on-secondary-container),
-    state-layer-color: var(--mat-sys-secondary),
-
-    small-container-color: var(--mat-sys-secondary-container),
-    small-foreground-color: var(--mat-sys-on-secondary-container),
-    small-state-layer-color: var(--mat-sys-secondary),
+    container-color: var(--mat-sys-secondary),
+    foreground-color: var(--mat-sys-secondary-container),
+    state-layer-color: var(--mat-sys-on-secondary),
+    small-container-color: var(--mat-sys-secondary),
+    small-foreground-color: var(--mat-sys-secondary-container),
+    small-state-layer-color: var(--mat-sys-on-secondary),
   ));
 
   @include mat.button-toggle-overrides((
     legacy-selected-state-text-color: var(--mat-sys-secondary),
-
-    selected-state-background-color: var(--mat-sys-secondary),
-    selected-state-text-color: var(--mat-sys-secondary-container),
+    selected-state-background-color: var(--mat-sys-secondary-container),
+    selected-state-text-color: var(--mat-sys-on-secondary-container),
   ));
 
   @include mat.checkbox-overrides((
-    selected-checkmark-color: var(--mat-sys-secondary-container),
-    selected-focus-icon-color: var(--mat-sys-on-secondary-container),
-    selected-focus-state-layer-color: var(--mat-sys-on-secondary-container),
-    selected-hover-icon-color: var(--mat-sys-on-secondary-container),
-    selected-hover-state-layer-color: var(--mat-sys-secondary-container),
-    selected-icon-color: var(--mat-sys-on-secondary-container),
-    selected-pressed-state-layer-color: var(--mat-sys-on-secondary-container),
+    selected-icon-color: var(--mat-sys-secondary),
+    selected-checkmark-color: var(--mat-sys-on-secondary),
+    selected-focus-icon-color: var(--mat-sys-secondary),
+    selected-focus-state-layer-color: var(--mat-sys-secondary),
+    selected-hover-icon-color: var(--mat-sys-secondary),
+    selected-hover-state-layer-color: var(--mat-sys-secondary),
+    selected-pressed-state-layer-color: var(--mat-sys-secondary),
     unselected-pressed-state-layer-color: var(--mat-sys-secondary),
+  ));
+
+  @include mat.menu-overrides((
+    item-label-text-color: var(--mat-sys-secondary),
+    item-icon-color: var(--mat-sys-secondary),
   ));
 }
 
@@ -260,56 +263,50 @@ mat-icon.secondary {
 
 .error {
   @include mat.button-overrides((
-    filled-label-text-color: var(--mat-sys-on-error),
+    filled-label-text-color: var(--mat-sys-error-container),
     filled-state-layer-color: var(--mat-sys-on-error),
     filled-container-color: var(--mat-sys-error),
-
     protected-label-text-color: var(--mat-sys-error),
     protected-state-layer-color: var(--mat-sys-error),
-    //protected-container-color: var(--mat-sys-error-container),
-
     tonal-label-text-color: var(--mat-sys-on-error-container),
     tonal-container-color: var(--mat-sys-error-container),
-
+    tonal-state-layer-color: var(--mat-sys-on-error-container),
     text-label-text-color: var(--mat-sys-error),
     text-state-layer-color: var(--mat-sys-error),
-
     outlined-label-text-color: var(--mat-sys-error),
     outlined-state-layer-color: var(--mat-sys-error),
     outlined-outline-color: var(--mat-sys-error),
   ));
 
   @include mat.fab-overrides((
-    container-color: var(--mat-sys-error-container),
-    foreground-color: var(--mat-sys-on-error-container),
-    state-layer-color: var(--mat-sys-error),
-
-    small-container-color: var(--mat-sys-error-container),
-    small-foreground-color: var(--mat-sys-on-error-container),
-    small-state-layer-color: var(--mat-sys-error),
+    container-color: var(--mat-sys-error),
+    foreground-color: var(--mat-sys-error-container),
+    state-layer-color: var(--mat-sys-on-error),
+    small-container-color: var(--mat-sys-error),
+    small-foreground-color: var(--mat-sys-error-container),
+    small-state-layer-color: var(--mat-sys-on-error),
   ));
 
   @include mat.button-toggle-overrides((
     legacy-selected-state-text-color: var(--mat-sys-error),
-
     selected-state-background-color: var(--mat-sys-error-container),
-    selected-state-text-color: var(--mat-sys-error),
+    selected-state-text-color: var(--mat-sys-on-error-container),
+  ));
+
+  @include mat.checkbox-overrides((
+    selected-icon-color: var(--mat-sys-error),
+    selected-checkmark-color: var(--mat-sys-on-error),
+    selected-focus-icon-color: var(--mat-sys-error),
+    selected-focus-state-layer-color: var(--mat-sys-error),
+    selected-hover-icon-color: var(--mat-sys-error),
+    selected-hover-state-layer-color: var(--mat-sys-error),
+    selected-pressed-state-layer-color: var(--mat-sys-error),
+    unselected-pressed-state-layer-color: var(--mat-sys-error),
   ));
 
   @include mat.menu-overrides((
     item-label-text-color: var(--mat-sys-error),
     item-icon-color: var(--mat-sys-error),
-  ));
-
-  @include mat.checkbox-overrides((
-    selected-checkmark-color: var(--mat-sys-error-container),
-    selected-focus-icon-color: var(--mat-sys-on-error-container),
-    selected-focus-state-layer-color: var(--mat-sys-on-error-container),
-    selected-hover-icon-color: var(--mat-sys-on-error-container),
-    selected-hover-state-layer-color: var(--mat-sys-error-container),
-    selected-icon-color: var(--mat-sys-on-error-container),
-    selected-pressed-state-layer-color: var(--mat-sys-error),
-    unselected-pressed-state-layer-color: var(--mat-sys-error),
   ));
 }
 
@@ -323,6 +320,18 @@ mat-icon.error {
   @include mat.icon-overrides((
     color: var(--mat-sys-error)
   ));
+}
+
+span, p {
+  &.tertiary {
+    color: var(--mat-sys-tertiary);
+  }
+  &.secondary {
+    color: var(--mat-sys-secondary);
+  }
+  &.error {
+    color: var(--mat-sys-error);
+  }
 }
 
 .square {
@@ -350,16 +359,49 @@ mat-icon.error {
   @include mat.list-overrides((
     list-item-one-line-container-height: 2.5rem
   ));
+
+  @include mat.button-overrides((
+    filled-container-height: var(--mat-sys-headline-large-line-height),
+    filled-horizontal-padding: var(--mat-sys-display-small-line-height),
+    tonal-container-height: var(--mat-sys-headline-large-line-height),
+    tonal-horizontal-padding: var(--mat-sys-display-small-line-height),
+    outlined-container-height: var(--mat-sys-headline-large-line-height),
+    outlined-horizontal-padding: var(--mat-sys-display-small-line-height),
+    protected-container-height: var(--mat-sys-headline-large-line-height),
+    protected-horizontal-padding: var(--mat-sys-display-small-line-height),
+    text-container-height: var(--mat-sys-headline-large-line-height),
+    text-horizontal-padding: var(--mat-sys-display-small-line-height)
+  ));
+
+  .mat-mdc-menu-content {
+    padding: 0 !important;
+  }
+
+  .mat-mdc-menu-item {
+    min-height: 2.5rem;
+  }
 }
 
 .height-dense {
   @include mat.list-overrides((
     list-item-one-line-container-height: 2rem
   ));
+
+  @include mat.menu-overrides((
+    item-label-text-line-height: 2rem
+  ));
+
+  .mat-mdc-menu-content {
+    padding: 0 !important;
+  }
+
+  .mat-mdc-menu-item {
+    min-height: 2rem;
+  }
 }
 
 .media-viewer {
-  height: calc(100vh - var(--toolbar-height) - var(--breadcrumbs-height));
+  height: calc(100vh - var(--toolbar-height) - var(--breadcrumbs-height) + 3px);
   overflow: auto;
   padding: 1rem !important;
   margin: .3rem 0 0 0 !important;
@@ -378,6 +420,7 @@ mat-icon.error {
     text-container-shape: var(--mat-sys-corner-small)
   ));
 }
+
 .corner-medium {
   @include mat.button-overrides((
     filled-container-shape: var(--mat-sys-corner-medium),
@@ -387,12 +430,13 @@ mat-icon.error {
     text-container-shape: var(--mat-sys-corner-medium)
   ));
 }
+
 .corner-large {
-   @include mat.button-overrides((
-     filled-container-shape: var(--mat-sys-corner-large),
-     tonal-container-shape: var(--mat-sys-corner-large),
-     outlined-container-shape: var(--mat-sys-corner-large),
-     protected-container-shape: var(--mat-sys-corner-large),
-     text-container-shape: var(--mat-sys-corner-large)
-   ));
- }
+  @include mat.button-overrides((
+    filled-container-shape: var(--mat-sys-corner-large),
+    tonal-container-shape: var(--mat-sys-corner-large),
+    outlined-container-shape: var(--mat-sys-corner-large),
+    protected-container-shape: var(--mat-sys-corner-large),
+    text-container-shape: var(--mat-sys-corner-large)
+  ));
+}

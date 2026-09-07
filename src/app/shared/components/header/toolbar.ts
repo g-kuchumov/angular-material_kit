@@ -5,10 +5,21 @@ import { MatToolbar } from '@angular/material/toolbar';
 
 import { SidenavService } from '../../../core/services/sidenav/sidenav.service';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import { MatDivider } from '@angular/material/list';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'amk-toolbar',
-  imports: [MatToolbar, MatIcon, MatIconButton, MatMenu, MatMenuItem, MatMenuTrigger],
+  imports: [
+    MatToolbar,
+    MatIcon,
+    MatIconButton,
+    MatMenu,
+    MatMenuItem,
+    MatMenuTrigger,
+    MatDivider,
+    RouterLink,
+  ],
   templateUrl: './toolbar.html',
   styleUrl: './toolbar.scss',
 })

@@ -3,19 +3,20 @@ import { Component, computed, effect, inject, signal, ViewEncapsulation } from '
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterOutlet } from '@angular/router';
 import {
+  MatDrawerMode,
   MatSidenav,
   MatSidenavContainer,
   MatSidenavContent,
-  MatDrawerMode,
 } from '@angular/material/sidenav';
 import { MatProgressBar } from '@angular/material/progress-bar';
-import { MatNavList } from '@angular/material/list';
+import { MatDivider, MatNavList } from '@angular/material/list';
 import { map } from 'rxjs';
 
 import { SidenavService } from '../../../core/services/sidenav/sidenav.service';
 import { SidenavNodeComponent } from './sidenav-node';
 import { Toolbar } from '../header/toolbar';
 import { Breadcrumbs } from '../breadcrumbs/breadcrumbs';
+import { DatePipe } from '@angular/common';
 
 const SMALL_SCREEN_QUERY = '(max-width: 959.98px)';
 
@@ -31,6 +32,8 @@ const SMALL_SCREEN_QUERY = '(max-width: 959.98px)';
     SidenavNodeComponent,
     Toolbar,
     Breadcrumbs,
+    MatDivider,
+    DatePipe,
   ],
   templateUrl: './sidenav.html',
   styleUrl: './sidenav.scss',
@@ -42,6 +45,10 @@ export class Sidenav {
   private readonly breakpointObserver: BreakpointObserver = inject(BreakpointObserver);
 
   private previousSmall: boolean | null = null;
+
+  public appName = 'Angular Material Kit';
+
+  public currentDate = new Date();
 
   public readonly menu = this.sidenavService.menu;
 

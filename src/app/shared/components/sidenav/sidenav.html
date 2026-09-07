@@ -8,21 +8,41 @@
     [fixedInViewport]="true"
     (closedStart)="close()"
   >
-    @if (busy()) {
-      <mat-progress-bar mode="indeterminate" class="progress-bar" />
-    }
-
-    <mat-nav-list class="sidenav-tree smooth height-compact" style="padding: 1rem 0" >
-      @for (node of menu(); track node.id) {
-        <amk-sidenav-node
-          [node]="node"
-          [disabled]="busy()"
-          [expandedIds]="expandedIds()"
-          (toggleNode)="toggleNode($event)"
-          (navigate)="close()"
-        />
+    <div class="sidenav-wrapper">
+      @if (busy()) {
+        <mat-progress-bar mode="indeterminate" class="progress-bar" />
       }
-    </mat-nav-list>
+
+      <mat-nav-list class="smooth height-compact" style="padding: 1rem 0">
+        @for (node of menu(); track node.id) {
+          <amk-sidenav-node
+            [node]="node"
+            [disabled]="busy()"
+            [expandedIds]="expandedIds()"
+            (toggleNode)="toggleNode($event)"
+            (navigate)="close()"
+          />
+        }
+      </mat-nav-list>
+
+      <span class="spacer"></span>
+
+      <mat-divider />
+
+      <footer>
+        <div class="footer-links">
+          <a href="/about">О нас</a>
+          <a href="/support">Обратная связь</a>
+        </div>
+        <div class="footer-links">
+          <a href="/privacy">Политика конфиденциальности</a>
+          <a href="/terms">Пользовательское соглашение</a>
+        </div>
+        <div class="footer-copyright">
+          © <span id="footer-year">{{ currentDate | date: 'yyyy' }}</span> {{ appName }}
+        </div>
+      </footer>
+    </div>
   </mat-sidenav>
 
   <mat-sidenav-content class="sidenav-content">
