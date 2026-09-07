@@ -1,0 +1,82 @@
+<mat-accordion>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title style="gap: 1rem">
+        <mat-icon>palette</mat-icon>
+        <span>Тема</span>
+      </mat-panel-title>
+      <mat-panel-description>
+        Настройка цветовой палитры и цветовой схемы
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <div style="display: flex; gap: 2rem">
+      <div class="settings-section" style="display: flex; gap: 1rem; align-items: center">
+        <h3>Палитра</h3>
+        <mat-button-toggle-group
+          aria-label="Палитра темы"
+          [value]="theme()"
+          (valueChange)="setTheme($event)"
+        >
+          @for (themeId of themeIds; track themeId) {
+            <mat-button-toggle [value]="themeId">{{ themeId }}</mat-button-toggle>
+          }
+        </mat-button-toggle-group>
+      </div>
+
+      <div class="settings-section" style="display: flex; gap: 1rem; align-items: center">
+        <h3>Цветовая схема</h3>
+        <mat-button-toggle-group
+          aria-label="Цветовая схема"
+          [value]="preferredColorScheme()"
+          (valueChange)="setPreferredColorScheme($event)"
+        >
+          @for (scheme of colorSchemes; track scheme) {
+            <mat-button-toggle [value]="scheme">{{ scheme }}</mat-button-toggle>
+          }
+        </mat-button-toggle-group>
+      </div>
+    </div>
+
+  </mat-expansion-panel>
+
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title style="gap: 1rem">
+        <mat-icon>notifications</mat-icon>
+        <span>Уведомления</span>
+      </mat-panel-title>
+      <mat-panel-description>
+        Настройка уведомлений приложения
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <div class="settings-section">
+      <mat-checkbox>Уведомления о новых компонентах</mat-checkbox>
+      <mat-checkbox>Уведомления об обновлениях</mat-checkbox>
+      <mat-checkbox>Звуковые уведомления</mat-checkbox>
+    </div>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title style="gap: 1rem">
+        <mat-icon>language</mat-icon>
+        <span>Язык и регион</span>
+      </mat-panel-title>
+      <mat-panel-description>
+        Настройка языка интерфейса и региональных форматов
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <div class="settings-section">
+      <mat-form-field>
+        <mat-label>Язык интерфейса</mat-label>
+        <mat-select value="ru">
+          <mat-option value="ru">Русский</mat-option>
+          <mat-option value="en">English</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </mat-expansion-panel>
+</mat-accordion>
