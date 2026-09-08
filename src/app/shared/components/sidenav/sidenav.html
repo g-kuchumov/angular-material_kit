@@ -1,54 +1,40 @@
-<ng-container *transloco="let t">
-  <amk-toolbar />
+<amk-toolbar />
 
-  <mat-sidenav-container class="sidenav-container">
-    <mat-sidenav
-      class="sidenav"
-      [mode]="mode()"
-      [opened]="opened()"
-      [fixedInViewport]="true"
-      (closedStart)="close()"
-    >
-      <div class="sidenav-wrapper">
-        @if (busy()) {
-          <mat-progress-bar mode="indeterminate" class="progress-bar" />
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav
+    class="sidenav"
+    [mode]="mode()"
+    [opened]="opened()"
+    [fixedInViewport]="true"
+    (closedStart)="close()"
+  >
+    <div class="sidenav-wrapper">
+      @if (busy()) {
+        <mat-progress-bar mode="indeterminate" class="progress-bar" />
+      }
+
+      <mat-nav-list class="shape-small height-medium" style="padding: 1rem 0">
+        @for (node of menu(); track node.id) {
+          <amk-sidenav-node
+            [node]="node"
+            [disabled]="busy()"
+            [expandedIds]="expandedIds()"
+            (toggleNode)="toggleNode($event)"
+            (navigate)="close()"
+          />
         }
+      </mat-nav-list>
 
-        <mat-nav-list class="smooth height-compact" style="padding: 1rem 0">
-          @for (node of menu(); track node.id) {
-            <amk-sidenav-node
-              [node]="node"
-              [disabled]="busy()"
-              [expandedIds]="expandedIds()"
-              (toggleNode)="toggleNode($event)"
-              (navigate)="close()"
-            />
-          }
-        </mat-nav-list>
+      <span class="spacer"></span>
 
-        <span class="spacer"></span>
+      <mat-divider />
 
-        <mat-divider />
+      <amk-footer />
+    </div>
+  </mat-sidenav>
 
-        <footer>
-          <div class="footer-links">
-            <button class="secondary height-dense" matButton="text" routerLink="about">{{ t('sidenav.footer.about') }}</button>
-            <button class="secondary height-dense" matButton="text" routerLink="support">{{ t('sidenav.footer.support') }}</button>
-          </div>
-          <div class="footer-links">
-            <button class="secondary height-dense" matButton="text" routerLink="/privacy">{{ t('sidenav.footer.privacy') }}</button>
-            <button class="secondary height-dense" matButton="text" routerLink="/terms">{{ t('sidenav.footer.terms') }}</button>
-          </div>
-          <div class="footer-copyright">
-            © <span id="footer-year">{{ currentDate | date: 'yyyy' }}</span> {{ t('app.name') }}
-          </div>
-        </footer>
-      </div>
-    </mat-sidenav>
-
-    <mat-sidenav-content class="sidenav-content">
-      <amk-breadcrumbs />
-      <router-outlet />
-    </mat-sidenav-content>
-  </mat-sidenav-container>
-</ng-container>
+  <mat-sidenav-content class="sidenav-content">
+    <amk-breadcrumbs />
+    <router-outlet />
+  </mat-sidenav-content>
+</mat-sidenav-container>

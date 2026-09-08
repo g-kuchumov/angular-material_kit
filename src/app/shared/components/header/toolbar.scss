@@ -7,28 +7,6 @@
   gap: .5rem;
 }
 
-.toolbar-logo {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 10px;
-  background: var(--mat-sys-primary-container);
-  color: var(--mat-sys-on-primary-container);
-}
-
-.toolbar-logo mat-icon {
-  font-size: 22px;
-  width: 22px;
-  height: 22px;
-}
-
-.toolbar-title {
-  font: var(--mat-sys-title-medium);
-  white-space: nowrap;
-}
-
-.toolbar-spacer {
+.spacer {
   flex: 1 1 auto;
 }

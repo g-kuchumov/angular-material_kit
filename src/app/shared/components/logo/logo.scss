@@ -1,0 +1,85 @@
+.logo-container {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+
+  .logo-icon-wrapper {
+    background: var(--mat-sys-primary-container);
+    color: var(--mat-sys-on-primary-container);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .logo-title {
+    color: var(--mat-sys-secondary);
+    white-space: nowrap;
+  }
+
+  &.row {
+    flex-direction: row;
+  }
+
+  &.column {
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    gap: 0.5rem;
+  }
+
+  &.small {
+    .logo-icon-wrapper {
+      width: 2.2rem;
+      height: 2.2rem;
+      border-radius: 0.66rem;
+    }
+
+    mat-icon {
+      font-size: 1.45rem;
+      width: 1.45rem;
+      height: 1.45rem;
+    }
+
+    .logo-title {
+      font-size: 1rem;
+    }
+  }
+
+  &.medium {
+    .logo-icon-wrapper {
+      width: 2.75rem;
+      height: 2.75rem;
+      border-radius: 0.825rem;
+    }
+
+    mat-icon {
+      font-size: 1.8rem;
+      width: 1.8rem;
+      height: 1.8rem;
+    }
+
+    .logo-title {
+      font-size: 1rem;
+    }
+  }
+
+  &.large {
+    .logo-icon-wrapper {
+      width: 3.75rem;
+      height: 3.75rem;
+      border-radius: 1.125rem;
+    }
+
+    mat-icon {
+      font-size: 2.45rem;
+      width: 2.45rem;
+      height: 2.45rem;
+    }
+
+    .logo-title {
+      font-size: 1.25rem;
+      font-weight: bold;
+    }
+  }
+}

@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { Sidenav } from './shared/components/sidenav/sidenav';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'amk-root',
-  imports: [Sidenav],
+  imports: [RouterOutlet],
   standalone: true,
   templateUrl: './app.html',
   styleUrl: './app.scss',

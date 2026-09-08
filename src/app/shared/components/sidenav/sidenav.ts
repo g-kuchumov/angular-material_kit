@@ -1,7 +1,7 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { Component, computed, effect, inject, signal, ViewEncapsulation } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import {
   MatDrawerMode,
   MatSidenav,
@@ -16,9 +16,7 @@ import { SidenavService } from '../../../core/services/sidenav/sidenav.service';
 import { SidenavNodeComponent } from './sidenav-node';
 import { Toolbar } from '../header/toolbar';
 import { Breadcrumbs } from '../breadcrumbs/breadcrumbs';
-import { DatePipe } from '@angular/common';
-import { TranslocoDirective } from '@ngneat/transloco';
-import { MatButton } from '@angular/material/button';
+import { Footer } from '../footer/footer';
 
 const SMALL_SCREEN_QUERY = '(max-width: 959.98px)';
 
@@ -35,10 +33,7 @@ const SMALL_SCREEN_QUERY = '(max-width: 959.98px)';
     Toolbar,
     Breadcrumbs,
     MatDivider,
-    DatePipe,
-    TranslocoDirective,
-    RouterLink,
-    MatButton,
+    Footer,
   ],
   templateUrl: './sidenav.html',
   styleUrl: './sidenav.scss',
@@ -50,8 +45,6 @@ export class Sidenav {
   private readonly breakpointObserver: BreakpointObserver = inject(BreakpointObserver);
 
   private previousSmall: boolean | null = null;
-
-  public currentDate = new Date();
 
   public readonly menu = this.sidenavService.menu;
 

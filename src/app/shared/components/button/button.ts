@@ -3,6 +3,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatButton, MatFabButton, MatIconButton, MatMiniFabButton } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
 import { MatDivider } from '@angular/material/list';
+import { TranslocoDirective } from '@ngneat/transloco';
 
 @Component({
   selector: 'amk-button',
@@ -14,6 +15,7 @@ import { MatDivider } from '@angular/material/list';
     MatMiniFabButton,
     MatIconButton,
     MatButton,
+    TranslocoDirective,
   ],
   templateUrl: './button.html',
   styleUrl: './button.scss',

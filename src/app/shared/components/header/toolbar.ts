@@ -8,6 +8,7 @@ import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatDivider } from '@angular/material/list';
 import { RouterLink } from '@angular/router';
 import { TranslocoDirective } from '@ngneat/transloco';
+import { Logo } from '../logo/logo';
 
 @Component({
   selector: 'amk-toolbar',
@@ -21,6 +22,7 @@ import { TranslocoDirective } from '@ngneat/transloco';
     MatDivider,
     RouterLink,
     TranslocoDirective,
+    Logo,
   ],
   templateUrl: './toolbar.html',
   styleUrl: './toolbar.scss',

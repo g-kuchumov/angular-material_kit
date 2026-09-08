@@ -4,13 +4,9 @@
       <mat-icon>menu</mat-icon>
     </button>
 
-    <span class="toolbar-logo">
-    <mat-icon>local_movies</mat-icon>
-  </span>
+    <amk-logo [size]="'small'" />
 
-    <span class="toolbar-title">{{ t('app.name') }}</span>
-
-    <span class="toolbar-spacer"></span>
+    <span class="spacer"></span>
 
     <button mat-icon-button class="toolbar-icon" [matMenuTriggerFor]="notificationMenu" [disabled]="busy()">
       <mat-icon>notifications</mat-icon>
@@ -25,8 +21,8 @@
       <mat-icon>account_circle</mat-icon>
     </button>
 
-    <mat-menu #accountMenu="matMenu" class="height-compact" style="margin: 0 !important; padding: 0 !important;">
-      <button class="height-compact" mat-menu-item>
+    <mat-menu #accountMenu="matMenu" class="height-medium" style="margin: 0 !important; padding: 0 !important;">
+      <button class="height-medium" mat-menu-item>
         <div style="display: flex; flex-direction: column; padding: 0.4rem 0">
           <span><b>Иванов Иван Иванович</b></span>
           <span class="secondary">{{ '@username' }}</span>
@@ -38,7 +34,7 @@
         {{ t('buttons.settings') }}
       </button>
       <mat-divider />
-      <button mat-menu-item>
+      <button mat-menu-item routerLink="login">
         <mat-icon>logout</mat-icon>
         {{ t('buttons.logout') }}
       </button>

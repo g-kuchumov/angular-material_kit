@@ -1,0 +1,19 @@
+<ng-container *transloco="let t">
+  <footer>
+    <div class="footer-links">
+      <button class="secondary height-small" matButton="text" routerLink="about">{{ t('sidenav.footer.about') }}
+      </button>
+      <button class="secondary height-small" matButton="text" routerLink="support">{{ t('sidenav.footer.support') }}
+      </button>
+    </div>
+    <div class="footer-links">
+      <button class="secondary height-small" matButton="text" routerLink="/privacy">{{ t('sidenav.footer.privacy') }}
+      </button>
+      <button class="secondary height-small" matButton="text" routerLink="/terms">{{ t('sidenav.footer.terms') }}
+      </button>
+    </div>
+    <div class="footer-copyright">
+      © <span id="footer-year">{{ currentDate | date: 'yyyy' }}</span> {{ t('app.name') }}
+    </div>
+  </footer>
+</ng-container>
