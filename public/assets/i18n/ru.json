@@ -16,6 +16,40 @@
       "terms": "Пользовательское соглашение"
     }
   },
+  "auth": {
+    "login": {
+      "title": "Вход",
+      "email": "Электронная почта",
+      "emailRequired": "Введите адрес электронной почты",
+      "emailInvalid": "Введите корректный адрес электронной почты",
+      "password": "Пароль",
+      "passwordRequired": "Введите пароль",
+      "passwordMinLength": "Пароль должен содержать не менее 6 символов",
+      "rememberMe": "Запомнить меня",
+      "submit": "Войти",
+      "noAccount": "Нет аккаунта?",
+      "register": "Регистрация"
+    },
+    "register": {
+      "title": "Регистрация",
+      "name": "Имя",
+      "nameRequired": "Введите имя",
+      "nameMinLength": "Имя должно содержать не менее 2 символов",
+      "email": "Электронная почта",
+      "emailRequired": "Введите адрес электронной почты",
+      "emailInvalid": "Введите корректный адрес электронной почты",
+      "password": "Пароль",
+      "passwordRequired": "Введите пароль",
+      "passwordMinLength": "Пароль должен содержать не менее 6 символов",
+      "confirmPassword": "Подтверждение пароля",
+      "confirmPasswordRequired": "Подтвердите пароль",
+      "confirmPasswordMinLength": "Пароль должен содержать не менее 6 символов",
+      "agreeTerms": "Я согласен с условиями использования",
+      "submit": "Зарегистрироваться",
+      "haveAccount": "Уже есть аккаунт?",
+      "login": "Войти"
+    }
+  },
   "settings": {
     "title": "Настройки",
     "theme": {
@@ -59,17 +93,11 @@
     "remove": "Удалить",
     "itemToRemove": "Пункт для удаления"
   },
-  "card": {
-    "title": "Заголовок",
-    "subtitle": "Подзаголовок"
-  },
   "buttons": {
+    "title": "Кнопки",
     "settings": "Настройки",
     "logout": "Выйти",
     "save": "Сохранить",
     "cancel": "Отмена"
-  },
-  "material": {
-    "itemsPerPage": "Элементов на странице:"
   }
 }

@@ -16,6 +16,40 @@
       "terms": "Terms of Service"
     }
   },
+  "auth": {
+    "login": {
+      "title": "Sign In",
+      "email": "Email",
+      "emailRequired": "Email is required",
+      "emailInvalid": "Please enter a valid email address",
+      "password": "Password",
+      "passwordRequired": "Password is required",
+      "passwordMinLength": "Password must be at least 6 characters long",
+      "rememberMe": "Remember me",
+      "submit": "Sign In",
+      "noAccount": "Don't have an account?",
+      "register": "Sign up"
+    },
+    "register": {
+      "title": "Sign Up",
+      "name": "Name",
+      "nameRequired": "Name is required",
+      "nameMinLength": "Name must be at least 2 characters long",
+      "email": "Email",
+      "emailRequired": "Email is required",
+      "emailInvalid": "Please enter a valid email address",
+      "password": "Password",
+      "passwordRequired": "Password is required",
+      "passwordMinLength": "Password must be at least 6 characters long",
+      "confirmPassword": "Confirm Password",
+      "confirmPasswordRequired": "Confirm password is required",
+      "confirmPasswordMinLength": "Confirm password must be at least 6 characters long",
+      "agreeTerms": "I agree to the terms and conditions",
+      "submit": "Sign Up",
+      "haveAccount": "Already have an account?",
+      "login": "Sign In"
+    }
+  },
   "settings": {
     "title": "Settings",
     "theme": {
@@ -60,12 +94,10 @@
     "itemToRemove": "Item to remove"
   },
   "buttons": {
+    "title": "Buttons",
     "settings": "Settings",
     "logout": "Log Out",
     "save": "Save",
     "cancel": "Cancel"
-  },
-  "material": {
-    "itemsPerPage": "Items per page:"
   }
 }

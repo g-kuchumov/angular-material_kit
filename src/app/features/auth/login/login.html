@@ -1,0 +1,58 @@
+<ng-container *transloco="let t">
+  <div class="login-container">
+    <span class="spacer"></span>
+
+    <amk-logo [size]="'large'" [direction]="'column'" />
+
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>{{ t('auth.login.title') }}</mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <form class="login-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+          <mat-form-field appearance="outline">
+            <mat-label>{{ t('auth.login.email') }}</mat-label>
+
+            <input id="" matInput type="email" formControlName="email" />
+
+            @if (form.controls.email.hasError('required')) {
+              <mat-error>{{ t('auth.login.emailRequired') }}</mat-error>
+            } @else if (form.controls.email.hasError('email')) {
+              <mat-error>{{ t('auth.login.emailInvalid') }}</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>{{ t('auth.login.password') }}</mat-label>
+
+            <input id="" matInput type="password" formControlName="password" />
+
+            @if (form.controls.password.hasError('required')) {
+              <mat-error>{{ t('auth.login.passwordRequired') }}</mat-error>
+            } @else if (form.controls.password.hasError('minlength')) {
+              <mat-error>{{ t('auth.login.passwordMinLength') }}</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-checkbox class="login-remember" formControlName="rememberMe">
+            {{ t('auth.login.rememberMe') }}
+          </mat-checkbox>
+
+          <button class="login-button" matButton="outlined">
+            {{ t('auth.login.submit') }}
+          </button>
+
+          <div class="login-to-registry">
+            <span>{{ t('auth.login.noAccount') }}</span>
+            <button class="height-small" matButton routerLink="../register">{{ t('auth.login.register') }}</button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <span class="spacer"></span>
+
+    <amk-footer />
+  </div>
+</ng-container>

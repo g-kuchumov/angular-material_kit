@@ -1,0 +1,39 @@
+.register-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  gap: 1rem;
+
+  mat-card {
+    width: 100%;
+    max-width: 480px;
+
+    mat-card-header {
+      justify-content: center;
+      padding-bottom: 1rem;
+    }
+
+    .register-form {
+      display: flex;
+      flex-direction: column;
+
+      .register-agree {
+        padding-bottom: 1rem;
+      }
+
+      .register-to-login {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-top: 1rem;
+        gap: .2rem;
+      }
+    }
+  }
+}
+
+.spacer {
+  flex: 1 1 auto;
+}

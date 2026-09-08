@@ -1,0 +1,82 @@
+<ng-container *transloco="let t">
+  <div class="register-container">
+    <span class="spacer"></span>
+
+    <amk-logo [size]="'large'" [direction]="'column'" />
+
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>{{ t('auth.register.title') }}</mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <form class="register-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+          <mat-form-field appearance="outline">
+            <mat-label>{{ t('auth.register.name') }}</mat-label>
+
+            <input id="" matInput type="text" formControlName="name" />
+
+            @if (form.controls.name.hasError('required')) {
+              <mat-error>{{ t('auth.register.nameRequired') }}</mat-error>
+            } @else if (form.controls.name.hasError('minlength')) {
+              <mat-error>{{ t('auth.register.nameMinLength') }}</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>{{ t('auth.register.email') }}</mat-label>
+
+            <input id="" matInput type="email" formControlName="email" />
+
+            @if (form.controls.email.hasError('required')) {
+              <mat-error>{{ t('auth.register.emailRequired') }}</mat-error>
+            } @else if (form.controls.email.hasError('email')) {
+              <mat-error>{{ t('auth.register.emailInvalid') }}</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>{{ t('auth.register.password') }}</mat-label>
+
+            <input id="" matInput type="password" formControlName="password" />
+
+            @if (form.controls.password.hasError('required')) {
+              <mat-error>{{ t('auth.register.passwordRequired') }}</mat-error>
+            } @else if (form.controls.password.hasError('minlength')) {
+              <mat-error>{{ t('auth.register.passwordMinLength') }}</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>{{ t('auth.register.confirmPassword') }}</mat-label>
+
+            <input id="" matInput type="password" formControlName="confirmPassword" />
+
+            @if (form.controls.confirmPassword.hasError('required')) {
+              <mat-error>{{ t('auth.register.confirmPasswordRequired') }}</mat-error>
+            } @else if (form.controls.confirmPassword.hasError('minlength')) {
+              <mat-error>{{ t('auth.register.confirmPasswordMinLength') }}</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-checkbox class="register-agree" formControlName="agreeTerms">
+            {{ t('auth.register.agreeTerms') }}
+          </mat-checkbox>
+
+          <button class="register-button" matButton="outlined" type="submit" >
+            {{ t('auth.register.submit') }}
+          </button>
+
+          <div class="register-to-login">
+            <span>{{ t('auth.register.haveAccount') }}</span>
+            <button type="button" class="height-small" matButton routerLink="../login">{{ t('auth.register.login') }}</button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <span class="spacer"></span>
+
+    <amk-footer />
+  </div>
+</ng-container>
