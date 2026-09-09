@@ -1,11 +1,18 @@
-import { Injectable, computed, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 
 import {
-  SidenavNode,
   createSidenavNode,
   insertSidenavNode,
   removeSidenavNode,
+  SidenavNode,
 } from './sidenav-node.model';
+import { TranslocoService } from '@ngneat/transloco';
+
+export interface BookContext {
+  id: number;
+  name: string;
+  userRoleInCourse: 'teacher' | 'student';
+}
 
 export interface MenuItem {
   label: string;
@@ -47,17 +54,25 @@ const OPERATION_DELAY_MS = 500;
 
 @Injectable({ providedIn: 'root' })
 export class SidenavService {
+  private transloco = inject(TranslocoService);
+
   private readonly nodes = signal<SidenavNode[]>(DEFAULT_NODES);
 
   private readonly openedState = signal(false);
 
   private readonly busyState = signal(false);
 
-  public readonly menu = this.nodes.asReadonly();
-
   public readonly opened = this.openedState.asReadonly();
 
   public readonly busy = this.busyState.asReadonly();
+
+  private readonly activeBookContext = signal<BookContext | null>({
+    id: 1,
+    name: 'Математика и химия сложных процессов в строительстве минерального комбайна',
+    userRoleInCourse: 'student',
+  });
+
+  public readonly isBookMode = computed(() => this.activeBookContext() !== null);
 
   public open(): void {
     this.openedState.set(true);
@@ -69,6 +84,53 @@ export class SidenavService {
 
   public toggle(): void {
     this.openedState.update((value) => !value);
+  }
+
+  public readonly menu = computed(() => {
+    const book = this.activeBookContext();
+    if (!book) {
+      return this.nodes();
+    }
+
+    const bookId = book.id.toString();
+    return [
+      node({
+        id: 'book-content',
+        label: 'Содержание',
+        icon: 'auto_stories',
+        route: `book/${bookId}/content`,
+      }),
+      node({
+        id: 'book-tests',
+        label: 'Тесты и опросы',
+        icon: 'quiz',
+        route: `book/${bookId}/tests`,
+      }),
+      node({
+        id: 'book-files',
+        label: 'Файлы курса',
+        icon: 'folder_open',
+        route: `book/${bookId}/files`,
+      }),
+    ];
+  });
+
+  public readonly bookName = computed(() => {
+    const book = this.activeBookContext();
+    if (!book) return '';
+
+    return book.name;
+  });
+
+  public readonly backButtonText = computed(() => {
+    const book = this.activeBookContext();
+    if (!book) return '';
+
+    return this.transloco.translate(`sidenav.backButton.${book.userRoleInCourse}`);
+  });
+
+  public closeBook(): void {
+    this.activeBookContext.set(null);
   }
 
   public addMenuItem(parentId: string | null, item: MenuItem): void {

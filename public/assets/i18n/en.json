@@ -9,6 +9,10 @@
     }
   },
   "sidenav": {
+    "backButton": {
+      "teacher": "My Subjects",
+      "student": "My Textbooks"
+    },
     "footer": {
       "about": "About",
       "support": "Support",

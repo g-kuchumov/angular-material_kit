@@ -9,6 +9,10 @@
     }
   },
   "sidenav": {
+    "backButton": {
+      "teacher": "Мои предметы",
+      "student": "Мои учебники"
+    },
     "footer": {
       "about": "О нас",
       "support": "Обратная связь",

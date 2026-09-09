@@ -13,6 +13,10 @@
         <mat-progress-bar mode="indeterminate" class="progress-bar" />
       }
 
+      @if (isBookMode()) {
+        <h2 style="margin: 1rem 1rem 0; text-align: center; line-height: 1.4rem">{{ bookName() }}</h2>
+      }
+
       <mat-nav-list class="shape-small height-medium" style="padding: 1rem 0">
         @for (node of menu(); track node.id) {
           <amk-sidenav-node
@@ -26,6 +30,18 @@
       </mat-nav-list>
 
       <span class="spacer"></span>
+
+      @if (isBookMode()) {
+        <ng-container *transloco="let t">
+          <mat-divider />
+
+          <button class="tertiary shape-none" matButton="text" (click)="onCloseBook()">
+            <mat-icon>library_books</mat-icon>
+            {{ backButtonText() }}
+          </button>
+        </ng-container>
+
+      }
 
       <mat-divider />
 

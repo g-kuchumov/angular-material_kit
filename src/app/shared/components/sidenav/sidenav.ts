@@ -17,6 +17,9 @@ import { SidenavNodeComponent } from './sidenav-node';
 import { Toolbar } from '../header/toolbar';
 import { Breadcrumbs } from '../breadcrumbs/breadcrumbs';
 import { Footer } from '../footer/footer';
+import { MatIcon } from '@angular/material/icon';
+import { MatButton } from '@angular/material/button';
+import { TranslocoDirective } from '@ngneat/transloco';
 
 const SMALL_SCREEN_QUERY = '(max-width: 959.98px)';
 
@@ -34,6 +37,9 @@ const SMALL_SCREEN_QUERY = '(max-width: 959.98px)';
     Breadcrumbs,
     MatDivider,
     Footer,
+    MatIcon,
+    MatButton,
+    TranslocoDirective,
   ],
   templateUrl: './sidenav.html',
   styleUrl: './sidenav.scss',
@@ -99,11 +105,23 @@ export class Sidenav {
     });
   }
 
-  public toggle(): void {
-    this.sidenavService.toggle();
-  }
-
   public close(): void {
     this.sidenavService.close();
+  }
+
+  public isBookMode(): boolean {
+    return this.sidenavService.isBookMode();
+  }
+
+  public onCloseBook(): void {
+    this.sidenavService.closeBook();
+  }
+
+  public backButtonText(): string {
+    return this.sidenavService.backButtonText();
+  }
+
+  public bookName(): string {
+    return this.sidenavService.bookName();
   }
 }
