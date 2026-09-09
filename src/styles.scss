@@ -114,14 +114,14 @@ img, picture, video, canvas, svg {
   ));
 
   @include mat.checkbox-overrides((
-    selected-icon-color: var(--mat-sys-surface),
-    selected-checkmark-color: var(--mat-sys-on-surface),
+    selected-icon-color: var(--mat-sys-on-surface),
+    selected-checkmark-color: var(--mat-sys-surface),
     selected-focus-icon-color: var(--mat-sys-on-surface),
     selected-focus-state-layer-color: var(--mat-sys-on-surface),
     selected-hover-icon-color: var(--mat-sys-on-surface),
     selected-hover-state-layer-color: var(--mat-sys-on-surface),
     selected-pressed-state-layer-color: var(--mat-sys-on-surface),
-    unselected-pressed-state-layer-color: var(--mat-sys-on-surface),
+    unselected-pressed-state-layer-color:var(--mat-sys-on-surface),
   ));
 
   @include mat.menu-overrides((
