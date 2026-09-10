@@ -6,6 +6,7 @@
     top: var(--toolbar-height) !important;
     height: calc(100% - var(--toolbar-height));
     overflow: hidden !important;
+    box-shadow: var(--mat-sys-level2);
 
     .sidenav-wrapper {
       display: flex;

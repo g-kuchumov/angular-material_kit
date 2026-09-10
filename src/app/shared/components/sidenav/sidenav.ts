@@ -14,7 +14,7 @@ import { map } from 'rxjs';
 
 import { SidenavService } from '../../../core/services/sidenav/sidenav.service';
 import { SidenavNodeComponent } from './sidenav-node';
-import { Toolbar } from '../header/toolbar';
+import { Toolbar } from '../toolbar/toolbar';
 import { Breadcrumbs } from '../breadcrumbs/breadcrumbs';
 import { Footer } from '../footer/footer';
 import { MatIcon } from '@angular/material/icon';

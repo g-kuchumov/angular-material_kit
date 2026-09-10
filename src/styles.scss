@@ -3,7 +3,7 @@
 
 :root {
   --toolbar-height: 4rem;
-  --breadcrumbs-height: 5rem;
+  --breadcrumbs-height: 3rem;
 
   @include mat.sidenav-overrides((
     content-background-color: var(--mat-sys-surface-container)
@@ -345,7 +345,7 @@ span, p {
  ******************************************************************************/
 
 .media-viewer {
-  height: calc(100vh - var(--toolbar-height) - var(--breadcrumbs-height) + 3px);
+  height: calc(100vh - var(--toolbar-height) - var(--breadcrumbs-height) + 0.7rem);
   overflow: auto;
   margin: .3rem 0 0 0 !important;
 
