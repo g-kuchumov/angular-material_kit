@@ -8,11 +8,7 @@ export function isThemeId(value: string | null): value is ThemeId {
 
 export type PreferredColorScheme = 'light' | 'dark' | 'system';
 
-export const PREFERRED_COLOR_SCHEMES: readonly PreferredColorScheme[] = [
-  'light',
-  'dark',
-  'system',
-] as const;
+export const PREFERRED_COLOR_SCHEMES: readonly PreferredColorScheme[] = ['light', 'dark', 'system'] as const;
 
 export function isPreferredColorScheme(value: string | null): value is PreferredColorScheme {
   return PREFERRED_COLOR_SCHEMES.some((scheme) => scheme === value);

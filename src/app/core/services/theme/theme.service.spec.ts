@@ -63,10 +63,7 @@ describe('ThemeService', () => {
 
   afterEach(() => {
     localStorage.clear();
-    document.documentElement.classList.remove(
-      `${THEME_CLASS_PREFIX}green`,
-      `${THEME_CLASS_PREFIX}blue`,
-    );
+    document.documentElement.classList.remove(`${THEME_CLASS_PREFIX}green`, `${THEME_CLASS_PREFIX}blue`);
     document.documentElement.style.colorScheme = 'light';
     vi.unstubAllGlobals();
   });

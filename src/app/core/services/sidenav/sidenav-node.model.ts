@@ -69,9 +69,7 @@ export function insertSidenavNode(
 
     const updatedChildren = insertSidenavNode(current.children, parentId, node);
 
-    return updatedChildren !== current.children
-      ? { ...current, children: updatedChildren }
-      : current;
+    return updatedChildren !== current.children ? { ...current, children: updatedChildren } : current;
   });
 }
 
@@ -81,10 +79,7 @@ export function removeSidenavNode(nodes: readonly SidenavNode[], id: string): Si
     .map((node) => ({ ...node, children: removeSidenavNode(node.children, id) }));
 }
 
-export function flattenSidenavNodes(
-  nodes: readonly SidenavNode[],
-  parentPath = '',
-): SidenavFlatNode[] {
+export function flattenSidenavNodes(nodes: readonly SidenavNode[], parentPath = ''): SidenavFlatNode[] {
   const result: SidenavFlatNode[] = [];
 
   for (const node of nodes) {

@@ -1,11 +1,11 @@
 import { Component, computed, inject } from '@angular/core';
-import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { filter, map } from 'rxjs';
 import { MatIcon } from '@angular/material/icon';
+import { NavigationEnd, Router, RouterLink } from '@angular/router';
+import { filter, map } from 'rxjs';
 
-import { SidenavService } from '../../../core/services/sidenav/sidenav.service';
 import { MatButton } from '@angular/material/button';
+import { SidenavService } from '../../../core/services/sidenav/sidenav.service';
 
 interface Breadcrumb {
   label: string;

@@ -1,13 +1,13 @@
 import { Component, inject } from '@angular/core';
-import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 import { MatToolbar } from '@angular/material/toolbar';
 
-import { SidenavService } from '../../../core/services/sidenav/sidenav.service';
-import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatDivider } from '@angular/material/list';
+import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { RouterLink } from '@angular/router';
 import { TranslocoDirective } from '@ngneat/transloco';
+import { SidenavService } from '../../../core/services/sidenav/sidenav.service';
 import { Logo } from '../logo/logo';
 
 @Component({

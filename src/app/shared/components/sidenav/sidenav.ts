@@ -1,25 +1,20 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { Component, computed, effect, inject, signal, ViewEncapsulation } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { RouterOutlet } from '@angular/router';
-import {
-  MatDrawerMode,
-  MatSidenav,
-  MatSidenavContainer,
-  MatSidenavContent,
-} from '@angular/material/sidenav';
-import { MatProgressBar } from '@angular/material/progress-bar';
 import { MatDivider, MatNavList } from '@angular/material/list';
+import { MatProgressBar } from '@angular/material/progress-bar';
+import { MatDrawerMode, MatSidenav, MatSidenavContainer, MatSidenavContent } from '@angular/material/sidenav';
+import { RouterOutlet } from '@angular/router';
 import { map } from 'rxjs';
 
+import { MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { TranslocoDirective } from '@ngneat/transloco';
 import { SidenavService } from '../../../core/services/sidenav/sidenav.service';
-import { SidenavNodeComponent } from './sidenav-node';
-import { Toolbar } from '../toolbar/toolbar';
 import { Breadcrumbs } from '../breadcrumbs/breadcrumbs';
 import { Footer } from '../footer/footer';
-import { MatIcon } from '@angular/material/icon';
-import { MatButton } from '@angular/material/button';
-import { TranslocoDirective } from '@ngneat/transloco';
+import { Toolbar } from '../toolbar/toolbar';
+import { SidenavNodeComponent } from './sidenav-node';
 
 const SMALL_SCREEN_QUERY = '(max-width: 959.98px)';
 

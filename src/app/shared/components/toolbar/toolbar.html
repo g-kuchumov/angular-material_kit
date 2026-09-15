@@ -1,6 +1,6 @@
 <ng-container *transloco="let t">
   <mat-toolbar class="toolbar" style="box-shadow: var(--mat-sys-level1)">
-    <button mat-icon-button class="toolbar-icon" [disabled]="busy()" (click)="toggleSidenav()">
+    <button class="toolbar-icon" [disabled]="busy()" (click)="toggleSidenav()" mat-icon-button>
       <mat-icon>menu</mat-icon>
     </button>
 
@@ -8,7 +8,7 @@
 
     <span class="spacer"></span>
 
-    <button mat-icon-button class="toolbar-icon" [matMenuTriggerFor]="notificationMenu" [disabled]="busy()">
+    <button class="toolbar-icon" [disabled]="busy()" [matMenuTriggerFor]="notificationMenu" mat-icon-button>
       <mat-icon>notifications</mat-icon>
     </button>
 
@@ -17,11 +17,11 @@
       <button mat-menu-item>{{ t('toolbar.notifications.item2') }}</button>
     </mat-menu>
 
-    <button mat-icon-button class="toolbar-icon" [matMenuTriggerFor]="accountMenu" [disabled]="busy()">
+    <button class="toolbar-icon" [disabled]="busy()" [matMenuTriggerFor]="accountMenu" mat-icon-button>
       <mat-icon>account_circle</mat-icon>
     </button>
 
-    <mat-menu #accountMenu="matMenu" class="height-medium" style="margin: 0 !important; padding: 0 !important;">
+    <mat-menu class="height-medium" #accountMenu="matMenu" style="margin: 0 !important; padding: 0 !important">
       <button class="height-medium" mat-menu-item>
         <div style="display: flex; flex-direction: column; padding: 0.4rem 0">
           <span><b>Иванов Иван Иванович</b></span>
@@ -29,7 +29,7 @@
         </div>
       </button>
       <mat-divider />
-      <button mat-menu-item [routerLink]="'settings'">
+      <button [routerLink]="'settings'" mat-menu-item>
         <mat-icon>settings</mat-icon>
         {{ t('buttons.settings') }}
       </button>
@@ -39,6 +39,5 @@
         {{ t('buttons.logout') }}
       </button>
     </mat-menu>
-
   </mat-toolbar>
 </ng-container>

@@ -1,16 +1,10 @@
 <amk-toolbar />
 
 <mat-sidenav-container class="sidenav-container">
-  <mat-sidenav
-    class="sidenav"
-    [mode]="mode()"
-    [opened]="opened()"
-    [fixedInViewport]="true"
-    (closedStart)="close()"
-  >
+  <mat-sidenav class="sidenav" [fixedInViewport]="true" [mode]="mode()" [opened]="opened()" (closedStart)="close()">
     <div class="sidenav-wrapper">
       @if (busy()) {
-        <mat-progress-bar mode="indeterminate" class="progress-bar" />
+        <mat-progress-bar class="progress-bar" mode="indeterminate" />
       }
 
       @if (isBookMode()) {
@@ -20,11 +14,11 @@
       <mat-nav-list class="shape-small height-medium" style="padding: 1rem 0">
         @for (node of menu(); track node.id) {
           <amk-sidenav-node
-            [node]="node"
             [disabled]="busy()"
             [expandedIds]="expandedIds()"
-            (toggleNode)="toggleNode($event)"
+            [node]="node"
             (navigate)="close()"
+            (toggleNode)="toggleNode($event)"
           />
         }
       </mat-nav-list>
@@ -35,12 +29,11 @@
         <ng-container *transloco="let t">
           <mat-divider />
 
-          <button class="tertiary shape-none" matButton="text" (click)="onCloseBook()">
+          <button class="tertiary shape-none" (click)="onCloseBook()" matButton="text">
             <mat-icon>library_books</mat-icon>
             {{ backButtonText() }}
           </button>
         </ng-container>
-
       }
 
       <mat-divider />

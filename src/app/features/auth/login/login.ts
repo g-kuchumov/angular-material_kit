@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButton } from '@angular/material/button';
 import { MatCard, MatCardContent, MatCardHeader, MatCardTitle } from '@angular/material/card';
+import { MatCheckbox } from '@angular/material/checkbox';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { MatButton } from '@angular/material/button';
-import { MatCheckbox } from '@angular/material/checkbox';
-import { TranslocoDirective } from '@ngneat/transloco';
-import { Logo } from '../../../shared/components/logo/logo';
-import { Footer } from '../../../shared/components/footer/footer';
 import { RouterLink } from '@angular/router';
+import { TranslocoDirective } from '@ngneat/transloco';
+import { Footer } from '../../../shared/components/footer/footer';
+import { Logo } from '../../../shared/components/logo/logo';
 
 @Component({
   selector: 'amk-login',

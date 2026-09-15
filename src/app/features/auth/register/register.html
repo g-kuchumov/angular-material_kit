@@ -2,7 +2,7 @@
   <div class="register-container">
     <span class="spacer"></span>
 
-    <amk-logo [size]="'large'" [direction]="'column'" />
+    <amk-logo [direction]="'column'" [size]="'large'" />
 
     <mat-card>
       <mat-card-header>
@@ -14,7 +14,7 @@
           <mat-form-field appearance="outline">
             <mat-label>{{ t('auth.register.name') }}</mat-label>
 
-            <input id="" matInput type="text" formControlName="name" />
+            <input id="" formControlName="name" matInput type="text" />
 
             @if (form.controls.name.hasError('required')) {
               <mat-error>{{ t('auth.register.nameRequired') }}</mat-error>
@@ -26,7 +26,7 @@
           <mat-form-field appearance="outline">
             <mat-label>{{ t('auth.register.email') }}</mat-label>
 
-            <input id="" matInput type="email" formControlName="email" />
+            <input id="" formControlName="email" matInput type="email" />
 
             @if (form.controls.email.hasError('required')) {
               <mat-error>{{ t('auth.register.emailRequired') }}</mat-error>
@@ -38,7 +38,7 @@
           <mat-form-field appearance="outline">
             <mat-label>{{ t('auth.register.password') }}</mat-label>
 
-            <input id="" matInput type="password" formControlName="password" />
+            <input id="" formControlName="password" matInput type="password" />
 
             @if (form.controls.password.hasError('required')) {
               <mat-error>{{ t('auth.register.passwordRequired') }}</mat-error>
@@ -50,7 +50,7 @@
           <mat-form-field appearance="outline">
             <mat-label>{{ t('auth.register.confirmPassword') }}</mat-label>
 
-            <input id="" matInput type="password" formControlName="confirmPassword" />
+            <input id="" formControlName="confirmPassword" matInput type="password" />
 
             @if (form.controls.confirmPassword.hasError('required')) {
               <mat-error>{{ t('auth.register.confirmPasswordRequired') }}</mat-error>
@@ -63,13 +63,15 @@
             {{ t('auth.register.agreeTerms') }}
           </mat-checkbox>
 
-          <button class="register-button" matButton="outlined" type="submit" >
+          <button class="register-button" matButton="outlined" type="submit">
             {{ t('auth.register.submit') }}
           </button>
 
           <div class="register-to-login">
             <span>{{ t('auth.register.haveAccount') }}</span>
-            <button type="button" class="height-small" matButton routerLink="../login">{{ t('auth.register.login') }}</button>
+            <button class="height-small" matButton routerLink="../login" type="button">
+              {{ t('auth.register.login') }}
+            </button>
           </div>
         </form>
       </mat-card-content>

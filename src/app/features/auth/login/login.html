@@ -2,7 +2,7 @@
   <div class="login-container">
     <span class="spacer"></span>
 
-    <amk-logo [size]="'large'" [direction]="'column'" />
+    <amk-logo [direction]="'column'" [size]="'large'" />
 
     <mat-card>
       <mat-card-header>
@@ -14,7 +14,7 @@
           <mat-form-field appearance="outline">
             <mat-label>{{ t('auth.login.email') }}</mat-label>
 
-            <input id="" matInput type="email" formControlName="email" />
+            <input id="" formControlName="email" matInput type="email" />
 
             @if (form.controls.email.hasError('required')) {
               <mat-error>{{ t('auth.login.emailRequired') }}</mat-error>
@@ -26,7 +26,7 @@
           <mat-form-field appearance="outline">
             <mat-label>{{ t('auth.login.password') }}</mat-label>
 
-            <input id="" matInput type="password" formControlName="password" />
+            <input id="" formControlName="password" matInput type="password" />
 
             @if (form.controls.password.hasError('required')) {
               <mat-error>{{ t('auth.login.passwordRequired') }}</mat-error>

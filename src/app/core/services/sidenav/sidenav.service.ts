@@ -1,12 +1,7 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 
-import {
-  createSidenavNode,
-  insertSidenavNode,
-  removeSidenavNode,
-  SidenavNode,
-} from './sidenav-node.model';
 import { TranslocoService } from '@ngneat/transloco';
+import { createSidenavNode, insertSidenavNode, removeSidenavNode, SidenavNode } from './sidenav-node.model';
 
 export interface BookContext {
   id: number;

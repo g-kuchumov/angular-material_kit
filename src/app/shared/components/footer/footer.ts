@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { Component } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
 import { TranslocoDirective } from '@ngneat/transloco';

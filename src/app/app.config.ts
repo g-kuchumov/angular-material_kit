@@ -1,13 +1,15 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners, isDevMode } from '@angular/core';
-import { provideRouter } from '@angular/router';
-import { routes } from './app.routes';
 import { provideHttpClient } from '@angular/common/http';
-import { TranslocoHttpLoader } from './transloco-loader';
-import { provideTransloco } from '@ngneat/transloco';
+import { ApplicationConfig, isDevMode, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatPaginatorIntl } from '@angular/material/paginator';
-import { CustomPaginatorIntl } from './core/services/paginator/paginator-intl';
+import { provideRouter } from '@angular/router';
+
+import { provideTransloco } from '@ngneat/transloco';
+
+import { routes } from './app.routes';
 import { provideLanguageService } from './core/services/language';
+import { CustomPaginatorIntl } from './core/services/paginator/paginator-intl';
+import { TranslocoHttpLoader } from './transloco-loader';
 
 export const appConfig: ApplicationConfig = {
   providers: [

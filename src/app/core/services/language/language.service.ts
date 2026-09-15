@@ -1,19 +1,8 @@
-import {
-  EnvironmentProviders,
-  Injectable,
-  Provider,
-  inject,
-  provideAppInitializer,
-} from '@angular/core';
 import { DOCUMENT } from '@angular/common';
+import { EnvironmentProviders, Injectable, Provider, inject, provideAppInitializer } from '@angular/core';
 import { TranslocoService } from '@ngneat/transloco';
 
-import {
-  DEFAULT_LANGUAGE,
-  LANGUAGE_STORAGE_KEY,
-  AppLanguage,
-  isAppLanguage,
-} from './language.model';
+import { AppLanguage, DEFAULT_LANGUAGE, LANGUAGE_STORAGE_KEY, isAppLanguage } from './language.model';
 
 @Injectable({ providedIn: 'root' })
 export class LanguageService {

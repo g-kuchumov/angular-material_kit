@@ -1,22 +1,14 @@
 import { Component, computed, input, output } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatListItem, MatListItemIcon } from '@angular/material/list';
-import { SidenavNode } from '../../../core/services/sidenav/sidenav-node.model';
-import { MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import { SidenavNode } from '../../../core/services/sidenav/sidenav-node.model';
 
 @Component({
   selector: 'amk-sidenav-node',
-  imports: [
-    RouterLink,
-    RouterLinkActive,
-    MatIcon,
-    MatListItem,
-    MatListItemIcon,
-    MatIconButton,
-    MatTooltip,
-  ],
+  imports: [RouterLink, RouterLinkActive, MatIcon, MatListItem, MatListItemIcon, MatIconButton, MatTooltip],
   templateUrl: './sidenav-node.html',
   styleUrl: './sidenav-node.scss',
 })

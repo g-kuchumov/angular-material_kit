@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { MatIcon } from '@angular/material/icon';
 import { MatButton, MatFabButton, MatIconButton, MatMiniFabButton } from '@angular/material/button';
-import { RouterLink } from '@angular/router';
+import { MatIcon } from '@angular/material/icon';
 import { MatDivider } from '@angular/material/list';
+import { RouterLink } from '@angular/router';
 import { TranslocoDirective } from '@ngneat/transloco';
 
 @Component({

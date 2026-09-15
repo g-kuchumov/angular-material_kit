@@ -1,5 +1,5 @@
-import { DestroyRef, Injectable, Provider, computed, effect, inject, signal } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
+import { DestroyRef, Injectable, Provider, computed, effect, inject, signal } from '@angular/core';
 
 import {
   COLOR_SCHEME_STORAGE_KEY,
@@ -27,9 +27,7 @@ export class ThemeService {
 
   public readonly theme = signal<ThemeId>(this.readInitialTheme());
 
-  public readonly preferredColorScheme = signal<PreferredColorScheme>(
-    this.readInitialColorScheme(),
-  );
+  public readonly preferredColorScheme = signal<PreferredColorScheme>(this.readInitialColorScheme());
 
   public readonly resolvedColorScheme = computed(() => {
     if (this.preferredColorScheme() === 'system') {

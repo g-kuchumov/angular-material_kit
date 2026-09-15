@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButton } from '@angular/material/button';
 import { MatCard, MatCardContent, MatCardHeader, MatCardTitle } from '@angular/material/card';
+import { MatCheckbox } from '@angular/material/checkbox';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { MatButton } from '@angular/material/button';
-import { MatCheckbox } from '@angular/material/checkbox';
+import { RouterLink } from '@angular/router';
 import { TranslocoDirective } from '@ngneat/transloco';
 import { Footer } from '../../../shared/components/footer/footer';
 import { Logo } from '../../../shared/components/logo/logo';
-import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'amk-register',
@@ -33,7 +33,7 @@ import { RouterLink } from '@angular/router';
   styleUrl: './register.scss',
 })
 export class Register {
-  readonly form = new FormGroup({
+  public readonly form = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.minLength(2)]),
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required, Validators.minLength(6)]),
@@ -41,7 +41,7 @@ export class Register {
     agreeTerms: new FormControl(false, [Validators.requiredTrue]),
   });
 
-  onSubmit(): void {
+  public onSubmit(): void {
     if (this.form.invalid) {
       return;
     }

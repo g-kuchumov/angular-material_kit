@@ -1,17 +1,38 @@
 {
-  "printWidth": 100,
-  "singleQuote": true,
+  "printWidth": 120,
   "tabWidth": 2,
   "useTabs": false,
+  "semi": true,
+  "singleQuote": true,
+  "trailingComma": "all",
+  "bracketSpacing": true,
+  "arrowParens": "always",
+  "endOfLine": "lf",
   "htmlWhitespaceSensitivity": "ignore",
-  "plugins": ["prettier-plugin-organize-attributes"],
-  "attributeSortOrder": [
-    "^\\(.*\\)$",
-    "^#.*$",
-    "^id$",
-    "^class$",
-    "^[a-zA-Z]"
+
+  "plugins": [
+    "prettier-plugin-organize-imports",
+    "prettier-plugin-organize-attributes"
   ],
+
+  "attributeSort": "alphabetical",
+  "attributeSortOrder": [
+    "^\\*ng",
+    "^@(?:if|for|switch|defer)",
+    "^id$",
+    "^name$",
+    "^class$",
+    "^\\[class\\.",
+    "^\\[style\\.",
+    "^[a-zA-Z]",
+    "^\\[(?:ngModel|formControl|formControlName)\\]$",
+    "^\\[\\(.*\\)\\]$",
+    "^\\[.*\\]$",
+    "^\\((?!click)\\w+\\)$",
+    "^\\(click\\)$",
+    "^#.*$"
+  ],
+
   "overrides": [
     {
       "files": "*.html",

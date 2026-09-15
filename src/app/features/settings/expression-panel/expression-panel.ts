@@ -1,4 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
+import { MatButtonToggle, MatButtonToggleGroup } from '@angular/material/button-toggle';
+import { MatCheckbox } from '@angular/material/checkbox';
 import {
   MatAccordion,
   MatExpansionPanel,
@@ -6,21 +8,20 @@ import {
   MatExpansionPanelHeader,
   MatExpansionPanelTitle,
 } from '@angular/material/expansion';
-import { MatButtonToggle, MatButtonToggleGroup } from '@angular/material/button-toggle';
-import { MatIcon } from '@angular/material/icon';
-import { MatCheckbox } from '@angular/material/checkbox';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
-import { MatSelect, MatOption } from '@angular/material/select';
+import { MatIcon } from '@angular/material/icon';
+import { MatOption, MatSelect } from '@angular/material/select';
 import { TranslocoDirective, TranslocoService } from '@ngneat/transloco';
 
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { AppLanguage, LanguageService } from '../../../core/services/language';
 import {
   PREFERRED_COLOR_SCHEMES,
   PreferredColorScheme,
-  ThemeId,
   THEME_IDS,
+  ThemeId,
   ThemeService,
 } from '../../../core/services/theme';
-import { AppLanguage, LanguageService } from '../../../core/services/language';
 
 @Component({
   selector: 'amk-expression-panel',
@@ -61,7 +62,7 @@ export class ExpressionPanel {
   public readonly activeLang = signal(this.translocoService.getActiveLang());
 
   constructor() {
-    this.translocoService.langChanges$.subscribe((lang) => this.activeLang.set(lang));
+    this.translocoService.langChanges$.pipe(takeUntilDestroyed()).subscribe((lang) => this.activeLang.set(lang));
   }
 
   public setTheme(themeId: ThemeId): void {

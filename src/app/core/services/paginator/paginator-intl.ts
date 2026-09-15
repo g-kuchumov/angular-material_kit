@@ -3,8 +3,7 @@ import { MatPaginatorIntl } from '@angular/material/paginator';
 import { TranslocoService } from '@ngneat/transloco';
 import { Subject, switchMap, take, takeUntil } from 'rxjs';
 
-type PaginatorKeys =
-  'itemsPerPage' | 'nextPage' | 'previousPage' | 'firstPage' | 'lastPage' | 'range' | 'rangeZero';
+type PaginatorKeys = 'itemsPerPage' | 'nextPage' | 'previousPage' | 'firstPage' | 'lastPage' | 'range' | 'rangeZero';
 
 @Injectable()
 export class CustomPaginatorIntl extends MatPaginatorIntl {
@@ -19,9 +18,7 @@ export class CustomPaginatorIntl extends MatPaginatorIntl {
 
     this.transloco.langChanges$
       .pipe(
-        switchMap(() =>
-          this.transloco.selectTranslateObject<PaginatorKeys>('paginator').pipe(take(1)),
-        ),
+        switchMap(() => this.transloco.selectTranslateObject<PaginatorKeys>('paginator').pipe(take(1))),
         takeUntil(this.destroy$),
       )
       .subscribe(() => {

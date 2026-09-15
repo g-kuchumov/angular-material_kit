@@ -10,6 +10,7 @@ module.exports = (async () => {
   const rxjsX = rxjsXPlugin.default || rxjsXPlugin;
 
   return tseslint.config(
+    { ignores: ['dist/**', '.angular/**', 'node_modules/**'] },
     {
       files: ['**/*.ts'],
       extends: [
@@ -25,6 +26,7 @@ module.exports = (async () => {
         prettier: eslintPluginPrettier, // Подключает Prettier как плагин ESLint
       },
       languageOptions: {
+        parser: tseslint.parser,
         parserOptions: {
           projectService: true, // Говорит TypeScript автоматически искать tsconfig.json
           tsconfigRootDir: __dirname, // Указывает на корневую папку проекта
@@ -60,6 +62,20 @@ module.exports = (async () => {
           },
         ],
 
+        '@typescript-eslint/unbound-method': [
+          'error',
+          {
+            ignoreStatic: true, // Заставит линтер игнорировать статические методы
+          },
+        ],
+
+        '@typescript-eslint/no-confusing-void-expression': [
+          'error',
+          {
+            ignoreArrowShorthand: true, // Разрешит конструкции типа (lang) => this.activeLang.set(lang)
+          },
+        ],
+
         '@typescript-eslint/no-explicit-any': 'error', // Запрещает тип 'any'. Заставляет писать интерфейсы, чтобы не ломать строгую типизацию.
         '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }], // Запрещает неиспользуемые переменные. Игнорирует аргументы функций, только если они начинаются с '_'.
         '@angular-eslint/use-lifecycle-interface': 'error', // Обязывает писать 'implements OnInit/OnDestroy', если в классе объявлены одноименные методы.
@@ -83,50 +99,61 @@ module.exports = (async () => {
         '@angular-eslint/no-input-rename': 'error', // Запрещает переименовывать @Input() свойства (например, @Input('badName')), чтобы имя в TS и HTML совпадало.
         '@angular-eslint/no-output-rename': 'error', // Запрещает переименовывать @Output() свойства, сохраняя прозрачность событий в шаблонах.
 
+        'rxjs-x/no-ignored-subscribe': 'error', //  Запрещает .subscribe() без отписки/закрытия потока
+        'rxjs-x/no-nested-subscribe': 'error', // Запрещает подписки внутри других подписок (вложенные .subscribe)
+        'rxjs-x/no-subject-unsubscribe': 'error', // Запрещает «голые» подписки, требуя, чтобы поток обязательно завершался
+
         'prettier/prettier': 'error', // Выводит ошибки форматирования Prettier как ошибки ESLint
 
-        indent: ['error', 2, { SwitchCase: 1 }], // Размер отступа — 2 пробела
-        semi: ['error', 'always'], // Точка с запятой обязательна всегда
-        curly: ['error', 'all'], // Фигурные скобки обязательны для всех блоков
-        'brace-style': ['error', '1tbs', { allowSingleLine: true }], // Стиль скобок: открывающая на той же строке (1tbs), но можно писать всё в одну строку, если код короткий
-        'no-multiple-empty-lines': ['error', { max: 1, maxEOF: 0 }], // Никаких лишних пустых строк: максимум 1 пустая строка подряд
-        'keyword-spacing': ['error', { before: true, after: true }], // Пробелы вокруг ключевых слов
-        'space-before-blocks': ['error', 'always'], // Пробел перед открывающей фигурной скобкой
-        'object-curly-spacing': ['error', 'always'], // Пробелы внутри фигурных скобок
-        'comma-dangle': [
-          'error',
-          {
-            arrays: 'always-multiline', // В массивах ставим запятую, если каждый элемент на новой строке
-            objects: 'always-multiline', // В объектах ставим запятую, если свойства на новых строках
-            imports: 'never', // В импортах запятая в конце НЕ нужна
-            exports: 'never', // В экспортах запятая в конце НЕ нужна
-            functions: 'never', // В аргументах функций запятую в конце не ставим
-          },
-        ],
+        // indent: ['error', 2, { SwitchCase: 1 }], // Размер отступа — 2 пробела
+        // semi: ['error', 'always'], // Точка с запятой обязательна всегда
+        // curly: ['error', 'all'], // Фигурные скобки обязательны для всех блоков
+        // 'brace-style': ['error', '1tbs', { allowSingleLine: true }], // Стиль скобок: открывающая на той же строке (1tbs), но можно писать всё в одну строку, если код короткий
+        // 'no-multiple-empty-lines': ['error', { max: 1, maxEOF: 0 }], // Никаких лишних пустых строк: максимум 1 пустая строка подряд
+        // 'keyword-spacing': ['error', { before: true, after: true }], // Пробелы вокруг ключевых слов
+        // 'space-before-blocks': ['error', 'always'], // Пробел перед открывающей фигурной скобкой
+        // 'object-curly-spacing': ['error', 'always'], // Пробелы внутри фигурных скобок
+        // 'comma-dangle': [
+        //   'error',
+        //   {
+        //     arrays: 'always-multiline', // В массивах ставим запятую, если каждый элемент на новой строке
+        //     objects: 'always-multiline', // В объектах ставим запятую, если свойства на новых строках
+        //     imports: 'never', // В импортах запятая в конце НЕ нужна
+        //     exports: 'never', // В экспортах запятая в конце НЕ нужна
+        //     functions: 'never', // В аргументах функций запятую в конце не ставим
+        //   },
+        // ],
       },
     },
     {
       files: ['**/*.html'],
       extends: [angular.configs.templateRecommended, angular.configs.templateAccessibility],
+      plugins: {
+        prettier: eslintPluginPrettier,
+      },
+      languageOptions: {
+        parser: angular.templateParser,
+      },
       rules: {
         '@angular-eslint/template/banana-in-box': 'error', // Запрещает перепутанный синтаксис ([ngModel]). Только [(ngModel)].
         '@angular-eslint/template/eqeqeq': ['error', { allowNullOrUndefined: true }], // Требует строгое сравнение === внутри HTML-шаблонов.
         '@angular-eslint/template/prefer-control-flow': 'error', // Запрещает устаревшие *ngIf и *ngFor, требуя новый синтаксис @if и @for
         '@angular-eslint/template/no-duplicate-attributes': 'error', // Запрещает дублировать одинаковые атрибуты (например, два тега class) в одном элементе
-        '@angular-eslint/template/attributes-order': [
-          'error',
-          {
-            alphabetical: false,
-            order: [
-              'STRUCTURAL_DIRECTIVE', // 1. Логика: *ngIf, *ngFor
-              'TEMPLATE_REFERENCE', // 1. Ссылки на шаблон: #myInput
-              'ATTRIBUTE_BINDING', // 2. Статические HTML-атрибуты: class, id, type, placeholder
-              'INPUT_BINDING', // 3. Входящие свойства (Инпуты): [value], [disabled]
-              'TWO_WAY_BINDING', // 4. Двусторонняя связь (Бананы в коробке): [(ngModel)]
-              'OUTPUT_BINDING', // 5. Исходящие события (Аутпуты): (click), (submit)
-            ],
-          },
-        ],
+        // '@angular-eslint/template/attributes-order': [
+        //   'error',
+        //   {
+        //     alphabetical: false,
+        //     order: [
+        //       'STRUCTURAL_DIRECTIVE', // 1. Логика: *ngIf, *ngFor
+        //       'TEMPLATE_REFERENCE', // 1. Ссылки на шаблон: #myInput
+        //       'ATTRIBUTE_BINDING', // 2. Статические HTML-атрибуты: class, id, type, placeholder
+        //       'INPUT_BINDING', // 3. Входящие свойства (Инпуты): [value], [disabled]
+        //       'TWO_WAY_BINDING', // 4. Двусторонняя связь (Бананы в коробке): [(ngModel)]
+        //       'OUTPUT_BINDING', // 5. Исходящие события (Аутпуты): (click), (submit)
+        //     ],
+        //   },
+        // ],
+        'prettier/prettier': 'error',
       },
     },
     eslintConfigPrettier,
