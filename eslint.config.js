@@ -89,6 +89,8 @@ module.exports = (async () => {
         'no-eval': 'error', // Категорически запрещает использование 'eval()', защищая от выполнения вредоносного кода.
         'no-param-reassign': ['error', { props: true }], // Запрещает мутировать (перезаписывать) входные параметры функций и их свойства.
         'max-classes-per-file': ['error', 1], // Ограничивает количество классов в файле до одного (один файл — один компонент/сервис).
+
+        '@typescript-eslint/no-extraneous-class': 'off', // Разрешить пустые классы
         '@typescript-eslint/no-require-imports': 'error', // Запрещает устаревший синтаксис 'require()' в TS файлах, требуя только 'import'.
 
         '@typescript-eslint/consistent-type-definitions': ['error', 'interface'], // Заставляет всегда использовать 'interface' вместо 'type' для описания объектов.

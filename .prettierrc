@@ -9,12 +9,7 @@
   "arrowParens": "always",
   "endOfLine": "lf",
   "htmlWhitespaceSensitivity": "ignore",
-
-  "plugins": [
-    "prettier-plugin-organize-imports",
-    "prettier-plugin-organize-attributes"
-  ],
-
+  "plugins": ["prettier-plugin-organize-imports", "prettier-plugin-organize-attributes"],
   "attributeSort": "alphabetical",
   "attributeSortOrder": [
     "^\\*ng",
@@ -32,7 +27,6 @@
     "^\\(click\\)$",
     "^#.*$"
   ],
-
   "overrides": [
     {
       "files": "*.html",

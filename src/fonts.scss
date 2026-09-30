@@ -1,0 +1,80 @@
+/* roboto-300 - cyrillic_latin */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 300;
+  src: url('/assets/fonts/roboto-v51-cyrillic_latin-300.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+/* roboto-regular - cyrillic_latin */
+@font-face {
+  font-display: swap;
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/assets/fonts/roboto-v51-cyrillic_latin-regular.woff2') format('woff2');
+}
+
+/* roboto-500 - cyrillic_latin */
+@font-face {
+  font-display: swap;
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 500;
+  src: url('/assets/fonts/roboto-v51-cyrillic_latin-500.woff2') format('woff2');
+}
+
+/* material-icons-regular - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/assets/fonts/material-icons-v145-latin-regular.woff2') format('woff2');
+}
+
+/* material-icons-outlined-regular - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'Material Icons Outlined';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/assets/fonts/material-icons-outlined-v110-latin-regular.woff2') format('woff2');
+}
+
+.material-icons,
+.material-icons-outlined {
+  font-size: 1.5rem;
+  display: inline-block;
+  line-height: 1;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+
+  font-feature-settings: 'liga' 1;
+  font-variant-ligatures: common-ligatures;
+}
+
+.material-icons {
+  font-family: 'Material Icons', sans-serif;
+}
+
+.material-icons-outlined {
+  font-family: 'Material Icons Outlined', sans-serif;
+}
+
+mat-checkbox,
+.mat-mdc-checkbox {
+  .mdc-checkbox__background {
+    .mdc-checkbox__checkmark {
+      visibility: visible !important;
+
+      .mdc-checkbox__checkmark-path {
+        stroke: currentColor !important;
+        filter: invert(0) grayscale(0) contrast(200);
+      }
+    }
+  }
+}
