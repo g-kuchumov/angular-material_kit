@@ -1,6 +1,17 @@
 <ng-container *transloco="let t">
   <mat-toolbar class="toolbar" style="box-shadow: var(--mat-sys-level1)">
-    <button class="toolbar-icon" [disabled]="busy()" (click)="toggleSidenav()" mat-icon-button>
+    <amk-accessibility-button />
+
+    <button
+      [attr.aria-controls]="'app-sidenav'"
+      [attr.aria-expanded]="opened()"
+      [attr.aria-label]="t('toolbar.menu')"
+      [attr.title]="t('toolbar.menu')"
+      [disabled]="busy()"
+      (click)="toggleSidenav()"
+      matIconButton
+      type="button"
+    >
       <mat-icon>menu</mat-icon>
     </button>
 
@@ -8,36 +19,7 @@
 
     <span class="spacer"></span>
 
-    <button class="toolbar-icon" [disabled]="busy()" [matMenuTriggerFor]="notificationMenu" mat-icon-button>
-      <mat-icon>notifications</mat-icon>
-    </button>
-
-    <mat-menu #notificationMenu="matMenu">
-      <button mat-menu-item>{{ t('toolbar.notifications.item1') }}</button>
-      <button mat-menu-item>{{ t('toolbar.notifications.item2') }}</button>
-    </mat-menu>
-
-    <button class="toolbar-icon" [disabled]="busy()" [matMenuTriggerFor]="accountMenu" mat-icon-button>
-      <mat-icon>account_circle</mat-icon>
-    </button>
-
-    <mat-menu class="height-medium" #accountMenu="matMenu" style="margin: 0 !important; padding: 0 !important">
-      <button class="height-medium" mat-menu-item>
-        <div style="display: flex; flex-direction: column; padding: 0.4rem 0">
-          <span><b>Иванов Иван Иванович</b></span>
-          <span class="secondary">{{ '@username' }}</span>
-        </div>
-      </button>
-      <mat-divider />
-      <button [routerLink]="'settings'" mat-menu-item>
-        <mat-icon>settings</mat-icon>
-        {{ t('buttons.settings') }}
-      </button>
-      <mat-divider />
-      <button mat-menu-item routerLink="login">
-        <mat-icon>logout</mat-icon>
-        {{ t('buttons.logout') }}
-      </button>
-    </mat-menu>
+    <amk-notification-menu />
+    <amk-account-menu />
   </mat-toolbar>
 </ng-container>
