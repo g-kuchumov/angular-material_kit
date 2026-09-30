@@ -46,6 +46,6 @@ export class Register {
       return;
     }
 
-    console.log('Register submitted', this.form.value);
+    // TODO: отправить данные регистрации на сервер
   }
 }

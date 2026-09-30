@@ -2,6 +2,7 @@ import { DOCUMENT } from '@angular/common';
 import { DestroyRef, Injectable, Provider, computed, effect, inject, signal } from '@angular/core';
 
 import {
+  COLOR_SCHEME_CLASS_PREFIX,
   COLOR_SCHEME_STORAGE_KEY,
   PreferredColorScheme,
   THEME_CLASS_PREFIX,
@@ -96,8 +97,8 @@ export class ThemeService {
       const themeId = this.theme();
       const scheme = this.resolvedColorScheme();
 
-      const themeClasses = Array.from(rootElement.classList).filter((className) =>
-        className.startsWith(THEME_CLASS_PREFIX),
+      const themeClasses = Array.from(rootElement.classList).filter(
+        (className) => className.startsWith(THEME_CLASS_PREFIX) || className.startsWith(COLOR_SCHEME_CLASS_PREFIX),
       );
 
       rootElement.classList.remove(...themeClasses);
@@ -105,6 +106,8 @@ export class ThemeService {
       if (themeId !== THEME_IDS[0]) {
         rootElement.classList.add(`${THEME_CLASS_PREFIX}${themeId}`);
       }
+
+      rootElement.classList.add(`${COLOR_SCHEME_CLASS_PREFIX}${scheme}`);
 
       rootElement.style.colorScheme = scheme;
     });

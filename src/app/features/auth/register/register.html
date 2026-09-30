@@ -10,12 +10,18 @@
       </mat-card-header>
 
       <mat-card-content>
-        <form class="register-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+        <form class="register-form" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
           <mat-form-field appearance="outline">
-            <mat-label>{{ t('auth.register.name') }}</mat-label>
-
-            <input id="" formControlName="name" matInput type="text" />
-
+            <mat-label id="name-label">{{ t('auth.register.name') }}</mat-label>
+            <input
+              id="name-input"
+              aria-labelledby="name-label"
+              autocomplete="name"
+              formControlName="name"
+              matInput
+              required
+              type="text"
+            />
             @if (form.controls.name.hasError('required')) {
               <mat-error>{{ t('auth.register.nameRequired') }}</mat-error>
             } @else if (form.controls.name.hasError('minlength')) {
@@ -24,10 +30,17 @@
           </mat-form-field>
 
           <mat-form-field appearance="outline">
-            <mat-label>{{ t('auth.register.email') }}</mat-label>
-
-            <input id="" formControlName="email" matInput type="email" />
-
+            <mat-label id="email-label">{{ t('auth.register.email') }}</mat-label>
+            <input
+              id="email-input"
+              aria-labelledby="email-label"
+              autocomplete="email"
+              formControlName="email"
+              inputmode="email"
+              matInput
+              required
+              type="email"
+            />
             @if (form.controls.email.hasError('required')) {
               <mat-error>{{ t('auth.register.emailRequired') }}</mat-error>
             } @else if (form.controls.email.hasError('email')) {
@@ -36,10 +49,17 @@
           </mat-form-field>
 
           <mat-form-field appearance="outline">
-            <mat-label>{{ t('auth.register.password') }}</mat-label>
-
-            <input id="" formControlName="password" matInput type="password" />
-
+            <mat-label id="password-label">{{ t('auth.register.password') }}</mat-label>
+            <input
+              id="password-input"
+              aria-labelledby="password-label"
+              autocomplete="new-password"
+              formControlName="password"
+              matInput
+              minlength="6"
+              required
+              type="password"
+            />
             @if (form.controls.password.hasError('required')) {
               <mat-error>{{ t('auth.register.passwordRequired') }}</mat-error>
             } @else if (form.controls.password.hasError('minlength')) {
@@ -48,10 +68,17 @@
           </mat-form-field>
 
           <mat-form-field appearance="outline">
-            <mat-label>{{ t('auth.register.confirmPassword') }}</mat-label>
-
-            <input id="" formControlName="confirmPassword" matInput type="password" />
-
+            <mat-label id="confirmPassword-label">{{ t('auth.register.confirmPassword') }}</mat-label>
+            <input
+              id="confirmPassword-input"
+              aria-labelledby="confirmPassword-label"
+              autocomplete="new-password"
+              formControlName="confirmPassword"
+              matInput
+              minlength="6"
+              required
+              type="password"
+            />
             @if (form.controls.confirmPassword.hasError('required')) {
               <mat-error>{{ t('auth.register.confirmPasswordRequired') }}</mat-error>
             } @else if (form.controls.confirmPassword.hasError('minlength')) {
@@ -59,7 +86,7 @@
             }
           </mat-form-field>
 
-          <mat-checkbox class="register-agree" formControlName="agreeTerms">
+          <mat-checkbox class="register-agree" formControlName="agreeTerms" required>
             {{ t('auth.register.agreeTerms') }}
           </mat-checkbox>
 

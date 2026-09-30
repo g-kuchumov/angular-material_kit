@@ -44,6 +44,6 @@ export class Login {
       return;
     }
 
-    console.log('Login submitted', this.form.value);
+    // TODO: отправить учётные данные на сервер
   }
 }

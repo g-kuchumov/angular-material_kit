@@ -2,7 +2,7 @@ import { DOCUMENT } from '@angular/common';
 import { EnvironmentProviders, Injectable, Provider, inject, provideAppInitializer } from '@angular/core';
 import { TranslocoService } from '@ngneat/transloco';
 
-import { AppLanguage, DEFAULT_LANGUAGE, LANGUAGE_STORAGE_KEY, isAppLanguage } from './language.model';
+import { AppLanguage, LANGUAGE_STORAGE_KEY, getSystemLanguage, isAppLanguage } from './language.model';
 
 @Injectable({ providedIn: 'root' })
 export class LanguageService {
@@ -21,22 +21,27 @@ export class LanguageService {
    */
   public init(): void {
     const storedLanguage = this.readFromStorage();
-    const target = isAppLanguage(storedLanguage) ? storedLanguage : DEFAULT_LANGUAGE;
+    const target = isAppLanguage(storedLanguage) ? storedLanguage : getSystemLanguage();
 
-    // Меняем язык только при реальном расхождении: setActiveLang всегда
-    // порождает событие langChanges$ и ре-рендер всех *transloco-вью.
     if (this.translocoService.getActiveLang() !== target) {
       this.translocoService.setActiveLang(target);
     }
 
+    this.syncDocumentLang(target);
+
     if (!isAppLanguage(storedLanguage)) {
-      this.writeToStorage(DEFAULT_LANGUAGE);
+      this.writeToStorage(target);
     }
   }
 
   public setLanguage(language: AppLanguage): void {
     this.translocoService.setActiveLang(language);
     this.writeToStorage(language);
+    this.syncDocumentLang(language);
+  }
+
+  private syncDocumentLang(language: AppLanguage): void {
+    this.document.documentElement.lang = language;
   }
 
   private readFromStorage(): string | null {
@@ -59,4 +64,4 @@ export const provideLanguageService: (Provider | EnvironmentProviders)[] = [
   }),
 ];
 
-export { APP_LANGUAGES, DEFAULT_LANGUAGE } from './language.model';
+export { APP_LANGUAGES, getSystemLanguage } from './language.model';

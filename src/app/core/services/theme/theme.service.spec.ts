@@ -1,9 +1,14 @@
 import { TestBed } from '@angular/core/testing';
 
-import { COLOR_SCHEME_STORAGE_KEY, THEME_CLASS_PREFIX, THEME_STORAGE_KEY } from './theme.model';
+import {
+  COLOR_SCHEME_CLASS_PREFIX,
+  COLOR_SCHEME_STORAGE_KEY,
+  THEME_CLASS_PREFIX,
+  THEME_STORAGE_KEY,
+} from './theme.model';
 import { ThemeService } from './theme.service';
 
-const DEFAULT_THEME = 'violet';
+const DEFAULT_THEME = 'magenta';
 const DEFAULT_SCHEME = 'system';
 
 interface MockMediaQueryList {
@@ -63,7 +68,12 @@ describe('ThemeService', () => {
 
   afterEach(() => {
     localStorage.clear();
-    document.documentElement.classList.remove(`${THEME_CLASS_PREFIX}green`, `${THEME_CLASS_PREFIX}blue`);
+    document.documentElement.classList.remove(
+      `${THEME_CLASS_PREFIX}green`,
+      `${THEME_CLASS_PREFIX}blue`,
+      `${COLOR_SCHEME_CLASS_PREFIX}light`,
+      `${COLOR_SCHEME_CLASS_PREFIX}dark`,
+    );
     document.documentElement.style.colorScheme = 'light';
     vi.unstubAllGlobals();
   });
@@ -167,5 +177,13 @@ describe('ThemeService', () => {
     service.setPreferredColorScheme('light');
 
     expect(service.resolvedColorScheme()).toBe('light');
+  });
+
+  it('должен добавлять класс цветовой схемы на корневой элемент', () => {
+    const service = createService();
+    service.setPreferredColorScheme('dark');
+    TestBed.tick();
+
+    expect(document.documentElement.classList.contains(`${COLOR_SCHEME_CLASS_PREFIX}dark`)).toBe(true);
   });
 });

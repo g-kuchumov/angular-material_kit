@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 
+import { provideTestTransloco } from '../../../testing/transloco.testing';
 import { Footer } from './footer';
 
 describe('Footer', () => {
@@ -9,6 +11,7 @@ describe('Footer', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [Footer],
+      providers: [provideRouter([]), ...provideTestTransloco()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Footer);

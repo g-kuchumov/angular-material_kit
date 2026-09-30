@@ -21,3 +21,5 @@ export const THEME_STORAGE_KEY = 'amk-theme';
 export const COLOR_SCHEME_STORAGE_KEY = 'amk-color-scheme';
 
 export const THEME_CLASS_PREFIX = 'theme-palette-';
+
+export const COLOR_SCHEME_CLASS_PREFIX = 'theme-scheme-';
