@@ -3,12 +3,10 @@
     <mat-expansion-panel hideToggle>
       <mat-expansion-panel-header>
         <mat-panel-title style="gap: 1rem">
-          <mat-icon>palette</mat-icon>
+          <mat-icon aria-hidden="true">palette</mat-icon>
           <span>{{ t('settings.theme.title') }}</span>
         </mat-panel-title>
-        <mat-panel-description>
-          {{ t('settings.theme.description') }}
-        </mat-panel-description>
+        <mat-panel-description>{{ t('settings.theme.description') }}</mat-panel-description>
       </mat-expansion-panel-header>
 
       <div style="display: flex; gap: 2rem">
@@ -20,7 +18,9 @@
             (valueChange)="setTheme($event)"
           >
             @for (themeId of themeIds; track themeId) {
-              <mat-button-toggle [value]="themeId">{{ themeId }}</mat-button-toggle>
+              <mat-button-toggle [value]="themeId">
+                {{ t('settings.theme.paletteValues.' + themeId) }}
+              </mat-button-toggle>
             }
           </mat-button-toggle-group>
         </div>
@@ -33,7 +33,9 @@
             (valueChange)="setPreferredColorScheme($event)"
           >
             @for (scheme of colorSchemes; track scheme) {
-              <mat-button-toggle [value]="scheme">{{ scheme }}</mat-button-toggle>
+              <mat-button-toggle [value]="scheme">
+                {{ t('settings.theme.colorSchemes.' + scheme) }}
+              </mat-button-toggle>
             }
           </mat-button-toggle-group>
         </div>
@@ -43,12 +45,10 @@
     <mat-expansion-panel hideToggle>
       <mat-expansion-panel-header>
         <mat-panel-title style="gap: 1rem">
-          <mat-icon>notifications</mat-icon>
+          <mat-icon aria-hidden="true">notifications</mat-icon>
           <span>{{ t('settings.notifications.title') }}</span>
         </mat-panel-title>
-        <mat-panel-description>
-          {{ t('settings.notifications.description') }}
-        </mat-panel-description>
+        <mat-panel-description>{{ t('settings.notifications.description') }}</mat-panel-description>
       </mat-expansion-panel-header>
 
       <div class="settings-section">
@@ -61,12 +61,10 @@
     <mat-expansion-panel hideToggle>
       <mat-expansion-panel-header>
         <mat-panel-title style="gap: 1rem">
-          <mat-icon>language</mat-icon>
+          <mat-icon aria-hidden="true">language</mat-icon>
           <span>{{ t('settings.language.title') }}</span>
         </mat-panel-title>
-        <mat-panel-description>
-          {{ t('settings.language.description') }}
-        </mat-panel-description>
+        <mat-panel-description>{{ t('settings.language.description') }}</mat-panel-description>
       </mat-expansion-panel-header>
 
       <div class="settings-section">
