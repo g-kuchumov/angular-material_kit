@@ -6,7 +6,7 @@ import { provideRouter } from '@angular/router';
 
 import { MAT_ICON_DEFAULT_OPTIONS } from '@angular/material/icon';
 import { routes } from './app.routes';
-import { provideLanguageService } from './core/services/language';
+import { AccessibilityService, provideAccessibilityService } from './core/services/accessibility';
 import { LanguageService, provideLanguageService } from './core/services/language';
 import { CustomPaginatorIntl } from './core/services/paginator/paginator-intl';
 import { provideThemeService, ThemeService } from './core/services/theme';
@@ -20,16 +20,8 @@ export const appConfig: ApplicationConfig = {
     provideNativeDateAdapter(),
     { provide: MatPaginatorIntl, useClass: CustomPaginatorIntl },
     ...provideLanguageService,
-    provideTransloco({
-      config: {
-        availableLangs: ['en', 'ru'],
-        defaultLang: 'en',
-        // Remove this option if your application doesn't support changing language in runtime.
-        reRenderOnLangChange: true,
-        prodMode: !isDevMode(),
-      },
-      loader: TranslocoHttpLoader,
     ...provideThemeService,
+    ...provideAccessibilityService,
     ...provideAppTransloco(),
     {
       provide: MAT_ICON_DEFAULT_OPTIONS,
@@ -37,6 +29,7 @@ export const appConfig: ApplicationConfig = {
     },
     provideAppInitializer(() => {
       inject(ThemeService);
+      inject(AccessibilityService);
       inject(LanguageService).init();
     }),
   ],

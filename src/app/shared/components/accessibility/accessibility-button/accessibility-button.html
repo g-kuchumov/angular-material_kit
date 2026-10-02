@@ -1,0 +1,13 @@
+<ng-container *transloco="let t">
+  <button
+    class="tertiary"
+    [attr.aria-label]="t('accessibility.openSettings')"
+    [attr.title]="t('accessibility.openSettings')"
+    (click)="openDialog()"
+    aria-haspopup="dialog"
+    matIconButton
+    type="button"
+  >
+    <mat-icon aria-hidden="true">accessibility_new</mat-icon>
+  </button>
+</ng-container>

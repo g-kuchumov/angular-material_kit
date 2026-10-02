@@ -1,0 +1,96 @@
+<ng-container *transloco="let t">
+  <h2 class="accessibility-dialog__title" matDialogTitle>
+    <mat-icon aria-hidden="true">accessibility_new</mat-icon>
+    <span>{{ t('accessibility.title') }}</span>
+  </h2>
+
+  <mat-dialog-content class="accessibility-dialog__content">
+    <section class="accessibility-dialog__section">
+      <h3>{{ t('accessibility.vision.title') }}</h3>
+
+      <div class="accessibility-dialog__row">
+        <span class="accessibility-dialog__label">{{ t('accessibility.vision.contrast') }}</span>
+        <mat-slide-toggle
+          class="accessibility-dialog__contrast"
+          [checked]="contrast()"
+          (change)="setContrast($event.checked)"
+        >
+          {{ t('accessibility.vision.contrastDescription') }}
+        </mat-slide-toggle>
+      </div>
+
+      <div class="accessibility-dialog__row">
+        <span class="accessibility-dialog__label">{{ t('accessibility.vision.fontSize') }}</span>
+        <mat-button-toggle-group
+          [attr.aria-label]="t('accessibility.vision.fontSize')"
+          [value]="fontSize()"
+          (valueChange)="setFontSize($event)"
+        >
+          @for (size of fontSizes; track size) {
+            <mat-button-toggle [attr.aria-label]="t('accessibility.vision.fontSize')" [value]="size">
+              {{ t('accessibility.vision.fontSizes.' + size) }}
+            </mat-button-toggle>
+          }
+        </mat-button-toggle-group>
+      </div>
+
+      <div class="accessibility-dialog__row">
+        <span class="accessibility-dialog__label">{{ t('accessibility.vision.lineSpacing') }}</span>
+        <mat-button-toggle-group
+          [attr.aria-label]="t('accessibility.vision.lineSpacing')"
+          [value]="lineSpacing()"
+          (valueChange)="setLineSpacing($event)"
+        >
+          @for (spacing of lineSpacings; track spacing) {
+            <mat-button-toggle [value]="spacing">
+              {{ t('accessibility.vision.spacings.' + spacing) }}
+            </mat-button-toggle>
+          }
+        </mat-button-toggle-group>
+      </div>
+
+      <div class="accessibility-dialog__row">
+        <span class="accessibility-dialog__label">{{ t('accessibility.vision.letterSpacing') }}</span>
+        <mat-button-toggle-group
+          [attr.aria-label]="t('accessibility.vision.letterSpacing')"
+          [value]="letterSpacing()"
+          (valueChange)="setLetterSpacing($event)"
+        >
+          @for (spacing of letterSpacings; track spacing) {
+            <mat-button-toggle [value]="spacing">
+              {{ t('accessibility.vision.spacings.' + spacing) }}
+            </mat-button-toggle>
+          }
+        </mat-button-toggle-group>
+      </div>
+
+      <div class="accessibility-dialog__row">
+        <span class="accessibility-dialog__label">{{ t('accessibility.vision.imageMode') }}</span>
+        <mat-button-toggle-group
+          [attr.aria-label]="t('accessibility.vision.imageMode')"
+          [value]="imageMode()"
+          (valueChange)="setImageMode($event)"
+        >
+          @for (mode of imageModes; track mode) {
+            <mat-button-toggle [value]="mode">{{ t('accessibility.vision.imageModes.' + mode) }}</mat-button-toggle>
+          }
+        </mat-button-toggle-group>
+      </div>
+    </section>
+
+    <section class="accessibility-dialog__section">
+      <h3>{{ t('accessibility.hearing.title') }}</h3>
+
+      <div class="accessibility-dialog__row">
+        <span class="accessibility-dialog__label">{{ t('accessibility.hearing.sound') }}</span>
+        <mat-slide-toggle [checked]="soundEnabled()" (change)="setSoundEnabled($event.checked)">
+          {{ t('accessibility.hearing.soundDescription') }}
+        </mat-slide-toggle>
+      </div>
+    </section>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button (click)="close()" mat-button type="button">{{ t('buttons.close') }}</button>
+  </mat-dialog-actions>
+</ng-container>

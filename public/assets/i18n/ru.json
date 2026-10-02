@@ -1,14 +1,91 @@
 {
   "app": {
-    "name": "Angular Material Kit"
+    "name": "Angular Material Kit",
+    "description": "Демонстрационный набор компонентов Angular Material с поддержкой специальных возможностей"
   },
-  "toolbar": {
-    "notifications": {
-      "item1": "Пункт 1",
-      "item2": "Пункт 2"
+  "accessibility": {
+    "title": "Специальные возможности",
+    "openSettings": "Открыть настройки специальных возможностей",
+    "vision": {
+      "title": "Зрение",
+      "contrast": "Контраст",
+      "contrastDescription": "Повышенная контрастность для слабовидящих",
+      "fontSize": "Размер текста",
+      "fontSizes": {
+        "small": "Мелкий",
+        "normal": "Обычный",
+        "large": "Крупный",
+        "xlarge": "Очень крупный"
+      },
+      "imageMode": "Изображения",
+      "imageModes": {
+        "normal": "Цветные",
+        "grayscale": "Чёрно-белые",
+        "hidden": "Скрыть"
+      },
+      "lineSpacing": "Межстрочный интервал",
+      "letterSpacing": "Межбуквенный интервал",
+      "spacings": {
+        "normal": "Обычный",
+        "increased": "Увеличенный",
+        "large": "Крупный"
+      }
+    },
+    "hearing": {
+      "title": "Слух",
+      "sound": "Звуковые подсказки",
+      "soundDescription": "Озвучивание элементов интерфейса при переходе клавишей Tab"
+    },
+    "speech": {
+      "expanded": "развёрнуто",
+      "collapsed": "свёрнуто",
+      "currentPage": "текущая страница",
+      "currentStep": "текущий шаг",
+      "disabled": "недоступно",
+      "required": "обязательное поле",
+      "checked": "отмечено",
+      "unchecked": "не отмечено",
+      "pressed": "нажато",
+      "notPressed": "не нажато",
+      "selected": "выбрано",
+      "notSelected": "не выбрано",
+      "comboBox": "раскрывающийся список",
+      "link": "ссылка",
+      "button": "кнопка",
+      "textField": "текстовое поле",
+      "listBox": "список"
     }
   },
+  "toolbar": {
+    "navigation": "Основная навигация",
+    "notifications": {
+      "title": "Уведомления",
+      "item1": "Пункт 1",
+      "item2": "Пункт 2"
+    },
+    "menu": "Меню навигации",
+    "account": "Профиль пользователя"
+  },
   "sidenav": {
+    "navigationLabel": "Боковое меню",
+    "menuLabel": "Разделы приложения",
+    "progressLabel": "Выполняется операция",
+    "bookHeadingLabel": "Текущий учебник",
+    "expand": "Развернуть",
+    "collapse": "Свернуть",
+    "items": {
+      "components": "Компоненты",
+      "button": "Кнопка",
+      "buttonToggle": "Переключатели кнопок",
+      "card": "Карточка",
+      "checkbox": "Флажки",
+      "other": "Прочее",
+      "settings": "Настройки",
+      "about": "О проекте",
+      "bookContent": "Содержание",
+      "bookTests": "Тесты и опросы",
+      "bookFiles": "Файлы курса"
+    },
     "backButton": {
       "teacher": "Мои предметы",
       "student": "Мои учебники"
@@ -17,13 +94,16 @@
       "about": "О нас",
       "support": "Обратная связь",
       "privacy": "Политика конфиденциальности",
-      "terms": "Пользовательское соглашение"
+      "terms": "Пользовательское соглашение",
+      "label": "Информация о сервисе"
     }
   },
   "auth": {
     "login": {
       "title": "Вход",
       "email": "Электронная почта",
+      "emailAutocomplete": "email",
+      "passwordAutocomplete": "current-password",
       "emailRequired": "Введите адрес электронной почты",
       "emailInvalid": "Введите корректный адрес электронной почты",
       "password": "Пароль",
@@ -32,11 +112,14 @@
       "rememberMe": "Запомнить меня",
       "submit": "Войти",
       "noAccount": "Нет аккаунта?",
-      "register": "Регистрация"
+      "register": "Зарегистрироваться"
     },
     "register": {
       "title": "Регистрация",
       "name": "Имя",
+      "nameAutocomplete": "name",
+      "emailAutocomplete": "email",
+      "passwordAutocomplete": "new-password",
       "nameRequired": "Введите имя",
       "nameMinLength": "Имя должно содержать не менее 2 символов",
       "email": "Электронная почта",
@@ -59,8 +142,33 @@
     "theme": {
       "title": "Тема",
       "description": "Настройка цветовой палитры и цветовой схемы",
-      "palette": "Палитра",
-      "colorScheme": "Цветовая схема"
+      "palette": "Цветовая палитра",
+      "colorScheme": "Цветовая схема",
+      "paletteValues": {
+        "magenta": "Пурпурная",
+        "green": "Зелёная",
+        "blue": "Синяя"
+      },
+      "colorSchemes": {
+        "light": "Светлая",
+        "dark": "Тёмная",
+        "system": "Как в системе"
+      },
+      "contrast": "Контраст",
+      "contrastDescription": "Повышенная контрастность для слабовидящих",
+      "fontSize": "Размер текста",
+      "fontSizes": {
+        "small": "Мелкий",
+        "normal": "Обычный",
+        "large": "Крупный",
+        "xlarge": "Очень крупный"
+      },
+      "imageMode": "Изображения",
+      "imageModes": {
+        "normal": "Цветные",
+        "grayscale": "Чёрно-белые",
+        "hidden": "Скрыть"
+      }
     },
     "notifications": {
       "title": "Уведомления",
@@ -86,22 +194,16 @@
     "range": "{{start}} – {{end}} из {{length}}",
     "rangeZero": "0 из {{length}}"
   },
-  "sidenavManager": {
-    "addItem": "Добавить пункт",
-    "removeItem": "Удалить пункт",
-    "parent": "Родитель",
-    "root": "Корень",
-    "name": "Название",
-    "route": "Маршрут",
-    "icon": "Иконка",
-    "remove": "Удалить",
-    "itemToRemove": "Пункт для удаления"
-  },
   "buttons": {
     "title": "Кнопки",
     "settings": "Настройки",
     "logout": "Выйти",
     "save": "Сохранить",
-    "cancel": "Отмена"
+    "cancel": "Отмена",
+    "close": "Закрыть"
+  },
+  "checkbox": {
+    "check": "Выбрать",
+    "disabled": "Недоступен"
   }
 }

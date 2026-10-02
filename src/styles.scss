@@ -28,8 +28,6 @@ html {
     )
   );
 
-  @include mat.strong-focus-indicators();
-
   -webkit-text-size-adjust: none;
   text-size-adjust: none;
   scroll-behavior: smooth;
@@ -64,6 +62,141 @@ html.theme-palette-blue {
 .spacer {
   flex: 1 1 auto;
 }
+
+/*******************************************************************************
+ *
+ *  HIGH CONTRAST THEME
+ *  Опция для слабовидящих: максимальный контраст поверхностей, текста и границ
+ *
+ ******************************************************************************/
+
+html.theme-contrast.theme-scheme-light {
+  --mat-sys-surface: #ffffff;
+  --mat-sys-surface-dim: #ffffff;
+  --mat-sys-surface-bright: #ffffff;
+  --mat-sys-surface-container-lowest: #ffffff;
+  --mat-sys-surface-container-low: #ffffff;
+  --mat-sys-surface-container: #ffffff;
+  --mat-sys-surface-container-high: #ffffff;
+  --mat-sys-surface-container-highest: #ffffff;
+  --mat-sys-surface-variant: #ffffff;
+  --mat-sys-on-surface: #000000;
+  --mat-sys-on-surface-variant: #000000;
+  --mat-sys-outline: #000000;
+  --mat-sys-outline-variant: #000000;
+  --mat-sys-scrim: #000000;
+  --mat-sys-shadow: #000000;
+  --mat-sys-inverse-surface: #000000;
+  --mat-sys-inverse-on-surface: #ffffff;
+  --mat-sys-on-primary: #ffffff;
+  --mat-sys-on-secondary: #ffffff;
+  --mat-sys-on-error: #ffffff;
+}
+
+html.theme-contrast.theme-scheme-dark {
+  --mat-sys-surface: #000000;
+  --mat-sys-surface-dim: #000000;
+  --mat-sys-surface-bright: #000000;
+  --mat-sys-surface-container-lowest: #000000;
+  --mat-sys-surface-container-low: #000000;
+  --mat-sys-surface-container: #000000;
+  --mat-sys-surface-container-high: #000000;
+  --mat-sys-surface-container-highest: #000000;
+  --mat-sys-surface-variant: #000000;
+  --mat-sys-on-surface: #ffffff;
+  --mat-sys-on-surface-variant: #ffffff;
+  --mat-sys-outline: #ffffff;
+  --mat-sys-outline-variant: #ffffff;
+  --mat-sys-scrim: #ffffff;
+  --mat-sys-shadow: #ffffff;
+  --mat-sys-inverse-surface: #ffffff;
+  --mat-sys-inverse-on-surface: #000000;
+  --mat-sys-on-primary: #000000;
+  --mat-sys-on-secondary: #000000;
+  --mat-sys-on-error: #000000;
+}
+
+html.theme-contrast {
+  @include mat.strong-focus-indicators();
+}
+
+/*******************************************************************************
+ *
+ *  FONT SIZE
+ *  Опция для слабовидящих: увеличенный размер текста
+ *
+ ******************************************************************************/
+
+html.theme-font-small {
+  font-size: 0.875rem;
+}
+
+html.theme-font-large {
+  font-size: 1.125rem;
+}
+
+html.theme-font-xlarge {
+  font-size: 1.25rem;
+}
+
+/*******************************************************************************
+ *
+ *  IMAGE MODE
+ *  Опция для слабовидящих: чёрно-белые или скрытые изображения
+ *
+ ******************************************************************************/
+
+html.theme-image-grayscale {
+  img,
+  picture,
+  video,
+  canvas,
+  svg,
+  .mat-mdc-card-avatar,
+  .mat-mdc-card-sm-image,
+  .mat-card-image,
+  [mat-card-image] {
+    filter: grayscale(1);
+  }
+}
+
+html.theme-image-hidden {
+  img,
+  picture,
+  video,
+  canvas,
+  svg,
+  .mat-mdc-card-avatar,
+  .mat-mdc-card-sm-image,
+  .mat-card-image,
+  [mat-card-image] {
+    visibility: hidden;
+  }
+}
+
+/*******************************************************************************
+ *
+ *  TEXT SPACING
+ *  Опция для слабовидящих: увеличенный межстрочный и межбуквенный интервал
+ *
+ ******************************************************************************/
+
+html.theme-line-increased {
+  line-height: 1.6;
+}
+
+html.theme-line-large {
+  line-height: 2;
+}
+
+html.theme-letter-increased {
+  letter-spacing: 0.05em;
+}
+
+html.theme-letter-large {
+  letter-spacing: 0.1em;
+}
+
 body {
   font: var(--mat-sys-body-medium);
   background: var(--mat-sys-surface-container);

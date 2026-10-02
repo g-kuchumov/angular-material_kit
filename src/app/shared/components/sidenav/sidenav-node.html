@@ -26,10 +26,14 @@
         <span class="node-label" #labelEl>{{ node().label }}</span>
 
         <button
+          [attr.aria-expanded]="isExpanded()"
+          [attr.aria-label]="node().label"
+          [attr.title]="(isExpanded() ? 'Свернуть ' : 'Развернуть ') + node().label"
           (click)="onToggleClick($event)"
           (mouseenter)="tooltip.hide(0)"
           (mouseleave)="checkEllipsis(labelEl, tooltip)"
           matIconButton
+          type="button"
         >
           <mat-icon>
             {{ isExpanded() ? 'expand_more' : 'chevron_right' }}

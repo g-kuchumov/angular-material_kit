@@ -1,19 +1,97 @@
 {
   "app": {
-    "name": "Angular Material Kit"
+    "name": "Angular Material Kit",
+    "description": "Angular Material component showcase with accessibility support"
   },
-  "toolbar": {
-    "notifications": {
-      "item1": "Item 1",
-      "item2": "Item 2"
+  "accessibility": {
+    "title": "Accessibility",
+    "openSettings": "Open accessibility settings",
+    "vision": {
+      "title": "Vision",
+      "contrast": "Contrast",
+      "contrastDescription": "High contrast for low vision",
+      "fontSize": "Text size",
+      "fontSizes": {
+        "small": "Small",
+        "normal": "Normal",
+        "large": "Large",
+        "xlarge": "Extra large"
+      },
+      "imageMode": "Images",
+      "imageModes": {
+        "normal": "Color",
+        "grayscale": "Grayscale",
+        "hidden": "Hide"
+      },
+      "lineSpacing": "Line spacing",
+      "letterSpacing": "Letter spacing",
+      "spacings": {
+        "normal": "Normal",
+        "increased": "Increased",
+        "large": "Large"
+      }
+    },
+    "hearing": {
+      "title": "Hearing",
+      "sound": "Sound hints",
+      "soundDescription": "Speak interface elements when moving with the Tab key"
+    },
+    "speech": {
+      "expanded": "expanded",
+      "collapsed": "collapsed",
+      "currentPage": "current page",
+      "currentStep": "current step",
+      "disabled": "unavailable",
+      "required": "required field",
+      "checked": "checked",
+      "unchecked": "not checked",
+      "pressed": "pressed",
+      "notPressed": "not pressed",
+      "selected": "selected",
+      "notSelected": "not selected",
+      "comboBox": "dropdown list",
+      "link": "link",
+      "button": "button",
+      "textField": "text field",
+      "listBox": "list"
     }
   },
+  "toolbar": {
+    "navigation": "Main navigation",
+    "notifications": {
+      "title": "Notifications",
+      "item1": "Item 1",
+      "item2": "Item 2"
+    },
+    "menu": "Navigation menu",
+    "account": "User account"
+  },
   "sidenav": {
+    "navigationLabel": "Side menu",
+    "menuLabel": "Application sections",
+    "progressLabel": "Operation in progress",
+    "bookHeadingLabel": "Current textbook",
+    "expand": "Expand",
+    "collapse": "Collapse",
+    "items": {
+      "components": "Components",
+      "button": "Button",
+      "buttonToggle": "Button toggles",
+      "card": "Card",
+      "checkbox": "Checkboxes",
+      "other": "Other",
+      "settings": "Settings",
+      "about": "About",
+      "bookContent": "Contents",
+      "bookTests": "Tests and quizzes",
+      "bookFiles": "Course files"
+    },
     "backButton": {
       "teacher": "My Subjects",
       "student": "My Textbooks"
     },
     "footer": {
+      "label": "Service information",
       "about": "About",
       "support": "Support",
       "privacy": "Privacy Policy",
@@ -59,8 +137,33 @@
     "theme": {
       "title": "Theme",
       "description": "Configure color palette and color scheme",
-      "palette": "Palette",
-      "colorScheme": "Color scheme"
+      "palette": "Color palette",
+      "colorScheme": "Color scheme",
+      "paletteValues": {
+        "magenta": "Magenta",
+        "green": "Green",
+        "blue": "Blue"
+      },
+      "colorSchemes": {
+        "light": "Light",
+        "dark": "Dark",
+        "system": "System"
+      },
+      "contrast": "Contrast",
+      "contrastDescription": "High contrast for low vision",
+      "fontSize": "Text size",
+      "fontSizes": {
+        "small": "Small",
+        "normal": "Normal",
+        "large": "Large",
+        "xlarge": "Extra large"
+      },
+      "imageMode": "Images",
+      "imageModes": {
+        "normal": "Color",
+        "grayscale": "Grayscale",
+        "hidden": "Hide"
+      }
     },
     "notifications": {
       "title": "Notifications",
@@ -86,22 +189,12 @@
     "range": "{{start}} – {{end}} of {{length}}",
     "rangeZero": "0 of {{length}}"
   },
-  "sidenavManager": {
-    "addItem": "Add item",
-    "removeItem": "Remove item",
-    "parent": "Parent",
-    "root": "Root",
-    "name": "Name",
-    "route": "Route",
-    "icon": "Icon",
-    "remove": "Remove",
-    "itemToRemove": "Item to remove"
-  },
   "buttons": {
     "title": "Buttons",
     "settings": "Settings",
     "logout": "Log Out",
     "save": "Save",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "close": "Close"
   }
 }

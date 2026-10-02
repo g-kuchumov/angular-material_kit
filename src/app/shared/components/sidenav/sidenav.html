@@ -1,49 +1,57 @@
-<amk-toolbar />
+<ng-container *transloco="let t">
+  <amk-toolbar />
 
-<mat-sidenav-container class="sidenav-container">
-  <mat-sidenav class="sidenav" [fixedInViewport]="true" [mode]="mode()" [opened]="opened()" (closedStart)="close()">
-    <div class="sidenav-wrapper">
-      @if (busy()) {
-        <mat-progress-bar class="progress-bar" mode="indeterminate" />
-      }
-
-      @if (isBookMode()) {
-        <h2 style="margin: 1rem 1rem 0; text-align: center; line-height: 1.4rem">{{ bookName() }}</h2>
-      }
-
-      <mat-nav-list class="shape-small height-medium" style="padding: 1rem 0">
-        @for (node of menu(); track node.id) {
-          <amk-sidenav-node
-            [disabled]="busy()"
-            [expandedIds]="expandedIds()"
-            [node]="node"
-            (navigate)="close()"
-            (toggleNode)="toggleNode($event)"
-          />
+  <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav
+      class="sidenav"
+      id="app-sidenav"
+      [attr.aria-label]="t('sidenav.navigationLabel')"
+      [fixedInViewport]="true"
+      [mode]="mode()"
+      [opened]="opened()"
+      (closedStart)="close()"
+    >
+      <div class="sidenav-wrapper">
+        @if (busy()) {
+          <mat-progress-bar class="progress-bar" [attr.aria-label]="t('sidenav.progressLabel')" mode="indeterminate" />
         }
-      </mat-nav-list>
 
-      <span class="spacer"></span>
+        @if (isBookMode()) {
+          <h2 class="book-title" [attr.aria-label]="t(bookName())">{{ bookName() }}</h2>
+        }
 
-      @if (isBookMode()) {
-        <ng-container *transloco="let t">
+        <mat-nav-list class="shape-small height-medium" style="padding: 1rem 0">
+          @for (node of menu(); track node.id) {
+            <amk-sidenav-node
+              [disabled]="busy()"
+              [expandedIds]="expandedIds()"
+              [node]="node"
+              (navigate)="close()"
+              (toggleNode)="toggleNode($event)"
+            />
+          }
+        </mat-nav-list>
+
+        <span class="spacer"></span>
+
+        @if (isBookMode()) {
           <mat-divider />
 
-          <button class="tertiary shape-none" (click)="onCloseBook()" matButton="text">
+          <button class="tertiary shape-none" (click)="onCloseBook()" matButton="text" type="button">
             <mat-icon>library_books</mat-icon>
             {{ backButtonText() }}
           </button>
-        </ng-container>
-      }
+        }
 
-      <mat-divider />
+        <mat-divider />
 
-      <amk-footer />
-    </div>
-  </mat-sidenav>
+        <amk-footer />
+      </div>
+    </mat-sidenav>
 
-  <mat-sidenav-content class="sidenav-content">
-    <amk-breadcrumbs />
-    <router-outlet />
-  </mat-sidenav-content>
-</mat-sidenav-container>
+    <mat-sidenav-content class="sidenav-content">
+      <amk-breadcrumbs />
+      <router-outlet />
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</ng-container>
