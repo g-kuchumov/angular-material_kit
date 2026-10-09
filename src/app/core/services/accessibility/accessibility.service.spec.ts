@@ -62,6 +62,7 @@ describe('AccessibilityService', () => {
     expect(service.lineSpacing()).toBe('normal');
     expect(service.letterSpacing()).toBe('normal');
     expect(service.soundEnabled()).toBe(true);
+    expect(service.clickAnnouncementEnabled()).toBe(false);
   });
 
   it('должен загружать сохранённые настройки из localStorage', () => {
@@ -699,6 +700,7 @@ describe('AccessibilityService', () => {
       service.setSoundEnabled(true);
 
       const checkbox = createCheckbox(true);
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true }));
       checkbox.dispatchEvent(new Event('change', { bubbles: true }));
       await flush();
 
@@ -710,6 +712,7 @@ describe('AccessibilityService', () => {
       service.setSoundEnabled(true);
 
       const checkbox = createCheckbox(false);
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true }));
       checkbox.dispatchEvent(new Event('change', { bubbles: true }));
       await flush();
 
@@ -721,10 +724,36 @@ describe('AccessibilityService', () => {
       service.setSoundEnabled(false);
 
       const checkbox = createCheckbox(true);
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true }));
       checkbox.dispatchEvent(new Event('change', { bubbles: true }));
       await flush();
 
       expect(speakMock).not.toHaveBeenCalled();
+    });
+
+    it('не озвучивает изменение состояния при клике мышью', async () => {
+      const service = createService();
+      service.setSoundEnabled(true);
+
+      const checkbox = createCheckbox(true);
+      document.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
+      checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+      await flush();
+
+      expect(speakMock).not.toHaveBeenCalled();
+    });
+
+    it('озвучивает изменение состояния при клике мышью, если флаг clickAnnouncementEnabled включён', async () => {
+      const service = createService();
+      service.setSoundEnabled(true);
+      service.setClickAnnouncementEnabled(true);
+
+      const checkbox = createCheckbox(true);
+      document.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
+      checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+      await flush();
+
+      expect(spokenTexts().some((text) => text.includes('отмечено'))).toBe(true);
     });
 
     it('озвучивает метку и значение селекта при выборе пункта из раскрытой панели', async () => {
@@ -753,6 +782,7 @@ describe('AccessibilityService', () => {
 
       document.body.append(label, select, overlay);
 
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true }));
       option.dispatchEvent(new MouseEvent('click', { bubbles: true }));
       await flush();
       await flush();
@@ -801,6 +831,7 @@ describe('AccessibilityService', () => {
 
       const checkbox = createCheckbox(false);
 
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true }));
       checkbox.checked = true;
       checkbox.dispatchEvent(new Event('change', { bubbles: true }));
       checkbox.checked = false;

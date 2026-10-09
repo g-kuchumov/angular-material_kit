@@ -181,19 +181,23 @@ html.theme-image-hidden {
  *
  ******************************************************************************/
 
-html.theme-line-increased {
+html.theme-line-increased,
+html.theme-line-increased body {
   line-height: 1.6;
 }
 
-html.theme-line-large {
+html.theme-line-large,
+html.theme-line-large body {
   line-height: 2;
 }
 
-html.theme-letter-increased {
+html.theme-letter-increased,
+html.theme-letter-increased body {
   letter-spacing: 0.05em;
 }
 
-html.theme-letter-large {
+html.theme-letter-large,
+html.theme-letter-large body {
   letter-spacing: 0.1em;
 }
 

@@ -5,6 +5,7 @@ import { TranslocoService } from '@ngneat/transloco';
 import {
   CONTRAST_CLASS,
   CONTRAST_STORAGE_KEY,
+  DEFAULT_CLICK_ANNOUNCEMENT_ENABLED,
   DEFAULT_FONT_SIZE,
   DEFAULT_IMAGE_MODE,
   DEFAULT_LETTER_SPACING,
@@ -61,6 +62,10 @@ const GROUP_LABEL_SELECTOR = [
 
 const SELECT_SELECTOR = 'mat-select, select, [role="listbox"], [role="combobox"]';
 
+const OPENED_SELECT_SELECTOR = SELECT_SELECTOR.split(',')
+  .map((selector) => `${selector.trim()}[aria-expanded="true"]`)
+  .join(',');
+
 @Injectable({ providedIn: 'root' })
 export class AccessibilityService {
   private readonly document: Document = inject(DOCUMENT);
@@ -80,6 +85,8 @@ export class AccessibilityService {
   public readonly letterSpacing = signal<LetterSpacing>(this.readLetterSpacing());
 
   public readonly soundEnabled = signal<boolean>(this.readSoundEnabled());
+
+  public readonly clickAnnouncementEnabled = signal<boolean>(DEFAULT_CLICK_ANNOUNCEMENT_ENABLED);
 
   private lastAnnouncedElement: Element | null = null;
 
@@ -128,6 +135,10 @@ export class AccessibilityService {
       this.resetFocusAnnouncement();
       this.lastStateAnnouncement = '';
     }
+  }
+
+  public setClickAnnouncementEnabled(enabled: boolean): void {
+    this.clickAnnouncementEnabled.set(enabled);
   }
 
   /**
@@ -201,7 +212,7 @@ export class AccessibilityService {
   }
 
   private extractControlType(element: HTMLElement): string {
-    if (element.matches('mat-select, select, [role="combobox"], [role="listbox"]')) {
+    if (element.matches(SELECT_SELECTOR)) {
       return this.translateSpeech('accessibility.speech.comboBox');
     }
 
@@ -317,10 +328,10 @@ export class AccessibilityService {
 
   private extractSelectedValue(element: HTMLElement): string {
     if (element instanceof HTMLSelectElement) {
-      return element.selectedIndex >= 0 ? this.normalize(element.options[element.selectedIndex]?.textContent) : '';
+      return this.normalize(element.options[element.selectedIndex]?.textContent);
     }
 
-    if (element.matches('mat-select, [role="listbox"], [role="combobox"]')) {
+    if (element.matches(SELECT_SELECTOR)) {
       return this.normalize(element.querySelector('.mat-mdc-select-value-text')?.textContent);
     }
 
@@ -414,9 +425,7 @@ export class AccessibilityService {
     }
 
     if (target.closest('mat-option, option, [role="option"]')) {
-      const openedSelect = this.document.querySelector<HTMLElement>(
-        'mat-select[aria-expanded="true"], select[aria-expanded="true"], [role="listbox"][aria-expanded="true"], [role="combobox"][aria-expanded="true"]',
-      );
+      const openedSelect = this.document.querySelector<HTMLElement>(OPENED_SELECT_SELECTOR);
 
       if (openedSelect) {
         return openedSelect;
@@ -490,10 +499,14 @@ export class AccessibilityService {
     return labels?.length ? this.normalize(labels[0].textContent) : '';
   }
 
-  private extractVisibleText(element: HTMLElement): string {
+  private extractCleanText(element: HTMLElement): string {
     const clone = element.cloneNode(true) as HTMLElement;
     clone.querySelectorAll('mat-icon, svg, [aria-hidden="true"]').forEach((decorative) => decorative.remove());
     return this.normalize(clone.textContent);
+  }
+
+  private extractVisibleText(element: HTMLElement): string {
+    return this.extractCleanText(element);
   }
 
   private normalize(value: string | null | undefined): string {
@@ -509,21 +522,11 @@ export class AccessibilityService {
   }
 
   private resolveSpeechLanguage(): string {
-    const languageCandidates = [
-      this.document.documentElement.lang,
-      this.document.defaultView?.navigator.language,
-      'ru-RU',
-    ];
-
-    for (const candidate of languageCandidates) {
-      const language = this.normalize(candidate);
-
-      if (language) {
-        return language;
-      }
-    }
-
-    return 'ru-RU';
+    return (
+      this.normalize(this.document.documentElement.lang) ||
+      this.normalize(this.document.defaultView?.navigator.language) ||
+      'ru-RU'
+    );
   }
 
   private readContrast(): boolean {
@@ -593,20 +596,17 @@ export class AccessibilityService {
         rootElement.classList.add(CONTRAST_CLASS);
       }
 
-      if (fontSize !== DEFAULT_FONT_SIZE) {
-        rootElement.classList.add(`${FONT_SIZE_CLASS_PREFIX}${fontSize}`);
-      }
+      const classMappings = [
+        { value: fontSize, prefix: FONT_SIZE_CLASS_PREFIX, fallback: DEFAULT_FONT_SIZE },
+        { value: imageMode, prefix: IMAGE_MODE_CLASS_PREFIX, fallback: DEFAULT_IMAGE_MODE },
+        { value: lineSpacing, prefix: LINE_SPACING_CLASS_PREFIX, fallback: DEFAULT_LINE_SPACING },
+        { value: letterSpacing, prefix: LETTER_SPACING_CLASS_PREFIX, fallback: DEFAULT_LETTER_SPACING },
+      ];
 
-      if (imageMode !== DEFAULT_IMAGE_MODE) {
-        rootElement.classList.add(`${IMAGE_MODE_CLASS_PREFIX}${imageMode}`);
-      }
-
-      if (lineSpacing !== DEFAULT_LINE_SPACING) {
-        rootElement.classList.add(`${LINE_SPACING_CLASS_PREFIX}${lineSpacing}`);
-      }
-
-      if (letterSpacing !== DEFAULT_LETTER_SPACING) {
-        rootElement.classList.add(`${LETTER_SPACING_CLASS_PREFIX}${letterSpacing}`);
+      for (const { value, prefix, fallback } of classMappings) {
+        if (value !== fallback) {
+          rootElement.classList.add(`${prefix}${value}`);
+        }
       }
     });
   }
@@ -660,8 +660,20 @@ export class AccessibilityService {
       return;
     }
 
-    const onStateEvent = (event: Event): void => {
-      this.scheduleStateAnnouncement(event.target);
+    const onClick = (event: Event): void => {
+      if (!this.shouldAnnounceState()) {
+        return;
+      }
+
+      this.scheduleStateAnnouncement(event.target, false);
+    };
+
+    const onChange = (event: Event): void => {
+      if (!this.shouldAnnounceState()) {
+        return;
+      }
+
+      this.scheduleStateAnnouncement(event.target, true);
     };
 
     const SELECT_OPEN_KEYS = ['Enter', ' ', 'ArrowDown', 'ArrowUp'];
@@ -682,22 +694,60 @@ export class AccessibilityService {
         return;
       }
 
-      if (SELECT_OPEN_KEYS.includes(event.key) || SELECT_NAVIGATION_KEYS.includes(event.key)) {
+      // «Развёрнуто» озвучивается только при ОТКРЫТИИ списка. Если список уже
+      // открыт, Enter/Space выбирает опцию — выбор озвучивается через change,
+      // поэтому состояние раскрытия повторять не нужно.
+      if (!isOpen && SELECT_OPEN_KEYS.includes(event.key)) {
         this.scheduleSelectToggleAnnouncement(select);
       }
     };
 
-    defaultView.addEventListener('change', onStateEvent, true);
-    defaultView.addEventListener('click', onStateEvent, true);
+    defaultView.addEventListener('change', onChange, true);
+    defaultView.addEventListener('click', onClick, true);
     defaultView.addEventListener('keydown', onStateKeyDown, true);
     this.destroyRef.onDestroy(() => {
-      defaultView.removeEventListener('change', onStateEvent, true);
-      defaultView.removeEventListener('click', onStateEvent, true);
+      defaultView.removeEventListener('change', onChange, true);
+      defaultView.removeEventListener('click', onClick, true);
       defaultView.removeEventListener('keydown', onStateKeyDown, true);
     });
   }
 
-  private scheduleStateAnnouncement(target: EventTarget | null): void {
+  private scheduleDebouncedAnnouncement(builder: () => string): void {
+    if (!this.soundEnabled()) {
+      return;
+    }
+
+    const token = (this.stateAnnouncementToken += 1);
+
+    this.document.defaultView?.setTimeout(() => {
+      this.document.defaultView?.setTimeout(() => {
+        if (token !== this.stateAnnouncementToken || !this.soundEnabled()) {
+          return;
+        }
+
+        const text = builder();
+
+        if (!text || text === this.lastStateAnnouncement) {
+          return;
+        }
+
+        this.lastStateAnnouncement = text;
+        this.speak(text);
+      }, 0);
+    }, 0);
+  }
+
+  /**
+   * Озвучивание изменения состояния (клик, change) выполняется только при
+   * навигации с клавиатуры. Клики мышью по умолчанию молчат, чтобы не дублировать
+   * реакцию скринридера. Флаг clickAnnouncementEnabled включает озвучивание и для
+   * кликов мышью.
+   */
+  private shouldAnnounceState(): boolean {
+    return this.keyboardNavigation || this.clickAnnouncementEnabled();
+  }
+
+  private scheduleStateAnnouncement(target: EventTarget | null, isChange = false): void {
     if (!this.soundEnabled() || !(target instanceof HTMLElement)) {
       return;
     }
@@ -711,121 +761,64 @@ export class AccessibilityService {
     const isSelect = source.matches(SELECT_SELECTOR);
     const isOption = target.closest('mat-option, [role="option"]') !== null;
 
-    if (isSelect && !isOption) {
+    // Change на самом селекте — это реальный выбор (например, по Enter):
+    // озвучиваем выбранное значение. Обычный клик по селекту только открывает
+    // его, поэтому в этом случае пропускаем.
+    if (isSelect && !isOption && !isChange) {
       return;
     }
 
-    const token = (this.stateAnnouncementToken += 1);
+    this.scheduleDebouncedAnnouncement(() => {
+      if (isSelect) {
+        const selectedValue = this.extractSelectedValue(source);
+        const selectedState = this.translateSpeech('accessibility.speech.selected');
+        return [selectedValue, selectedState].filter(Boolean).join('. ');
+      }
 
-    this.document.defaultView?.setTimeout(() => {
-      this.document.defaultView?.setTimeout(() => {
-        if (token !== this.stateAnnouncementToken || !this.soundEnabled()) {
-          return;
-        }
+      const name = this.extractAccessibleName(source);
+      const label = this.withGroupLabel(source, name);
+      const value = this.extractSelectedValue(source);
+      const hasValue = Boolean(value && value !== label);
+      const states = this.extractStateWords(source);
 
-        if (isSelect) {
-          const selectedValue = this.extractSelectedValue(source);
-          const selectedState = this.translateSpeech('accessibility.speech.selected');
-          const selectText = [selectedValue, selectedState].filter(Boolean).join('. ');
+      if (states.length === 0 && !hasValue) {
+        return '';
+      }
 
-          if (!selectText || selectText === this.lastStateAnnouncement) {
-            return;
-          }
+      const parts = label ? [label] : [];
 
-          this.lastStateAnnouncement = selectText;
-          this.speak(selectText);
-          return;
-        }
+      if (hasValue) {
+        parts.push(value);
+      }
 
-        const name = this.extractAccessibleName(source);
-        const label = this.withGroupLabel(source, name);
-        const value = this.extractSelectedValue(source);
-        const hasValue = Boolean(value && value !== label);
-        const states = this.extractStateWords(source);
+      if (states.length > 0) {
+        parts.push(states.join(', '));
+      }
 
-        if (states.length === 0 && !hasValue) {
-          return;
-        }
-
-        const parts = label ? [label] : [];
-
-        if (hasValue) {
-          parts.push(value);
-        }
-
-        if (states.length > 0) {
-          parts.push(states.join(', '));
-        }
-
-        const text = parts.join('. ');
-
-        if (!text || text === this.lastStateAnnouncement) {
-          return;
-        }
-
-        this.lastStateAnnouncement = text;
-        this.speak(text);
-      }, 0);
-    }, 0);
+      return parts.join('. ');
+    });
   }
 
   private scheduleSelectToggleAnnouncement(select: HTMLElement): void {
-    if (!this.soundEnabled()) {
-      return;
-    }
-
-    const token = (this.stateAnnouncementToken += 1);
-
-    this.document.defaultView?.setTimeout(() => {
-      this.document.defaultView?.setTimeout(() => {
-        if (token !== this.stateAnnouncementToken || !this.soundEnabled()) {
-          return;
-        }
-
-        const text = this.extractStateWords(select).join(', ');
-
-        if (!text || text === this.lastStateAnnouncement) {
-          return;
-        }
-
-        this.lastStateAnnouncement = text;
-        this.speak(text);
-      }, 0);
-    }, 0);
+    this.scheduleDebouncedAnnouncement(() => {
+      const isExpanded = select.getAttribute('aria-expanded') === 'true';
+      return this.translateSpeech(isExpanded ? 'accessibility.speech.expanded' : 'accessibility.speech.collapsed');
+    });
   }
 
   private scheduleActiveOptionAnnouncement(select: HTMLElement): void {
-    if (!this.soundEnabled()) {
-      return;
-    }
+    this.scheduleDebouncedAnnouncement(() => {
+      const activeId = this.normalize(select.getAttribute('aria-activedescendant'));
+      const option = activeId ? this.document.getElementById(activeId) : null;
+      const optionText = this.normalize(option?.textContent);
+      const optionState = this.translateSpeech(
+        option?.getAttribute('aria-selected') === 'true'
+          ? 'accessibility.speech.selected'
+          : 'accessibility.speech.notSelected',
+      );
 
-    const token = (this.stateAnnouncementToken += 1);
-
-    this.document.defaultView?.setTimeout(() => {
-      this.document.defaultView?.setTimeout(() => {
-        if (token !== this.stateAnnouncementToken || !this.soundEnabled()) {
-          return;
-        }
-
-        const activeId = this.normalize(select.getAttribute('aria-activedescendant'));
-        const option = activeId ? this.document.getElementById(activeId) : null;
-        const optionText = this.normalize(option?.textContent);
-        const optionState = this.translateSpeech(
-          option?.getAttribute('aria-selected') === 'true'
-            ? 'accessibility.speech.selected'
-            : 'accessibility.speech.notSelected',
-        );
-
-        const text = [optionText, optionState].filter(Boolean).join('. ');
-
-        if (!text || text === this.lastStateAnnouncement) {
-          return;
-        }
-
-        this.lastStateAnnouncement = text;
-        this.speak(text);
-      }, 0);
-    }, 0);
+      return [optionText, optionState].filter(Boolean).join('. ');
+    });
   }
 
   private announceFocusedElement(target: HTMLElement): void {
@@ -925,10 +918,7 @@ export class AccessibilityService {
       return '';
     }
 
-    const clone = heading.cloneNode(true) as HTMLElement;
-    clone.querySelectorAll('mat-icon, svg, [aria-hidden="true"]').forEach((decorative) => decorative.remove());
-
-    return this.normalize(clone.textContent);
+    return this.extractCleanText(heading);
   }
 
   private resolveAnnouncementSource(target: HTMLElement): HTMLElement {
@@ -963,12 +953,18 @@ export class AccessibilityService {
       const soundEnabled = this.soundEnabled();
       const storage = this.document.defaultView?.localStorage;
 
-      storage?.setItem(CONTRAST_STORAGE_KEY, String(contrast));
-      storage?.setItem(FONT_SIZE_STORAGE_KEY, fontSize);
-      storage?.setItem(IMAGE_MODE_STORAGE_KEY, imageMode);
-      storage?.setItem(LINE_SPACING_STORAGE_KEY, lineSpacing);
-      storage?.setItem(LETTER_SPACING_STORAGE_KEY, letterSpacing);
-      storage?.setItem(SOUND_STORAGE_KEY, String(soundEnabled));
+      const entries: [string, string][] = [
+        [CONTRAST_STORAGE_KEY, String(contrast)],
+        [FONT_SIZE_STORAGE_KEY, fontSize],
+        [IMAGE_MODE_STORAGE_KEY, imageMode],
+        [LINE_SPACING_STORAGE_KEY, lineSpacing],
+        [LETTER_SPACING_STORAGE_KEY, letterSpacing],
+        [SOUND_STORAGE_KEY, String(soundEnabled)],
+      ];
+
+      for (const [key, value] of entries) {
+        storage?.setItem(key, value);
+      }
     });
   }
 }
