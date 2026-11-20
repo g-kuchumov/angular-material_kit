@@ -1,0 +1,121 @@
+/*******************************************************************************
+ *  OVERLAY SCROLLBAR
+ *  Нативная полоса скрывается только у контейнеров, которыми управляет сервис.
+ * Кастомная полоса рисуется поверх контента и не участвует в потоке документа.
+ ******************************************************************************/
+
+html.amk-overlay-scrollbars [data-amk-scrollbar] {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+  }
+}
+
+.amk-scrollbar-track {
+  --amk-scrollbar-width: .75rem;
+  --amk-scrollbar-thumb-width: .5rem;
+
+  position: fixed;
+  z-index: 900;
+  box-sizing: border-box;
+  width: var(--amk-scrollbar-width);
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.12s ease,
+    visibility 0.12s ease;
+
+  /* Полоса над диалогами и меню Material, если сама прокручивается внутри них */
+  &.is-overlay {
+    z-index: 1100;
+  }
+
+  &.is-active,
+  &.is-dragging {
+    pointer-events: auto;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  &.is-empty,
+  &.is-offscreen {
+    display: none;
+  }
+}
+
+.amk-scrollbar-thumb {
+  width: var(--amk-scrollbar-thumb-width);
+  margin-inline: auto;
+  border-radius: 9999px;
+  background-color: var(--mat-sys-surface-variant);
+  opacity: 0.7;
+  transition:
+    width 0.12s ease,
+    opacity 0.12s ease,
+    background-color 0.12s ease;
+}
+
+.amk-scrollbar-track.is-dragging .amk-scrollbar-thumb,
+.amk-scrollbar-thumb:hover {
+  width: .5rem;
+  opacity: 1;
+  background-color: var(--mat-sys-outline);
+}
+
+/*******************************************************************************
+ *  CONTRAST THEME
+ *  В контрастной теме полоса видна всегда, имеет сплошной фон и чёткую границу.
+ ******************************************************************************/
+
+html.theme-contrast .amk-scrollbar-track {
+  pointer-events: auto;
+  opacity: 1 !important;
+  visibility: visible !important;
+  background-color: var(--mat-sys-surface);
+}
+
+html.theme-contrast .amk-scrollbar-thumb {
+  width: .5rem;
+  opacity: 1;
+  border-radius: .125rem;
+  background-color: var(--mat-sys-on-surface);
+}
+
+@media (prefers-contrast: more) {
+  .amk-scrollbar-track {
+    pointer-events: auto;
+    opacity: 1 !important;
+    visibility: visible !important;
+    background-color: var(--mat-sys-surface);
+    border-inline-start: 1px solid var(--mat-sys-outline);
+  }
+
+  .amk-scrollbar-thumb {
+    width: .625rem;
+    opacity: 1;
+    background-color: var(--mat-sys-on-surface);
+  }
+}
+
+/* Принудительные цвета ОС: используем системные цвета, иначе браузер их переопределит */
+@media (forced-colors: active) {
+  .amk-scrollbar-track,
+  html.theme-contrast .amk-scrollbar-track {
+    pointer-events: auto;
+    opacity: 1 !important;
+    visibility: visible !important;
+    background-color: Canvas;
+    border-inline-start: 1px solid CanvasText;
+  }
+
+  .amk-scrollbar-thumb,
+  html.theme-contrast .amk-scrollbar-thumb {
+    opacity: 1;
+    background-color: CanvasText !important;
+  }
+}
