@@ -1,4 +1,4 @@
-import { BreakpointObserver } from '@angular/cdk/layout';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component, computed, effect, inject, signal, ViewEncapsulation } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatDivider, MatNavList } from '@angular/material/list';
@@ -7,16 +7,28 @@ import { MatDrawerMode, MatSidenav, MatSidenavContainer, MatSidenavContent } fro
 import { RouterOutlet } from '@angular/router';
 import { map } from 'rxjs';
 
-import { MatButton } from '@angular/material/button';
+import { CdkPortalOutlet } from '@angular/cdk/portal';
+import { MatButton, MatMiniFabButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { TranslocoDirective } from '@ngneat/transloco';
+import { TranslocoDirective, TranslocoService } from '@ngneat/transloco';
+import { PortalService } from '../../../core/services/portal';
 import { SidenavService } from '../../../core/services/sidenav/sidenav.service';
 import { Breadcrumbs } from '../breadcrumbs/breadcrumbs';
 import { Footer } from '../footer/footer';
 import { Toolbar } from '../toolbar/toolbar';
 import { SidenavNodeComponent } from './sidenav-node';
 
-const SMALL_SCREEN_QUERY = '(max-width: 959.98px)';
+const DUAL_SIDENAVS_QUERIES = [Breakpoints.Large, Breakpoints.XLarge];
+
+const LEFT_SIDENAV_WIDTH_REM = 16;
+
+const RIGHT_SIDENAV_WIDTH_REM = 24;
+
+const MIN_CONTENT_WIDTH_REM = 40;
+
+const LEFT_OVER_MODE_QUERY = `(max-width: ${String(LEFT_SIDENAV_WIDTH_REM + MIN_CONTENT_WIDTH_REM - 0.02)}rem)`;
+
+const RIGHT_OVER_MODE_QUERY = `(max-width: ${String(RIGHT_SIDENAV_WIDTH_REM + MIN_CONTENT_WIDTH_REM - 0.02)}rem)`;
 
 @Component({
   selector: 'amk-sidenav',
@@ -35,6 +47,8 @@ const SMALL_SCREEN_QUERY = '(max-width: 959.98px)';
     MatIcon,
     MatButton,
     TranslocoDirective,
+    CdkPortalOutlet,
+    MatMiniFabButton,
   ],
   templateUrl: './sidenav.html',
   styleUrl: './sidenav.scss',
@@ -43,9 +57,26 @@ const SMALL_SCREEN_QUERY = '(max-width: 959.98px)';
 export class Sidenav {
   private readonly sidenavService: SidenavService = inject(SidenavService);
 
+  private readonly portalService: PortalService = inject(PortalService);
+
+  private readonly transloco: TranslocoService = inject(TranslocoService);
+
+  /** Активный портал боковой панели. */
+  public readonly activePortal = this.portalService.activePortal;
+
+  /** Боковая панель отображается только при наличии контента. */
+  public readonly hasRightContent = this.portalService.hasPortal;
+
+  /** Состояние открытия боковой панели. */
+  public readonly sidePanelOpened = this.sidenavService.isRightOpened;
+
+  public readonly sidePanelToggleLabel = computed(() =>
+    this.sidePanelOpened() ? this.transloco.translate('sidenav.collapse') : this.transloco.translate('sidenav.expand'),
+  );
+
   private readonly breakpointObserver: BreakpointObserver = inject(BreakpointObserver);
 
-  private previousSmall: boolean | null = null;
+  private previousDualSidenavs: boolean | null = null;
 
   public readonly menu = this.sidenavService.menu;
 
@@ -55,36 +86,66 @@ export class Sidenav {
 
   public readonly expandedIds = signal<ReadonlySet<string>>(new Set());
 
-  public readonly isSmallScreen = toSignal(
-    this.breakpointObserver.observe(SMALL_SCREEN_QUERY).pipe(map((result) => result.matches)),
+  private readonly isDualSidenavs = toSignal(
+    this.breakpointObserver.observe(DUAL_SIDENAVS_QUERIES).pipe(map((result) => result.matches)),
     {
-      initialValue: this.isSmallScreenInitial(),
+      initialValue: this.matchesAny(DUAL_SIDENAVS_QUERIES),
     },
   );
 
-  private isSmallScreenInitial(): boolean {
+  private readonly isLeftOverMode = toSignal(
+    this.breakpointObserver.observe(LEFT_OVER_MODE_QUERY).pipe(map((result) => result.matches)),
+    {
+      initialValue: this.matches(LEFT_OVER_MODE_QUERY),
+    },
+  );
+
+  private readonly isRightOverMode = toSignal(
+    this.breakpointObserver.observe(RIGHT_OVER_MODE_QUERY).pipe(map((result) => result.matches)),
+    {
+      initialValue: this.matches(RIGHT_OVER_MODE_QUERY),
+    },
+  );
+
+  private matchesAny(queries: readonly string[]): boolean {
+    return queries.some((query) => this.matches(query));
+  }
+
+  private matches(query: string): boolean {
     if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
       return false;
     }
 
-    return window.matchMedia(SMALL_SCREEN_QUERY).matches;
+    return window.matchMedia(query).matches;
   }
 
-  public readonly mode = computed<MatDrawerMode>(() => (this.isSmallScreen() ? 'over' : 'side'));
+  /** Панель выталкивает контент, пока он остаётся достаточно широким, и перекрывает его с затемнением только на узких экранах. */
+  public readonly leftMode = computed<MatDrawerMode>(() => (this.isLeftOverMode() ? 'over' : 'side'));
+
+  /** Правая панель шире, поэтому начинает перекрывать контент раньше левой. */
+  public readonly rightMode = computed<MatDrawerMode>(() => (this.isRightOverMode() ? 'over' : 'side'));
 
   constructor() {
     effect(() => {
-      const small = this.isSmallScreen();
+      const dualSidenavs = this.isDualSidenavs();
 
-      if (this.previousSmall === null || this.previousSmall !== small) {
-        if (small) {
-          this.sidenavService.close();
-        } else {
+      this.sidenavService.setSinglePanelMode(!dualSidenavs);
+
+      if (this.previousDualSidenavs === null) {
+        if (dualSidenavs) {
           this.sidenavService.open();
         }
+      } else if (this.previousDualSidenavs !== dualSidenavs && dualSidenavs) {
+        this.sidenavService.open();
       }
 
-      this.previousSmall = small;
+      this.previousDualSidenavs = dualSidenavs;
+    });
+
+    effect(() => {
+      if (!this.hasRightContent()) {
+        this.sidenavService.closeRight();
+      }
     });
   }
 
@@ -102,6 +163,14 @@ export class Sidenav {
 
   public close(): void {
     this.sidenavService.close();
+  }
+
+  public closeRight(): void {
+    this.sidenavService.closeRight();
+  }
+
+  public toggleSidePanel(): void {
+    this.sidenavService.toggleRight();
   }
 
   public isBookMode(): boolean {

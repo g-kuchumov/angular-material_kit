@@ -1,4 +1,4 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal, WritableSignal } from '@angular/core';
 
 import { TranslocoService } from '@ngneat/transloco';
 import { createSidenavNode, insertSidenavNode, removeSidenavNode, SidenavNode } from './sidenav-node.model';
@@ -69,8 +69,18 @@ export class SidenavService {
 
   public readonly isBookMode = computed(() => this.activeBookContext() !== null);
 
+  private readonly rightOpenedState = signal(false);
+
+  private readonly singlePanelState = signal(false);
+
+  /** Состояние открытия правой панели. */
+  public readonly isRightOpened = this.rightOpenedState.asReadonly();
+
+  /** На узких экранах одновременно может быть открыт только один сайднав. */
+  public readonly isSinglePanelMode = this.singlePanelState.asReadonly();
+
   public open(): void {
-    this.openedState.set(true);
+    this.openPanel(this.openedState, this.rightOpenedState);
   }
 
   public close(): void {
@@ -78,7 +88,41 @@ export class SidenavService {
   }
 
   public toggle(): void {
-    this.openedState.update((value) => !value);
+    this.togglePanel(this.openedState, this.rightOpenedState);
+  }
+
+  public openRight(): void {
+    this.openPanel(this.rightOpenedState, this.openedState);
+  }
+
+  public closeRight(): void {
+    this.rightOpenedState.set(false);
+  }
+
+  public toggleRight(): void {
+    this.togglePanel(this.rightOpenedState, this.openedState);
+  }
+
+  public setSinglePanelMode(value: boolean): void {
+    this.singlePanelState.set(value);
+    if (value && this.openedState() && this.rightOpenedState()) {
+      this.rightOpenedState.set(false);
+    }
+  }
+
+  private openPanel(panel: WritableSignal<boolean>, other: WritableSignal<boolean>): void {
+    if (this.singlePanelState()) {
+      other.set(false);
+    }
+    panel.set(true);
+  }
+
+  private togglePanel(panel: WritableSignal<boolean>, other: WritableSignal<boolean>): void {
+    const willOpen = !panel();
+    if (willOpen && this.singlePanelState()) {
+      other.set(false);
+    }
+    panel.set(willOpen);
   }
 
   public readonly menu = computed(() => {

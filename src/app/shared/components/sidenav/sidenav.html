@@ -3,11 +3,11 @@
 
   <mat-sidenav-container class="sidenav-container">
     <mat-sidenav
-      class="sidenav"
+      class="sidenav left-sidenav"
       id="app-sidenav"
       [attr.aria-label]="t('sidenav.navigationLabel')"
       [fixedInViewport]="true"
-      [mode]="mode()"
+      [mode]="leftMode()"
       [opened]="opened()"
       (closedStart)="close()"
     >
@@ -49,8 +49,37 @@
       </div>
     </mat-sidenav>
 
+    @if (hasRightContent()) {
+      <mat-sidenav
+        class="sidenav right-sidenav"
+        id="app-right-sidenav"
+        [attr.aria-label]="t('sidenav.sidePanelLabel')"
+        [fixedInViewport]="true"
+        [mode]="rightMode()"
+        [opened]="sidePanelOpened()"
+        (closedStart)="closeRight()"
+        position="end"
+      >
+        <ng-template [cdkPortalOutlet]="activePortal()"></ng-template>
+      </mat-sidenav>
+    }
+
     <mat-sidenav-content class="sidenav-content">
       <amk-breadcrumbs />
+      @if (hasRightContent()) {
+        <div class="sticky-wrapper">
+          <button
+            class="right-toggle-btn secondary"
+            [attr.aria-expanded]="sidePanelOpened()"
+            [attr.aria-label]="sidePanelToggleLabel()"
+            (click)="toggleSidePanel()"
+            matMiniFab
+            type="button"
+          >
+            <mat-icon>{{ sidePanelOpened() ? 'chevron_right' : 'chevron_left' }}</mat-icon>
+          </button>
+        </div>
+      }
       <router-outlet />
     </mat-sidenav-content>
   </mat-sidenav-container>
