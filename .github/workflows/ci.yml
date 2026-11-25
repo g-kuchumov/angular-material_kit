@@ -27,5 +27,5 @@ jobs:
       - name: Detect affected projects
         uses: nrwl/nx-set-shas@v4
 
-      - name: Lint, test and build affected projects
-        run: npx nx affected -t lint,test,build --base="$NX_BASE" --head="$NX_HEAD" --skip-nx-cache
+      - name: Lint, typecheck, test and build affected projects
+        run: npx nx affected -t lint,typecheck,test,build --base="$NX_BASE" --head="$NX_HEAD" --skip-nx-cache

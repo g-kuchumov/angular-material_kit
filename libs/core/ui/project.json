@@ -11,6 +11,12 @@
       "options": {
         "lintFilePatterns": ["libs/core/ui/src/**/*.ts"]
       }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc -p libs/core/ui/tsconfig.lib.json --noEmit"
+      }
     }
   }
 }

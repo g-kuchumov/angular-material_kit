@@ -52,6 +52,8 @@
 
 **Доступность разделена, граница `ui -> core` снята (Confirmed):** `core/accessibility` → `libs/domain/accessibility/api` (`scope:accessibility,type:domain-api`: `AccessibilityApi`, `ACCESSIBILITY_API`, модели настроек) и `libs/domain/accessibility/data-access` (`scope:accessibility,type:data-access`: `AccessibilityService implements AccessibilityApi`, `provideAccessibility()`). `accessibility-dialog` инъектит только `ACCESSIBILITY_API`; `app.config.ts` подключает реализацию через `provideAccessibility()` и инициализирует сервис через контракт. Удалён старый алиас `@amk/core-accessibility`. Из `depConstraints` для `type:ui` удалён `type:core` — оболочка больше не зависит от инфраструктурных реализаций. `nx graph` — 23 ноды, без циклов; `nx run-many -t lint,test,build --skip-nx-cache`: 23 проекта, 16 файлов / 107 тестов, initial 931.35 kB — зелёное.
 
+**Per-lib цели проверок (Confirmed):** у всех 22 lib'ов добавлен `typecheck` (`tsc -p tsconfig.lib.json --noEmit`). Target `test` добавлен 9 lib'ам, где есть спеки, с собственными `tsconfig.spec.json`; target приложения сужен до своих 5 спеков. `@angular/build:unit-test` не умеет проходить без найденных тестов, поэтому lib'ы без спеков `test`-цели не получают — генератор создаёт её только при наличии `*.spec.ts`. CI обновлён до `nx affected -t lint,typecheck,test,build`. `nx run-many -t lint,test,build,typecheck --skip-nx-cache`: 23 проекта, 10 test-таргетов, 16 файлов / 107 тестов, initial 931.33 kB — зелёное.
+
 **Итог миграции:** все импорты между lib'ами идут только через `@amk/*`, границы `@nx/enforce-module-boundaries` соблюдены, `nx graph` без циклов. `src/styles.scss` — пользовательское изменение, в миграционные коммиты не включалось.
 
 ## Подтверждённые факты о текущем проекте

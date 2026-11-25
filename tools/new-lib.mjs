@@ -7,7 +7,8 @@
  *   2. удаляет сгенерированную заглушку компонента;
  *   3. переносит файлы из --from в src/lib (через git mv, история сохраняется);
  *   4. собирает index.ts только из реальных .ts-файлов (публичный API);
- *   5. ставит prefix=amk и target lint в project.json;
+ *   5. ставит prefix=amk и цели lint/typecheck в project.json (test — только
+ *      если среди перенесённых файлов есть спеки);
  *   6. убирает из tsconfig.lib.json настройки эмиссии — lib не эмитируется,
  *      поэтому rootDir/declaration/outDir ему не нужны (и не дают TS6059).
  *
@@ -88,9 +89,9 @@ if (from) {
   }
 }
 
-const publicFiles = readdirSync(libInternal)
-  .filter((file) => file.endsWith('.ts') && !/\.(spec|test)\.ts$/.test(file))
-  .sort();
+const internalFiles = readdirSync(libInternal);
+const publicFiles = internalFiles.filter((file) => file.endsWith('.ts') && !/\.(spec|test)\.ts$/.test(file)).sort();
+const specFiles = internalFiles.filter((file) => /\.(spec|test)\.ts$/.test(file));
 const index =
   publicFiles.length > 0
     ? `${publicFiles.map((file) => `export * from './lib/${file.slice(0, -3)}';`).join('\n')}\n`
@@ -107,7 +108,21 @@ project.targets = {
     executor: '@angular-eslint/builder:lint',
     options: { lintFilePatterns: [`${dir}/src/**/*.ts`] },
   },
+  typecheck: {
+    executor: 'nx:run-commands',
+    options: { command: `tsc -p ${dir}/tsconfig.lib.json --noEmit` },
+  },
 };
+if (specFiles.length > 0) {
+  project.targets.test = {
+    executor: '@angular/build:unit-test',
+    options: {
+      buildTarget: 'angular-material_kit:build:development',
+      tsConfig: `${dir}/tsconfig.spec.json`,
+      include: ['**/*.spec.ts', '**/*.test.ts'],
+    },
+  };
+}
 writeFileSync(projectPath, `${JSON.stringify(project, null, 2)}\n`);
 
 const tsconfigPath = path.join(libRoot, 'tsconfig.lib.json');
@@ -116,6 +131,21 @@ for (const option of ['outDir', 'rootDir', 'declaration', 'declarationMap', 'inl
   delete tsconfig.compilerOptions[option];
 }
 writeFileSync(tsconfigPath, `${JSON.stringify(tsconfig, null, 2)}\n`);
+
+if (specFiles.length > 0) {
+  writeFileSync(
+    path.join(libRoot, 'tsconfig.spec.json'),
+    `${JSON.stringify(
+      {
+        extends: './tsconfig.json',
+        compilerOptions: { types: ['vitest/globals'] },
+        include: ['**/*.spec.ts', '**/*.test.ts'],
+      },
+      null,
+      2,
+    )}\n`,
+  );
+}
 
 console.log(`\n[new-lib] ${name} -> ${dir} (${importPath})`);
 if (publicFiles.length > 0) {

@@ -11,6 +11,12 @@
       "options": {
         "lintFilePatterns": ["libs/shared/testing/src/**/*.ts"]
       }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc -p libs/shared/testing/tsconfig.lib.json --noEmit"
+      }
     }
   }
 }

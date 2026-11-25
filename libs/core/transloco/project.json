@@ -3,18 +3,19 @@
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/core/transloco/src",
   "prefix": "amk",
-  "tags": [
-    "scope:core",
-    "type:core"
-  ],
+  "tags": ["scope:core", "type:core"],
   "projectType": "library",
   "targets": {
     "lint": {
       "executor": "@angular-eslint/builder:lint",
       "options": {
-        "lintFilePatterns": [
-          "libs/core/transloco/src/**/*.ts"
-        ]
+        "lintFilePatterns": ["libs/core/transloco/src/**/*.ts"]
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc -p libs/core/transloco/tsconfig.lib.json --noEmit"
       }
     }
   }

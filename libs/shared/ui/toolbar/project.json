@@ -3,18 +3,19 @@
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/shared/ui/toolbar/src",
   "prefix": "amk",
-  "tags": [
-    "scope:shared",
-    "type:ui"
-  ],
+  "tags": ["scope:shared", "type:ui"],
   "projectType": "library",
   "targets": {
     "lint": {
       "executor": "@angular-eslint/builder:lint",
       "options": {
-        "lintFilePatterns": [
-          "libs/shared/ui/toolbar/src/**/*.ts"
-        ]
+        "lintFilePatterns": ["libs/shared/ui/toolbar/src/**/*.ts"]
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc -p libs/shared/ui/toolbar/tsconfig.lib.json --noEmit"
       }
     }
   }

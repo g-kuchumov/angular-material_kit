@@ -3,18 +3,19 @@
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/domain/accessibility/api/src",
   "prefix": "amk",
-  "tags": [
-    "scope:accessibility",
-    "type:domain-api"
-  ],
+  "tags": ["scope:accessibility", "type:domain-api"],
   "projectType": "library",
   "targets": {
     "lint": {
       "executor": "@angular-eslint/builder:lint",
       "options": {
-        "lintFilePatterns": [
-          "libs/domain/accessibility/api/src/**/*.ts"
-        ]
+        "lintFilePatterns": ["libs/domain/accessibility/api/src/**/*.ts"]
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc -p libs/domain/accessibility/api/tsconfig.lib.json --noEmit"
       }
     }
   }
