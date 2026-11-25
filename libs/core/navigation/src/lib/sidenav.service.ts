@@ -48,8 +48,6 @@ const DEFAULT_NODES: SidenavNode[] = [
     node({ id: 'checkbox', label: 'Checkbox', icon: 'check_box', route: 'checkbox' }),
   ]),
 
-  node({ id: 'context-demo', label: 'Context demo', icon: 'account_tree', route: 'context-demo' }),
-
   node({ id: 'other', label: 'Other', icon: 'category' }, [
     node({ id: 'settings', label: 'Settings', icon: 'settings', route: 'settings' }),
     node({ id: 'info', label: 'About', icon: 'info', route: 'about' }),
