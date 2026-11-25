@@ -1,0 +1,16 @@
+{
+  "name": "core-ui",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/core/ui/src",
+  "prefix": "amk",
+  "tags": ["scope:core", "type:core"],
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "options": {
+        "lintFilePatterns": ["libs/core/ui/src/**/*.ts"]
+      }
+    }
+  }
+}

@@ -1,3 +1,4 @@
+import { Logo } from '@amk/shared-ui-logo';
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
@@ -8,7 +9,6 @@ import { MatInput } from '@angular/material/input';
 import { RouterLink } from '@angular/router';
 import { TranslocoDirective } from '@ngneat/transloco';
 import { Footer } from '../../../shared/components/footer/footer';
-import { Logo } from '../../../shared/components/logo/logo';
 
 @Component({
   selector: 'amk-login',

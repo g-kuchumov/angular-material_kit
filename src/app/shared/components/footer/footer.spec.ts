@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 
-import { provideTestTransloco } from '../../../testing/transloco.testing';
+import { provideTestTransloco } from '@amk/shared-testing';
 import { Footer } from './footer';
 
 describe('Footer', () => {

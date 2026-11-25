@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { provideTestTransloco } from '../../../testing/transloco.testing';
+import { provideTestTransloco } from '@amk/shared-testing';
 import { Logo } from './logo';
 
 describe('Logo', () => {

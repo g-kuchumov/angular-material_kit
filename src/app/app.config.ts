@@ -4,6 +4,7 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { provideRouter } from '@angular/router';
 
+import { OverlayScrollbarService } from '@amk/core-ui';
 import { MAT_ICON_DEFAULT_OPTIONS } from '@angular/material/icon';
 import { routes } from './app.routes';
 import { AccessibilityService, provideAccessibilityService } from './core/services/accessibility';
@@ -11,7 +12,6 @@ import { LanguageService, provideLanguageService } from './core/services/languag
 import { CustomPaginatorIntl } from './core/services/paginator/paginator-intl';
 import { provideThemeService, ThemeService } from './core/services/theme';
 import { provideAppTransloco } from './core/services/transloco';
-import { OverlayScrollbarService } from './shared/directives/overlay-scrollbar.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [

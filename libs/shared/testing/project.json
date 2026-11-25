@@ -1,0 +1,16 @@
+{
+  "name": "shared-testing",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/shared/testing/src",
+  "prefix": "amk",
+  "tags": ["scope:shared", "type:testing"],
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "options": {
+        "lintFilePatterns": ["libs/shared/testing/src/**/*.ts"]
+      }
+    }
+  }
+}

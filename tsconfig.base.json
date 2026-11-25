@@ -1,0 +1,16 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "preserve",
+    "skipLibCheck": true,
+    "paths": {
+      "@amk/shared-testing": ["./libs/shared/testing/src/index.ts"],
+      "@amk/shared-util-overlay-scrollbar": ["./libs/shared/util/overlay-scrollbar/src/index.ts"],
+      "@amk/core-ui": ["./libs/core/ui/src/index.ts"],
+      "@amk/shared-ui-logo": ["./libs/shared/ui/logo/src/index.ts"]
+    }
+  }
+}

@@ -1,0 +1,452 @@
+# План миграции Angular Material Kit в Nx-монорепозиторий
+
+## Статус (обновлено после подключения Nx)
+
+**Фаза 1 выполнена (Confirmed):**
+- Установлены `nx@24.0.7`, `@nx/workspace@24.0.7`, `@nx/angular@24.0.7`, `@angular-devkit/core`, `@angular-devkit/schematics`, `@schematics/angular`. Angular версии остались на `22.0.x`.
+- `npx nx init` выполнен с `--plugins=@nx/angular --nxCloud=false --aiAgents=none --cacheable=build,test,lint`; созданы `nx.json`, `project.json`, `.vscode/extensions.json`; `angular.json` конвертирован в `project.json`; npm-скрипты `start/build/watch/test/lint` теперь вызывают `nx`.
+- `nx show projects` -> `["angular-material_kit"]`; `nx graph` строится; `defaultBase: master`.
+- Проверено: `nx run angular-material_kit:lint` — OK, `nx run angular-material_kit:test` — 16 файлов/104 теста passed, `nx build --configuration=development` — OK.
+- **Бюджет bundle (было):** initial bundle 1.01 MB при лимите 1 MB (превышение 9.08 kB). Бюджеты в `project.json` изначально были точно такими же, как в `angular.json`; исходники не менялись. **Исправлено:** лимит `initial` увеличен до `maximumWarning: 1.5MB`, `maximumError: 2MB`; production-сборка проходит без предупреждений. Lazy-загрузка features остаётся отдельной задачей фазы 4.
+- Установка потребовала `npm install --legacy-peer-deps` из-за конфликта peer-зависимостей `@nx/angular` (optional peers `ng-packagr` / `@angular-devkit/build-angular` тянули Angular 21). Лишние пакеты (`ng-packagr`, webpack-based `@angular-devkit/build-angular`) после проверки удалены; приложение по-прежнему использует `@angular/build` (esbuild).
+- Node в окружении `v22.22.1`, packages Angular 22 требуют `^22.22.3`: warnings EBADENGINE при установке, но сборка/тесты/lint работают.
+
+**Фаза 3 выполнена (Confirmed):**
+- Установлен `@nx/eslint-plugin@24.0.7` (вместе с зависимостями `@nx/js`, `@nx/devkit`); версия совпадает с `nx`/`@nx/angular`.
+- В `eslint.config.js` подключён `nx.configs['flat/base']` и правило `@nx/enforce-module-boundaries` (`error`) с `depConstraints` по тегам `type:*` из раздела «Теги и правила зависимостей» ниже. Включены `enforceBuildableLibDependency: true` и `banTransitiveDependencies: true`.
+- Добавлены жёсткие `bannedExternalImports`: `type:model` — `@angular/*`, `@ngneat/transloco`, `rxjs`; `type:util` — `@angular/*`, `@ngneat/transloco`; `type:domain-api` — `@angular/material`, `@angular/forms`, `@angular/common/http`, `@ngneat/transloco`; `type:ui` — `@angular/common/http`.
+- Проект `angular-material_kit` получил теги `scope:app`, `type:app` в `project.json`.
+- Правило проверено на практике: временная смена тега на `type:util` дала ошибки `A project tagged with "type:util" is not allowed to import "@angular/core"/"@angular/router"`; тег восстановлен.
+- Финальная проверка `nx run-many -t lint,test,build --skip-nx-cache`: всё зелёное.
+
+**Фаза 4, шаг 4.1 выполнен (Confirmed):**
+- Созданы три lib через `@nx/angular:library` (с `--importPath`, `--tags`, `--unitTestRunner=none`, `--linter=none`):
+  - `libs/shared/testing` — `@amk/shared-testing`, теги `scope:shared,type:testing`;
+  - `libs/shared/util/overlay-scrollbar` — `@amk/shared-util-overlay-scrollbar`, теги `scope:shared,type:util`;
+  - `libs/core/ui` — `@amk/core-ui`, теги `scope:core,type:core`.
+- Перенесены файлы: `src/app/testing/transloco.testing.ts` → `libs/shared/testing/src/lib/`; `overlay-scrollbar.ts` → `libs/shared/util/overlay-scrollbar/src/lib/`; `overlay-scrollbar.service.ts` → `libs/core/ui/src/lib/`. Сгенерированные заглушки компонентов удалены, `index.ts` каждого lib экспортирует только нужный файл.
+- Импорты заменены на scope-алиасы: 8 spec-файлов + `app.spec.ts` → `@amk/shared-testing`; `app.config.ts` → `@amk/core-ui`; сервис → `@amk/shared-util-overlay-scrollbar`.
+- **Корректировка классификации:** `OverlayScrollbarService` (@Injectable, `@angular/core`) лежит в `type:core`, а не `type:util`, потому что для `type:util` задан запрет на `@angular/*`. Чистый DOM-класс `ScrollbarOverlay` остался в `type:util`.
+- У каждой lib добавлен target `lint` с `@angular-eslint/builder:lint`; prefix заменён с `lib` на `amk`.
+- `@nx/eslint-plugin` зафиксирован на точной версии `24.0.7` (как и остальные `@nx/*`), lockfile синхронизирован.
+- `nx run-many -t lint,test,build --skip-nx-cache`: 4 проекта, всё зелёное; `tsconfig.base.json` получил `paths` для трёх алиасов.
+- **Важно (TS 6.0.3):** как только lib начал импортировать исходник другой lib через `@amk/*`, `outDir` + `declaration` в `tsconfig.lib.json` заставили TypeScript считать rootDir равным каталогу lib и требовать явный `rootDir` (`TS6059` / `TS5011`). Перепроверил: убрать `declaration` недостаточно, а убрать `outDir` — достаточно. Поэтому выбрано **чистое решение**: не-buildable lib'ы никогда не эмитируются, и из их `tsconfig.lib.json` удалены `outDir`, `declaration`, `declarationMap`, `inlineSources`. Конфиг остаётся только для type-check/IDE, `rootDir` не нужен. `tsc -p <lib>/tsconfig.lib.json --noEmit` — без ошибок.
+- **Конвейер выноса:** добавлен `tools/new-lib.mjs` (`npm run lib`), который одной командой генерирует lib с нужными тегами/importPath, удаляет заглушку, переносит файлы через `git mv`, собирает `index.ts`, ставит `prefix=amk` + lint target и нормализует tsconfig. Defaults генератора зафиксированы в `nx.json`. Подробности — `docs/architecture.md`.
+
+**Фаза 4, шаг 4.2 начат (Confirmed):** `logo` вынесен в `libs/shared/ui/logo` (`@amk/shared-ui-logo`, `scope:shared,type:ui`) через новый конвейер `npm run lib`; импорты в `login`, `register`, `toolbar` заменены на алиас. `nx run-many -t lint,test,build --skip-nx-cache`: 5 проектов, 16 файлов / 104 теста, bundle 1.01 MB — зелёное. Заодно: `type:testing` разрешён всем слоям (спеки lib'ов импортируют `@amk/shared-testing`), а в `project.json` добавлен `include` для discovery специ lib'ов.
+
+**Следующий шаг:** продолжить 4.2 — `footer`, `menus`, `breadcrumbs`, accessibility UI, sidenav UI в `libs/shared/ui/*`; demo-страницы `button/card/checkbox/button-toggle` — в `libs/features/ui-kit/*` с `type:feature`. Затем 4.3 (core/i18n) и 4.4 (разделение sidenav на `domain/navigation/api` + `data-access`).
+
+## Подтверждённые факты о текущем проекте
+
+**Стек (из `package.json`, `angular.json`, `tsconfig*.json`, `eslint.config.js`) — Confirmed:**
+- Angular **22.0.x** (`@angular/core`, `@angular/material`, `@angular/cdk`, `@angular/build:application`, esbuild/application builder).
+- Standalone bootstrap: `src/main.ts` + `provideRouter`/providers в `src/app/app.config.ts`, корень `amk-root` (`src/app/app.ts`) содержит только `<router-outlet />`.
+- TypeScript **~6.0.2**, `strict`-ориентированные флаги, `module: preserve`, project references (`tsconfig.json` -> `app/spec`).
+- RxJS **~7.8.0**, Transloco (`@ngneat/transloco`), Angular Material, Vitest (`@angular/build:unit-test`, `vitest/globals`), ESLint flat config + `angular-eslint` + `typescript-eslint` strict/typeChecked + `eslint-plugin-rxjs-x` + Prettier.
+- Prefix: `amk`, стили SCSS, assets из `public/`, i18n JSON в `public/assets/i18n/`.
+- Path aliases в `tsconfig` **не настроены** (Confirmed).
+- Nx изначально в репозитории **отсутствовал** (Confirmed); подключён в фазе 1, см. статус выше. Нет NgRx/guards/interceptors/pipes/enums/environments/e2e.
+
+**Структура `src/app` — Confirmed:**
+- `core/services/`: `accessibility`, `language`, `paginator` (`MatPaginatorIntl`), `portal`, `sidenav` (`SidenavService` + `sidenav-node.model`), `theme`, `transloco` providers; есть index/barrel-файлы.
+- `features/`: `auth/login`, `auth/register`, `settings` (+ `expression-panel`), `context-demo` (`list/detail/documents`).
+- `shared/components/`: `accessibility`, `breadcrumbs`, `button` (+ `button-panel`), `button-toggle`, `card`, `checkbox`, `footer`, `logo`, `menus` (`base-menu.directive`, `account-menu`, `notification-menu`, `menu-context.token`), `sidenav`/`sidenav-node`, `toolbar`.
+- `shared/directives/`: `overlay-scrollbar.service.ts`, `overlay-scrollbar.ts`.
+- `testing/transloco.testing.ts`, `transloco-loader.ts`, `app.routes.ts`, `app.config.ts`.
+- **TS totals:** 49 non-spec `.ts` + 16 `.spec.ts`.
+
+**Граф зависимостей (по grep/import анализу) — Confirmed:**
+- `features -> shared/core` есть (`features/context-demo/* -> core/services/sidenav`, `features/settings/expression-panel -> core/services/language/theme`, `features/auth/* -> shared/components/footer|logo`).
+- `shared -> core` есть (`sidenav/toolbar/breadcrumbs/button/accessibility-dialog -> core/services/*`).
+- `core -> features/shared` импортов **не найдено**.
+- `shared -> features` импортов **не найдено**.
+- `core/services/transloco/transloco.providers.ts -> ../../../transloco-loader.ts` — пересечение слоя (core зависит от app-root файла). Кандидат на вынос в `core/i18n`.
+- `sidenav` — cross-cutting узел: сервис в core, UI в shared, фичи context-demo напрямую создают/регистрируют узлы сайденава. Главный кандидат на аккуратное разделение API/реализации.
+- Циклических импортов по grep не видно (Inferred: не полное доказательство графа).
+
+**Текущее состояние git — Confirmed:** ветка `feat_right-sidenav`, есть незакоммиченные изменения и untracked файлы (`context-demo`, `button-panel`, spec для sidenav service и др.). Миграцию в Nx лучше начинать **после фиксации/стэша чистого состояния**, иначе будет трудно отделить миграционные изменения от продуктовых.
+
+## Целевая модель Nx (что даёт “заменяемость”)
+
+Цель — не просто “папки в Nx”, а **контракты + изолированные реализации**:
+
+1. **App — тонкая композиция**: bootstrap, провайдеры, маршруты, сборка shell. Минимум логики.
+2. **Feature libs** — бизнес/экранные сценарии. Их можно заменить другой реализацией, если они зависят от доменных контрактов, а не от чужих внутренних деталей.
+3. **UI libs** — переиспользуемые презентационные компоненты без знания бизнес-данных/роутинга домена.
+4. **Data-access libs** — API/репозитории/адаптеры внешних источников. Заменяемость достигается через токен/интерфейс + provider.
+5. **Util/model/config libs** — чистые типы, утилиты, конфиги, тестовые хелперы.
+6. **Жёсткие границы ESLint** — архитектура проверяется автоматически, а не “по договорённости”.
+
+## Рекомендуемая целевая структура
+
+```text
+.
+├── apps/
+│   └── material-kit/
+│       ├── project.json
+│       ├── src/
+│       │   ├── main.ts
+│       │   ├── app/app.config.ts
+│       │   ├── app/app.routes.ts
+│       │   └── app/app.component.ts
+│       └── public/
+├── libs/
+│   ├── core/
+│   │   ├── config/                  # app-wide config, providers composition helpers
+│   │   ├── http/                    # interceptors, api base config, error handling
+│   │   ├── i18n/                    # Transloco loader/providers, language init
+│   │   ├── a11y/                    # accessibility service + model + providers
+│   │   └── shell/                   # layout shell only if truly app-core
+│   ├── shared/
+│   │   ├── ui/
+│   │   │   ├── button/
+│   │   │   ├── button-toggle/
+│   │   │   ├── card/
+│   │   │   ├── checkbox/
+│   │   │   ├── logo/
+│   │   │   ├── footer/
+│   │   │   ├── breadcrumbs/
+│   │   │   ├── menus/
+│   │   │   └── sidenav/             # UI components only
+│   │   ├── util/                    # pure helpers, directives where appropriate
+│   │   ├── models/                  # shared DTO/types only when truly shared
+│   │   └── testing/                 # transloco testing helpers, test providers
+│   ├── domain/                      # optional but recommended for replaceability
+│   │   └── navigation/
+│   │       ├── api/                 # SidenavNode, SidenavContext, tokens/interfaces
+│   │       └── data-access/         # SidenavService implementation/provider
+│   ├── features/
+│   │   ├── auth/
+│   │   │   ├── login/
+│   │   │   └── register/
+│   │   ├── settings/
+│   │   ├── context-demo/
+│   │   └── ui-kit/                  # button/card/checkbox/toggle demo pages
+├── tools/
+├── nx.json
+├── tsconfig.base.json
+├── eslint.config.mjs
+└── package.json
+```
+
+> Это целевая форма. Не обязательно создавать все libs в первый день; важно, чтобы новые границы были правильными.
+
+## Куда что выносить (конкретно для этого репозитория)
+
+| Текущее место | Куда | Тип | Почему / как сделать заменяемым |
+|---|---|---|---|
+| `src/app/app.config.ts`, `app.routes.ts`, `app.ts/html/scss` | `apps/material-kit/src/app/*` | app | Только композиция. В app не держать переиспользуемую логику. |
+| `core/services/theme/*` | `libs/core/theme` или `libs/shared/util/theme` | core/util | Тема/цветовая схема — app-wide concern. Экспортировать provider + service + model через `index.ts`. |
+| `core/services/language/*` | `libs/core/i18n` или `libs/core/language` | core | Язык/инициализация — инфраструктура. |
+| `core/services/transloco/*` + `app/transloco-loader.ts` | `libs/core/i18n` | core/data-access | Убрать импорт core->app-root. Loader/provider должны жить рядом и экспортироваться публичным API. |
+| `core/services/accessibility/*` | `libs/core/a11y` | core | Отдельный инфраструктурный домен; хорошо заменяется/выключается. |
+| `core/services/paginator/paginator-intl.ts` | `libs/core/material` или `libs/shared/ui/material` | core/shared | Адаптер Material i18n. Не смешивать с feature logic. |
+| `core/services/portal/*` | `libs/shared/util/portal` или `libs/core/portal` | util/core | Сервис порталов — UI-infrastructure; зависит от того, используется ли вне shell. |
+| `core/services/sidenav/*` | разделить: `libs/domain/navigation/api` + `libs/domain/navigation/data-access` | domain | **Ключевой рефакторинг.** Модели/контракт/context token — в `api`; реализация `SidenavService` — в `data-access`. Фичи зависят от `api` (или фасада), реализацию можно заменить. |
+| `shared/components/sidenav/*`, `toolbar`, `breadcrumbs` | `libs/shared/ui/shell` или несколько `shared/ui/*` | ui | UI shell-компоненты. Они могут зависеть от `domain/navigation/api`, но не от feature libs. |
+| `shared/components/button*`, `card`, `checkbox`, `button-toggle` | `libs/features/ui-kit/*` (или `features/demo-components/*`) | feature | Сейчас используются как routable demo-экраны; `button` дополнительно открывает правую панель через `PortalService` + `ButtonPanel`. Это feature/demo-сценарии, не чистый shared UI. |
+| `shared/components/logo`, `footer`, `menus`, `accessibility-dialog/button` | `libs/shared/ui/<component>` | ui | Презентационные/переиспользуемые компоненты. Стараться не тянуть feature/core implementation напрямую. |
+| `shared/directives/overlay-scrollbar*` | `libs/shared/util/overlay-scrollbar` | util | Техническая утилита/директива, не домен. |
+| `testing/transloco.testing.ts` | `libs/shared/testing` | testing | Общие test providers/helpers, не production code. |
+| `features/auth/login, register` | `libs/features/auth/login`, `libs/features/auth/register` или один `libs/features/auth` | feature | Если сценарии простые — одна feature-lib; если будут расти независимо — раздельно. |
+| `features/settings/*` | `libs/features/settings` | feature | Экран настроек и его локальные панели. |
+| `features/context-demo/*` | `libs/features/context-demo` | feature | Хороший шаблон lazy/route feature lib. |
+
+## Теги и правила зависимостей (жёсткая схема)
+
+Используйте **два измерения тегов**: `scope:*` и `type:*`. Этого достаточно, чтобы правила были простыми и долговечными.
+
+### Предлагаемые теги
+
+| Проект/папка | Теги |
+|---|---|
+| `apps/material-kit` | `scope:app`, `type:app` |
+| `libs/core/*` | `scope:core`, `type:core` |
+| `libs/domain/*/api` | `scope:<domain>`, `type:domain-api` |
+| `libs/domain/*/data-access` | `scope:<domain>`, `type:data-access` |
+| `libs/features/*` | `scope:<feature>`, `type:feature` |
+| `libs/shared/ui/*` | `scope:shared`, `type:ui` |
+| `libs/shared/util/*` | `scope:shared`, `type:util` |
+| `libs/shared/models/*` | `scope:shared`, `type:model` |
+| `libs/shared/testing/*` | `scope:shared`, `type:testing` |
+
+### Матрица зависимостей
+
+| Source tag | Может зависеть от |
+|---|---|
+| `type:app` | `type:feature`, `type:core`, `type:ui`, `type:util`, `type:model`, `type:data-access`, `type:domain-api` |
+| `type:feature` | `type:ui`, `type:data-access`, `type:domain-api`, `type:util`, `type:model` |
+| `type:data-access` | `type:domain-api`, `type:util`, `type:model`, `type:core` (ограниченно; лучше через токены) |
+| `type:domain-api` | `type:model`, `type:util` |
+| `type:ui` | `type:ui`, `type:util`, `type:model`, `type:domain-api` (только контракты/типы) |
+| `type:util` | `type:util`, `type:model` |
+| `type:model` | `type:model` |
+| `type:testing` | всё, кроме `type:app` (или по необходимости) |
+
+**Жёсткие запреты:**
+- `feature -> feature` (кроме явно разрешённого редкого случая; лучше запретить).
+- `ui -> feature`, `ui -> data-access`, `ui -> core`.
+- `domain-api -> data-access/feature/app`.
+- `shared/* -> feature/app`.
+- Любой проект без тега — считать нарушением процесса (добавить проверку в CI).
+
+## ESLint: жёсткие границы (`@nx/enforce-module-boundaries`)
+
+Проект уже на **flat ESLint config** (`eslint.config.js`) — Confirmed. В Nx это удобно сохранить как `eslint.config.mjs`/`eslint.config.js` с плоской конфигурацией.
+
+### Базовый пример (flat config)
+
+```js
+// eslint.config.mjs
+import nx from '@nx/eslint-plugin';
+
+export default [
+  ...nx.configs['flat/base'],
+  ...nx.configs['flat/typescript'],
+  ...nx.configs['flat/javascript'],
+  {
+    files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
+    rules: {
+      '@nx/enforce-module-boundaries': [
+        'error',
+        {
+          enforceBuildableLibDependency: true,
+          allow: [],
+          depConstraints: [
+            {
+              sourceTag: 'type:app',
+              onlyDependOnLibsWithTags: [
+                'type:feature',
+                'type:core',
+                'type:ui',
+                'type:util',
+                'type:model',
+                'type:data-access',
+                'type:domain-api',
+              ],
+            },
+            {
+              sourceTag: 'type:feature',
+              onlyDependOnLibsWithTags: ['type:ui', 'type:data-access', 'type:domain-api', 'type:util', 'type:model'],
+            },
+            {
+              sourceTag: 'type:data-access',
+              onlyDependOnLibsWithTags: ['type:domain-api', 'type:util', 'type:model', 'type:core'],
+            },
+            {
+              sourceTag: 'type:domain-api',
+              onlyDependOnLibsWithTags: ['type:model', 'type:util'],
+            },
+            {
+              sourceTag: 'type:ui',
+              onlyDependOnLibsWithTags: ['type:ui', 'type:util', 'type:model', 'type:domain-api'],
+            },
+            {
+              sourceTag: 'type:util',
+              onlyDependOnLibsWithTags: ['type:util', 'type:model'],
+            },
+            {
+              sourceTag: 'type:model',
+              onlyDependOnLibsWithTags: ['type:model'],
+            },
+            {
+              sourceTag: 'type:testing',
+              onlyDependOnLibsWithTags: [
+                'type:feature',
+                'type:core',
+                'type:ui',
+                'type:util',
+                'type:model',
+                'type:data-access',
+                'type:domain-api',
+                'type:testing',
+              ],
+            },
+          ],
+        },
+      ],
+    },
+  },
+];
+```
+
+### Дополнительные “железные” правила
+
+- `enforceBuildableLibDependency: true` — если появятся buildable/publishable libs, зависимость не должна ломать инкрементальную сборку.
+- Запрет глубоких импортов: не импортировать `libs/*/src/lib/**` напрямую, только публичный API (`index.ts` / `exports` в зависимости от стратегии). В Nx это контролируется тем же правилом + дисциплиной barrel exports.
+- Добавить проверку тегов в CI: падать, если у проекта нет `scope:*` и `type:*`.
+- Для Angular selector prefix можно сохранить `amk` на уровне app, а в ui-libs решить: общий `amk` или доменный префикс. Главное — зафиксировать правило.
+- Включить `nx lint`, `nx graph`, `nx affected -t lint,test,build` в CI.
+
+## Поэтапный план миграции (без потерь, с откатом)
+
+### Фаза 0 — подготовка (без Nx)
+
+1. **Зафиксировать текущее состояние**: отдельный commit/branch point, зелёные `npm run lint`, `npm run test`, `npm run build`. Текущая ветка уже грязная — сначала разделить продуктовые изменения и миграцию.
+2. **Снять baseline**: сохранить вывод build/lint/test, список маршрутов, скриншоты ключевых экранов (особенно sidenav/context-demo/settings/auth).
+3. **Ввести правило “миграция без функциональных изменений”**: первые PR — только перенос/конфиг/границы.
+4. **Договориться о naming**: scope пакетов (`@amk/*` или `@app/*`), схема тегов, где лежат public API.
+
+### Фаза 1 — подключение Nx к существующему Angular CLI проекту
+
+**Цель:** репозиторий управляется Nx, приложение собирается как раньше.
+
+Рекомендуемый безопасный путь для одного существующего Angular app:
+
+1. В корне: `npx nx@latest init` (или эквивалент текущей версии Nx; проверить актуальную команду в docs Nx перед запуском). Выбрать интеграцию с существующим `package.json`/scripts, не переписывая лишнее.
+2. Добавить Angular plugin: `nx add @nx/angular` (или `npm i -D @nx/angular @nx/eslint-plugin @nx/js` — по выбранному flow).
+3. Конвертировать текущий проект в Nx project/app конфигурацию. В современных Nx сценариях это обычно делается через `nx init` + генераторы/конвертеры; итог должен быть: `nx.json`, `project.json`/проектная конфигурация, рабочие targets `build/serve/test/lint`.
+4. Убедиться, что команды эквивалентны:
+   - `nx build angular-material_kit` (или новое имя app)
+   - `nx serve angular-material_kit`
+   - `nx test angular-material_kit`
+   - `nx lint angular-material_kit`
+5. Сохранить Angular builder `@angular/build:*` и Vitest setup, если Nx их поддерживает в текущей версии — не менять тестовый раннер одновременно с миграцией.
+
+**Риск-контроль:** отдельный PR “chore: add Nx”. Никаких переносов файлов, кроме минимально необходимых конфигов.
+
+### Фаза 2 — нормализация структуры monorepo
+
+1. Перенести приложение в `apps/material-kit` (или оставить имя ближе к текущему, но лучше короткое техническое имя). Обновить `project.json`, `tsconfig`, paths, assets/public, styles.
+2. Создать `tsconfig.base.json` и базовые alias/TS references по Nx convention.
+3. Включить кэш Nx, `namedInputs`, `targetDefaults`.
+4. Настроить `nx graph` как обязательный артефакт ревью архитектуры.
+
+**Риск-контроль:** после переноса app должен быть 1:1 функционально идентичен. Сравнить bundle output/маршруты/smoke.
+
+### Фаза 3 — ввести границы до массового переноса
+
+1. Подключить `@nx/enforce-module-boundaries` в ESLint.
+2. Сначала добавить теги только для `app` и нескольких первых libs, но сразу включить правило в `error`.
+3. Добавить convention: каждый lib имеет `index.ts` (public API). Внешние импорты — только из public API.
+4. Ввести генераторы/шаблоны: `nx g @nx/angular:library ... --tags=...`.
+
+**Важно:** границы нужно включить **до** того, как появится много libs, иначе долг накапливается мгновенно.
+
+### Фаза 4 — поэтапный вынос библиотек (strangler pattern)
+
+Порядок — от наименее связанного к наиболее связному. После каждого шага: `nx affected -t lint,test,build`, smoke UI.
+
+#### Шаг 4.1. Shared/util + testing
+- `testing/transloco.testing.ts` -> `libs/shared/testing`.
+- `overlay-scrollbar` directive/service -> `libs/shared/util/overlay-scrollbar`.
+- Низкий риск, мало доменной связности.
+
+#### Шаг 4.2. Shared UI (презентационные)
+- Начать с “листовых” компонентов: `logo`, `footer`.
+- Затем составные: `menus`, `accessibility` UI, `breadcrumbs`, `sidenav` UI.
+- Правило: UI lib не импортирует `features/*`, не делает HTTP, не знает маршруты домена. Вход/выход — через inputs/outputs/signals.
+- `button/card/checkbox/button-toggle` **не** считать чистым shared UI в текущем виде: они используются как routable demo-экраны; `button` управляет правой панелью через portal. Их лучше вынести в `features/ui-kit`.
+
+#### Шаг 4.3. Core/infrastructure
+- `theme`, `language`, `accessibility`, `paginator-intl`, `transloco` — в `libs/core/*`.
+- `transloco-loader` перенести рядом с i18n provider, убрать cross-layer import.
+- В `app.config.ts` оставить только композицию providers из публичных API libs.
+- Сверить `transloco.config.js` (`rootTranslationsPath: 'src/assets/i18n/'`) с фактическим расположением/runtime путём (`public/assets/i18n`, `/assets/i18n/${lang}.json`).
+
+#### Шаг 4.4. Domain navigation (развязка sidenav)
+- Создать `libs/domain/navigation/api`: `SidenavNode`, `SidenavContext`, token/интерфейс `SidenavApi`.
+- Создать `libs/domain/navigation/data-access`: реализация `SidenavService`, provider `provideSidenav()`.
+- Вынести конфигурацию конкретного меню приложения из общего сервиса в app/shell composition, если `SidenavService` сейчас содержит app-specific menu data.
+- Фичи `context-demo` зависят только от `navigation/api` (или узкого фасада), не от внутренностей shared sidenav component.
+- UI sidenav зависит от `navigation/api`, получает данные через контракт. Это даст заменяемость: можно подменить реализацию навигации или UI.
+
+#### Шаг 4.5. Features
+- `auth/login`, `auth/register`, `settings`, `context-demo`, `ui-kit` — отдельные feature libs.
+- В app routes использовать lazy loading на feature entry points/route providers:
+
+```ts
+// apps/material-kit/src/app/app.routes.ts
+export const routes: Routes = [
+  {
+    path: '',
+    loadComponent: () => import('@amk/shared/ui/shell').then(m => m.SidenavShellComponent),
+    children: [
+      { path: 'settings', loadChildren: () => import('@amk/features/settings').then(m => m.SETTINGS_ROUTES) },
+      { path: 'context-demo', loadChildren: () => import('@amk/features/context-demo').then(m => m.CONTEXT_DEMO_ROUTES) },
+      { path: 'button', loadChildren: () => import('@amk/features/ui-kit/button').then(m => m.BUTTON_ROUTES) },
+    ],
+  },
+  { path: 'login', loadComponent: () => import('@amk/features/auth/login').then(m => m.LoginPageComponent) },
+];
+```
+
+*Имена — пример; подстройте под реальный export.*
+
+### Фаза 5 — закрепление архитектуры
+
+1. **CI gate**: `nx affected -t lint,test,build --base=origin/main --head=HEAD`.
+2. **Генераторы по умолчанию**: в `nx.json` задать defaults для Angular libs/components (standalone, style scss, prefix/tags conventions).
+3. **Документировать правила** в `docs/architecture.md`: слои, теги, разрешённые импорты, как создавать новую lib.
+4. **Запрет прямых импортов между features** проверить отдельным lint правилом/depConstraints.
+5. **Визуальный контроль**: `nx graph` на ревью крупных PR.
+
+## Правила “заменяемости” (чтобы это работало не только на бумаге)
+
+1. **Зависеть от контракта, не от реализации.** Для навигации, API-клиентов, storage, feature flags — интерфейс + `InjectionToken`/provider в `api`/`domain` lib.
+2. **Public API минимален.** Экспортировать только то, что реально нужно снаружи. Всё остальное — внутренности lib.
+3. **Feature не импортирует feature.** Общий код поднимается в `shared/ui|util|model` или `domain/*/api`.
+4. **UI не знает источник данных.** Данные приходят через input/порт/фасад.
+5. **Data-access заменяем через provider.** Например, `provideNavigationApi(() => new SidenavService(...))` или `provideXxxApi(impl)`.
+6. **Route-level boundaries.** Каждая feature отдаёт свои routes/entry component; app только подключает.
+7. **Тесты на границах.** Для каждой lib — unit tests на public API; для app — smoke/e2e по ключевым маршрутам.
+
+## Практические команды (шаблон, проверить под текущую версию Nx)
+
+```bash
+# 0. Базовая проверка перед миграцией
+npm ci
+npm run lint
+npm run test
+npm run build
+
+# 1. Инициализация Nx в существующем Angular CLI репозитории
+npx nx@latest init
+nx add @nx/angular
+
+# 2. Проверка после подключения Nx
+nx graph
+nx run-many -t lint,test,build
+
+# 3. Генерация libs (примеры)
+nx g @nx/angular:library shared-ui-logo --directory=libs/shared/ui/logo --standalone --tags="scope:shared,type:ui"
+nx g @nx/angular:library domain-navigation-api --directory=libs/domain/navigation/api --standalone --tags="scope:navigation,type:domain-api"
+nx g @nx/angular:library domain-navigation-data-access --directory=libs/domain/navigation/data-access --standalone --tags="scope:navigation,type:data-access"
+nx g @nx/angular:library feature-settings --directory=libs/features/settings --standalone --tags="scope:settings,type:feature"
+
+# 4. Контроль после каждого шага
+nx affected -t lint,test,build
+```
+
+> Команды генерации/флаги Nx чувствительны к версии. Перед запуском сверяйте с `nx g @nx/angular:library --help` и актуальной документацией Nx.
+
+## Риски и как избежать потерь
+
+- **Смешение продуктовых изменений и миграции** — делать отдельные PR: “add Nx”, “move app”, “extract shared ui/util”, “split navigation domain”, “extract features”.
+- **Ломание git history при массовых переносах** — переносить небольшими батчами, использовать `git mv`, проверять blame/history на ключевых файлах.
+- **Скрытые циклические зависимости** — включить module boundaries с самого начала, регулярно смотреть `nx graph`.
+- **Слишком крупные libs** — лучше несколько маленьких libs с ясным public API, чем одна “shared”.
+- **Тестовый раннер/билдер меняются одновременно** — не делать. Сейчас Vitest + Angular build уже работает; сохраняем до завершения структурной миграции.
+- **Public API превращается в свалку** — экспортировать только стабильные элементы, внутренние файлы не импортировать извне.
+- **i18n путь ломается при переносе** — проверить `transloco.config.js`, расположение `public/assets/i18n`, и runtime loader path.
+- **Routable demo-компоненты ошибочно попадают в shared/ui** — классифицировать по ответственности, а не по текущей папке.
+
+## Тестовый долг, который стоит учитывать при миграции
+
+Specs есть у части core services и shared-компонентов, но отсутствуют у toolbar/sidenav UI, accessibility UI, auth/settings/context-demo, overlay-scrollbar directive/service, transloco loader/providers, paginator-intl. При выносе libs добавлять хотя бы smoke/unit tests на public API каждой новой lib; не переносить не покрытый тестами код “вслепую”.
+
+## Рекомендуемый первый приоритет именно здесь
+
+1. Закрыть текущие изменения на `feat_right-sidenav` и получить чистый baseline.
+2. Подключить Nx без переноса файлов.
+3. Вынести `shared/testing`, `overlay-scrollbar`, `logo/footer` — быстрые победы.
+4. Разрезать `sidenav` на `domain/navigation/api` + `data-access` + `shared/ui/sidenav`, вынеся app-specific menu data из общего сервиса.
+5. Перенести `settings`, `context-demo`, `auth`, `ui-kit` в feature libs с lazy routes.
+6. Включить строгие `depConstraints` и сделать lint обязательным в CI.
+
+## Источники
+
+- Локальные файлы проекта: `package.json`, `angular.json`, `tsconfig*.json`, `eslint.config.js`, `.prettierrc`, `src/app/**`, `git status`.
+- Nx docs: [Enforce Module Boundaries](https://nx.dev/features/enforce-module-boundaries), [@nx/angular application generator](https://nx.dev/technologies/angular/api/generators/application), [Crafting Your Nx Workspace](https://nx.dev/getting-started/tutorials/crafting-your-workspace).
+- Примечание: некоторые URL рецептов миграции Nx возвращали 404 во время проверки, поэтому команды миграции даны как шаблон и требуют сверки с `nx --help`/актуальной документацией Nx.

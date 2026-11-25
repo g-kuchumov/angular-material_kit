@@ -20,5 +20,20 @@
     "sharedGlobals": [],
     "default": ["{projectRoot}/**/*", "sharedGlobals"],
     "production": ["default", "!{projectRoot}/.eslintrc.json", "!{projectRoot}/eslint.config.cjs"]
+  },
+  "generators": {
+    "@nx/angular:library": {
+      "linter": "none",
+      "unitTestRunner": "none",
+      "standalone": true,
+      "flat": true,
+      "skipModule": true,
+      "skipTests": true,
+      "style": "none",
+      "prefix": "amk"
+    },
+    "@nx/angular:component": {
+      "style": "none"
+    }
   }
 }

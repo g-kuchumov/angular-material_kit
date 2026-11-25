@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { provideTestTransloco } from '../../../testing/transloco.testing';
+import { provideTestTransloco } from '@amk/shared-testing';
 import { createSidenavNode } from './sidenav-node.model';
 import { SidenavContext, SidenavService } from './sidenav.service';
 

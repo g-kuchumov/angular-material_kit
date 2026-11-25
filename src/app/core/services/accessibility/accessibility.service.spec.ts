@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { TranslocoService } from '@ngneat/transloco';
 import { firstValueFrom } from 'rxjs';
 
-import { provideTestTransloco } from '../../../testing/transloco.testing';
+import { provideTestTransloco } from '@amk/shared-testing';
 import {
   CONTRAST_CLASS,
   CONTRAST_STORAGE_KEY,

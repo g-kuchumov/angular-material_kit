@@ -1,7 +1,7 @@
 import { DOCUMENT } from '@angular/common';
 import { DestroyRef, inject, Injectable, OnDestroy } from '@angular/core';
 
-import { ScrollbarOverlay } from './overlay-scrollbar';
+import { ScrollbarOverlay } from '@amk/shared-util-overlay-scrollbar';
 
 /**
  * Сразу при загрузке находит все контейнеры с прокруткой и подключает к ним

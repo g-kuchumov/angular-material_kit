@@ -65,34 +65,40 @@ module.exports = (async () => {
                   'type:domain-api',
                   'type:util',
                   'type:model',
+                  'type:testing',
                 ],
               },
               {
                 sourceTag: 'type:data-access',
-                onlyDependOnLibsWithTags: ['type:domain-api', 'type:core', 'type:util', 'type:model'],
+                onlyDependOnLibsWithTags: ['type:domain-api', 'type:core', 'type:util', 'type:model', 'type:testing'],
               },
               {
                 sourceTag: 'type:domain-api',
-                onlyDependOnLibsWithTags: ['type:model', 'type:util'],
-                bannedExternalImports: ['@angular/material', '@angular/forms', '@angular/common/http', '@ngneat/transloco'],
+                onlyDependOnLibsWithTags: ['type:model', 'type:util', 'type:testing'],
+                bannedExternalImports: [
+                  '@angular/material',
+                  '@angular/forms',
+                  '@angular/common/http',
+                  '@ngneat/transloco',
+                ],
               },
               {
                 sourceTag: 'type:ui',
-                onlyDependOnLibsWithTags: ['type:ui', 'type:domain-api', 'type:util', 'type:model'],
+                onlyDependOnLibsWithTags: ['type:ui', 'type:domain-api', 'type:util', 'type:model', 'type:testing'],
                 bannedExternalImports: ['@angular/common/http'],
               },
               {
                 sourceTag: 'type:core',
-                onlyDependOnLibsWithTags: ['type:core', 'type:util', 'type:model'],
+                onlyDependOnLibsWithTags: ['type:core', 'type:util', 'type:model', 'type:testing'],
               },
               {
                 sourceTag: 'type:util',
-                onlyDependOnLibsWithTags: ['type:util', 'type:model'],
+                onlyDependOnLibsWithTags: ['type:util', 'type:model', 'type:testing'],
                 bannedExternalImports: ['@angular/*', '@ngneat/transloco'],
               },
               {
                 sourceTag: 'type:model',
-                onlyDependOnLibsWithTags: ['type:model'],
+                onlyDependOnLibsWithTags: ['type:model', 'type:testing'],
                 bannedExternalImports: ['@angular/*', '@ngneat/transloco', 'rxjs'],
               },
               {
