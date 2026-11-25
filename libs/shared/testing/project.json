@@ -17,6 +17,14 @@
       "options": {
         "command": "tsc -p libs/shared/testing/tsconfig.lib.json --noEmit"
       }
+    },
+    "test": {
+      "executor": "@angular/build:unit-test",
+      "options": {
+        "buildTarget": "angular-material_kit:build:development",
+        "tsConfig": "libs/shared/testing/tsconfig.spec.json",
+        "include": ["**/*.spec.ts", "**/*.test.ts"]
+      }
     }
   }
 }
