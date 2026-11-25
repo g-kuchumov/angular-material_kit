@@ -44,7 +44,9 @@
 
 **Фаза 4, шаг 4.3 завершён (Confirmed):** `core/services/language`, `theme`, `paginator`, `transloco` и `app/transloco-loader.ts` вынесены через `npm run lib` в `libs/core/{language,theme,paginator,transloco}` (`scope:core,type:core`). Публичные API — только `src/index.ts` (внутренние barrel'ы удалены). `transloco.providers` теперь импортирует loader из своей же lib и `APP_LANGUAGES` из `@amk/core-language` — cross-layer импорт в корень приложения убран. `transloco.config.js`: `rootTranslationsPath` исправлен с `src/assets/i18n/` на `public/assets/i18n/`; runtime-путь `/assets/i18n/${lang}.json` остался корректным. `nx graph` — 19 нод, без циклов; `nx run-many -t lint,test,build --skip-nx-cache`: 19 проектов, 16 файлов / 105 тестов, initial 931.21 kB — зелёное.
 
-**Следующий шаг:** feature libs для `auth` и `settings`, затем CI с `nx affected`.
+**Фаза 4, шаг 4.5 выполнен (Confirmed):** `features/auth` и `features/settings` вынесены в `libs/features/*` (`scope:feature,type:feature`) через `npm run lib`; маршруты `login`, `register`, `settings` теперь грузят публичные API `@amk/features-auth` / `@amk/features-settings` через `loadComponent`. В `depConstraints` для `type:feature` добавлен `type:core`: `settings` легально пользуется `core-language`/`core-theme`. `nx graph` — 21 нода, без циклов; `nx run-many -t lint,test,build --skip-nx-cache`: 21 проект, 16 файлов / 105 тестов, initial 931.19 kB — зелёное.
+
+**Следующий шаг:** CI с `nx affected` и финальная сверка архитектурных границ.
 
 ## Подтверждённые факты о текущем проекте
 

@@ -5,11 +5,11 @@ import { Sidenav } from '@amk/shared-ui-sidenav';
 export const routes: Routes = [
   {
     path: 'login',
-    loadComponent: () => import('./features/auth/login/login').then((m) => m.Login),
+    loadComponent: () => import('@amk/features-auth').then((m) => m.Login),
   },
   {
     path: 'register',
-    loadComponent: () => import('./features/auth/register/register').then((m) => m.Register),
+    loadComponent: () => import('@amk/features-auth').then((m) => m.Register),
   },
   {
     path: '',
@@ -33,7 +33,7 @@ export const routes: Routes = [
       },
       {
         path: 'settings',
-        loadComponent: () => import('./features/settings/settings').then((m) => m.Settings),
+        loadComponent: () => import('@amk/features-settings').then((m) => m.Settings),
       },
     ],
   },

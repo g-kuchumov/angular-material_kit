@@ -1,0 +1,21 @@
+{
+  "name": "features-settings",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/features/settings/src",
+  "prefix": "amk",
+  "tags": [
+    "scope:feature",
+    "type:feature"
+  ],
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/features/settings/src/**/*.ts"
+        ]
+      }
+    }
+  }
+}

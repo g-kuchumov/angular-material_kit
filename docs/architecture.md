@@ -13,7 +13,7 @@
 | Тег                | Назначение                            | Может зависеть от                                                |
 | ------------------ | ------------------------------------- | ---------------------------------------------------------------- |
 | `type:app`         | композиция приложения                 | feature, core, data-access, domain-api, ui, util, model, testing |
-| `type:feature`     | routable-фичи                         | ui, data-access, domain-api, util, model                         |
+| `type:feature`     | routable-фичи                         | ui, core, data-access, domain-api, util, model                   |
 | `type:data-access` | реализация портов, API                | domain-api, core, util, model                                    |
 | `type:domain-api`  | контракты, типы, токены               | model, util                                                      |
 | `type:ui`          | презентационные компоненты и оболочка | ui, core, domain-api, util, model                                |
@@ -22,7 +22,7 @@
 | `type:model`       | только типы                           | model                                                            |
 | `type:testing`     | тестовые провайдеры/моки              | все слои                                                         |
 
-Дополнительные запреты внешних импортов: `util`/`model` не могут импортировать `@angular/*`, `domain-api` — `@angular/material`, `@angular/forms`, `@angular/common/http`, `@ngneat/transloco`, `ui` — `@angular/common/http`. `type:testing` разрешён как зависимость всем слоям: это тестовый провайдер, а не продуктовая связь. `type:ui` дополнительно может зависеть от `type:core`: оболочка пока пользуется инфраструктурным `portal` и `core-ui`. HTTP для UI остаётся запрещён. Навигация уже вынесена из `core` в `domain/navigation`: оболочка (`sidenav`, `toolbar`, `breadcrumbs`) зависит только от `SIDENAV_API` (`type:domain-api`), реализация подключается композицией через `provideSidenav()`. Когда `portal` тоже получит контракт, зависимость `type:ui -> type:core` можно будет убрать из `depConstraints`.
+Дополнительные запреты внешних импортов: `util`/`model` не могут импортировать `@angular/*`, `domain-api` — `@angular/material`, `@angular/forms`, `@angular/common/http`, `@ngneat/transloco`, `ui` — `@angular/common/http`. `type:testing` разрешён как зависимость всем слоям: это тестовый провайдер, а не продуктовая связь. `type:core` разрешён для `ui` и `feature`: оболочка пока пользуется инфраструктурным `portal` и `core-ui`, а feature `settings` — `core-language`/`core-theme`. HTTP для UI остаётся запрещён. Навигация уже вынесена из `core` в `domain/navigation`: оболочка (`sidenav`, `toolbar`, `breadcrumbs`) зависит только от `SIDENAV_API` (`type:domain-api`), реализация подключается композицией через `provideSidenav()`. Когда `portal` тоже получит контракт, зависимость `type:ui -> type:core` можно будет убрать из `depConstraints`.
 
 Спеки перенесённых lib'ов продолжает запускать единый target приложения. В `project.json` для него задан `include: ["**/*.spec.ts", "../libs/**/*.spec.ts"]`: glob'ы `@angular/build:unit-test` резолвятся относительно `sourceRoot` приложения (`src`), поэтому `../libs` — это корневая папка `libs`. Без второго паттерна спеки lib'ов молча перестают выполняться.
 
