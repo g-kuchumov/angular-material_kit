@@ -46,7 +46,9 @@
 
 **Фаза 4, шаг 4.5 выполнен (Confirmed):** `features/auth` и `features/settings` вынесены в `libs/features/*` (`scope:feature,type:feature`) через `npm run lib`; маршруты `login`, `register`, `settings` теперь грузят публичные API `@amk/features-auth` / `@amk/features-settings` через `loadComponent`. В `depConstraints` для `type:feature` добавлен `type:core`: `settings` легально пользуется `core-language`/`core-theme`. `nx graph` — 21 нода, без циклов; `nx run-many -t lint,test,build --skip-nx-cache`: 21 проект, 16 файлов / 105 тестов, initial 931.19 kB — зелёное.
 
-**Следующий шаг:** CI с `nx affected` и финальная сверка архитектурных границ.
+**Фаза 5, CI выполнено (Confirmed):** добавлен `.github/workflows/ci.yml`: checkout с полной историей, Node 22, `npm ci --legacy-peer-deps`, `nrwl/nx-set-shas@v4`, затем `nx affected -t lint,test,build --base="$NX_BASE" --head="$NX_HEAD" --skip-nx-cache`. Команда проверена локально на диапазоне `HEAD~1..HEAD`: затронуты `angular-material_kit`, `features-auth`, `features-settings`, всё зелёное.
+
+**Итог миграции:** 21 проект, все импорты между lib'ами идут только через `@amk/*`, границы `@nx/enforce-module-boundaries` соблюдены, `nx graph` без циклов. `src/styles.scss` — пользовательское изменение, в миграционные коммиты не включалось.
 
 ## Подтверждённые факты о текущем проекте
 
