@@ -1,0 +1,12 @@
+export {
+  COLOR_SCHEME_CLASS_PREFIX,
+  COLOR_SCHEME_STORAGE_KEY,
+  PREFERRED_COLOR_SCHEMES,
+  THEME_CLASS_PREFIX,
+  THEME_IDS,
+  THEME_STORAGE_KEY,
+  isPreferredColorScheme,
+  isThemeId,
+} from './lib/theme.model';
+export type { PreferredColorScheme, ResolvedColorScheme, ThemeId } from './lib/theme.model';
+export { ThemeService, provideThemeService } from './lib/theme.service';

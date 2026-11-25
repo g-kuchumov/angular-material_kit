@@ -13,15 +13,9 @@ import { MatIcon } from '@angular/material/icon';
 import { MatOption, MatSelect } from '@angular/material/select';
 import { TranslocoDirective, TranslocoService } from '@ngneat/transloco';
 
+import { AppLanguage, LanguageService } from '@amk/core-language';
+import { PREFERRED_COLOR_SCHEMES, PreferredColorScheme, THEME_IDS, ThemeId, ThemeService } from '@amk/core-theme';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { AppLanguage, LanguageService } from '../../../core/services/language';
-import {
-  PREFERRED_COLOR_SCHEMES,
-  PreferredColorScheme,
-  THEME_IDS,
-  ThemeId,
-  ThemeService,
-} from '../../../core/services/theme';
 
 @Component({
   selector: 'amk-expression-panel',

@@ -5,15 +5,15 @@ import { MatPaginatorIntl } from '@angular/material/paginator';
 import { provideRouter } from '@angular/router';
 
 import { AccessibilityService, provideAccessibilityService } from '@amk/core-accessibility';
+import { LanguageService, provideLanguageService } from '@amk/core-language';
+import { CustomPaginatorIntl } from '@amk/core-paginator';
+import { provideThemeService, ThemeService } from '@amk/core-theme';
+import { provideAppTransloco } from '@amk/core-transloco';
 import { OverlayScrollbarService } from '@amk/core-ui';
 import { provideSidenav } from '@amk/domain-navigation-data-access';
 import { MAT_ICON_DEFAULT_OPTIONS } from '@angular/material/icon';
 import { APP_SIDENAV_NODES } from './app.navigation';
 import { routes } from './app.routes';
-import { LanguageService, provideLanguageService } from './core/services/language';
-import { CustomPaginatorIntl } from './core/services/paginator/paginator-intl';
-import { provideThemeService, ThemeService } from './core/services/theme';
-import { provideAppTransloco } from './core/services/transloco';
 
 export const appConfig: ApplicationConfig = {
   providers: [

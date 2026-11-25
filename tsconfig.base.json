@@ -20,7 +20,11 @@
       "@amk/shared-ui-toolbar": ["./libs/shared/ui/toolbar/src/index.ts"],
       "@amk/shared-ui-sidenav": ["./libs/shared/ui/sidenav/src/index.ts"],
       "@amk/domain-navigation-api": ["./libs/domain/navigation/api/src/index.ts"],
-      "@amk/domain-navigation-data-access": ["./libs/domain/navigation/data-access/src/index.ts"]
+      "@amk/domain-navigation-data-access": ["./libs/domain/navigation/data-access/src/index.ts"],
+      "@amk/core-language": ["./libs/core/language/src/index.ts"],
+      "@amk/core-theme": ["./libs/core/theme/src/index.ts"],
+      "@amk/core-paginator": ["./libs/core/paginator/src/index.ts"],
+      "@amk/core-transloco": ["./libs/core/transloco/src/index.ts"]
     }
   }
 }

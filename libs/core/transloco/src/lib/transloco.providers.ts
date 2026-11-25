@@ -1,8 +1,8 @@
 import { EnvironmentProviders, Provider, isDevMode } from '@angular/core';
 import { provideTransloco } from '@ngneat/transloco';
 
-import { TranslocoHttpLoader } from '../../../transloco-loader';
-import { APP_LANGUAGES } from '../language';
+import { APP_LANGUAGES } from '@amk/core-language';
+import { TranslocoHttpLoader } from './transloco-loader';
 
 export const AVAILABLE_LANGS = APP_LANGUAGES;
 
