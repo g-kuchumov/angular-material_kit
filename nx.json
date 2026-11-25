@@ -35,5 +35,6 @@
     "@nx/angular:component": {
       "style": "none"
     }
-  }
+  },
+  "analytics": false
 }

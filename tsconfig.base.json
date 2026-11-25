@@ -13,7 +13,6 @@
       "@amk/shared-ui-logo": ["./libs/shared/ui/logo/src/index.ts"],
       "@amk/shared-ui-footer": ["./libs/shared/ui/footer/src/index.ts"],
       "@amk/shared-ui-menus": ["./libs/shared/ui/menus/src/index.ts"],
-      "@amk/core-portal": ["./libs/core/portal/src/index.ts"],
       "@amk/core-accessibility": ["./libs/core/accessibility/src/index.ts"],
       "@amk/shared-ui-breadcrumbs": ["./libs/shared/ui/breadcrumbs/src/index.ts"],
       "@amk/shared-ui-accessibility": ["./libs/shared/ui/accessibility/src/index.ts"],
@@ -26,7 +25,9 @@
       "@amk/core-paginator": ["./libs/core/paginator/src/index.ts"],
       "@amk/core-transloco": ["./libs/core/transloco/src/index.ts"],
       "@amk/features-auth": ["./libs/features/auth/src/index.ts"],
-      "@amk/features-settings": ["./libs/features/settings/src/index.ts"]
+      "@amk/features-settings": ["./libs/features/settings/src/index.ts"],
+      "@amk/domain-portal-api": ["./libs/domain/portal/api/src/index.ts"],
+      "@amk/domain-portal-data-access": ["./libs/domain/portal/data-access/src/index.ts"]
     }
   }
 }

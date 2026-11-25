@@ -7,8 +7,8 @@ import { MatDrawerMode, MatSidenav, MatSidenavContainer, MatSidenavContent } fro
 import { Router, RouterOutlet } from '@angular/router';
 import { map } from 'rxjs';
 
-import { PortalService } from '@amk/core-portal';
 import { SIDENAV_API, SidenavApi } from '@amk/domain-navigation-api';
+import { PORTAL_API, PortalApi } from '@amk/domain-portal-api';
 import { Breadcrumbs } from '@amk/shared-ui-breadcrumbs';
 import { Footer } from '@amk/shared-ui-footer';
 import { Toolbar } from '@amk/shared-ui-toolbar';
@@ -57,7 +57,7 @@ const RIGHT_OVER_MODE_QUERY = `(max-width: ${String(RIGHT_SIDENAV_WIDTH_REM + MI
 export class Sidenav {
   private readonly navigation: SidenavApi = inject(SIDENAV_API);
 
-  private readonly portalService: PortalService = inject(PortalService);
+  private readonly portalService: PortalApi = inject(PORTAL_API);
 
   private readonly transloco: TranslocoService = inject(TranslocoService);
 

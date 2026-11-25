@@ -11,6 +11,7 @@ import { provideThemeService, ThemeService } from '@amk/core-theme';
 import { provideAppTransloco } from '@amk/core-transloco';
 import { OverlayScrollbarService } from '@amk/core-ui';
 import { provideSidenav } from '@amk/domain-navigation-data-access';
+import { providePortal } from '@amk/domain-portal-data-access';
 import { MAT_ICON_DEFAULT_OPTIONS } from '@angular/material/icon';
 import { APP_SIDENAV_NODES } from './app.navigation';
 import { routes } from './app.routes';
@@ -26,6 +27,7 @@ export const appConfig: ApplicationConfig = {
     ...provideThemeService,
     ...provideAccessibilityService,
     ...provideSidenav(APP_SIDENAV_NODES),
+    ...providePortal(),
     ...provideAppTransloco(),
     {
       provide: MAT_ICON_DEFAULT_OPTIONS,

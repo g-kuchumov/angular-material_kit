@@ -4,11 +4,12 @@ import { computed, Injectable, signal, TemplateRef, Type } from '@angular/core';
 import {
   ComponentPortalOptions,
   DEFAULT_PORTAL_SLOT,
+  PortalApi,
   PortalAttachOptions,
   PortalHandle,
   PortalSlot,
   TemplatePortalOptions,
-} from './portal.model';
+} from '@amk/domain-portal-api';
 
 /**
  * Хранилище порталов, независимое от места их отображения.
@@ -31,8 +32,8 @@ import {
  * <ng-template [cdkPortalOutlet]="portalService.portal('footer')"></ng-template>
  * ```
  */
-@Injectable({ providedIn: 'root' })
-export class PortalService {
+@Injectable()
+export class PortalService implements PortalApi {
   private readonly portalsState = signal<ReadonlyMap<PortalSlot, Portal<unknown>>>(new Map());
 
   /** Все активные порталы по слотам. */

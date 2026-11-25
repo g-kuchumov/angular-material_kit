@@ -2,8 +2,9 @@ import { ComponentPortal, TemplatePortal } from '@angular/cdk/portal';
 import { DestroyRef, TemplateRef, ViewContainerRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
-import { DEFAULT_PORTAL_SLOT } from './portal.model';
+import { DEFAULT_PORTAL_SLOT, PORTAL_API } from '@amk/domain-portal-api';
 import { PortalService } from './portal.service';
+import { providePortal } from './provide-portal';
 
 class Panel {}
 
@@ -15,8 +16,12 @@ describe('PortalService', () => {
   let service: PortalService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({ providers: [...providePortal()] });
     service = TestBed.inject(PortalService);
+  });
+
+  it('публикует реализацию через контракт PORTAL_API', () => {
+    expect(TestBed.inject(PORTAL_API)).toBe(service);
   });
 
   it('не имеет активного портала в начале', () => {
