@@ -35,7 +35,7 @@
 
 **Фаза 4, шаг 4.2 выполнен (Confirmed):** все презентационные компоненты вынесены через `npm run lib` в `libs/shared/ui/*` с тегами `scope:shared,type:ui`: `logo`, `footer`, `menus`, `breadcrumbs`, `accessibility`, `toolbar`, `sidenav`. Импорты переведены на `@amk/*`, включая `app.routes.ts`. Заодно вынесены `core/portal`, `core/accessibility`, `core/navigation` (`type:core`) — без них UI-lib'ы импортировали бы сервисы из приложения, что запрещено границами. В `depConstraints` для `type:ui` добавлен `type:core`: UI-оболочка легально пользуется инфраструктурными сервисами (portal, navigation, accessibility); HTTP по-прежнему запрещён. `nx run-many -t lint,test,build --skip-nx-cache`: 14 проектов, 16 файлов / 104 теста, bundle 1.01 MB — зелёное. `nx graph` — 14 нод, без циклов.
 
-**Следующий шаг:** шаг 4.2b / 4.5 — demo-страницы `button/card/checkbox/button-toggle` в `libs/features/ui-kit/*` с `type:feature`, затем features `auth`, `settings`, `context-demo` и lazy routes. Оставшаяся часть 4.3 — `theme`, `language`, `paginator`, `transloco`, фикс путей `transloco.config.js` / `public/assets/i18n`. Шаг 4.4 — разделить `core/navigation` на `domain/navigation/api` + `data-access`, чтобы UI зависел от контракта, а не от реализации.
+**Следующий шаг:** шаг 4.4 — разделить `core/navigation` на `domain/navigation/api` + `data-access`, чтобы UI зависел от контракта, а не от реализации. Затем 4.3 (остаток): `theme`, `language`, `paginator`, `transloco`, фикс путей `transloco.config.js` / `public/assets/i18n`. Демо-страницы `button/card/checkbox/button-toggle` остаются в приложении и переводятся на lazy `loadComponent`; feature libs нужны только для `auth` и `settings`.
 
 ## Подтверждённые факты о текущем проекте
 
@@ -48,24 +48,26 @@
 - Path aliases в `tsconfig` **не настроены** (Confirmed).
 - Nx изначально в репозитории **отсутствовал** (Confirmed); подключён в фазе 1, см. статус выше. Нет NgRx/guards/interceptors/pipes/enums/environments/e2e.
 
-**Структура `src/app` — Confirmed:**
+**Структура `src/app` — Confirmed (с корректировкой от 2026-11-25):**
+> ⚠️ Ранее здесь упоминался `features/context-demo (list/detail/documents)`. Этого кода нет ни в рабочем дереве, ни в одной ветке, ни в истории коммитов: на момент первого аудита это были untracked-файлы, которые так и не были закоммичены. Пункт меню `context-demo` был мёртвой ссылкой и удалён. Все упоминания `context-demo` как цели выноса ниже сняты с плана.
+
 - `core/services/`: `accessibility`, `language`, `paginator` (`MatPaginatorIntl`), `portal`, `sidenav` (`SidenavService` + `sidenav-node.model`), `theme`, `transloco` providers; есть index/barrel-файлы.
-- `features/`: `auth/login`, `auth/register`, `settings` (+ `expression-panel`), `context-demo` (`list/detail/documents`).
+- `features/`: `auth/login`, `auth/register`, `settings` (+ `expression-panel`). Демо-страницы `button/button-toggle/card/checkbox` остаются в приложении (`shared/components/*`), но не являются переиспользуемыми lib'ами.
 - `shared/components/`: `accessibility`, `breadcrumbs`, `button` (+ `button-panel`), `button-toggle`, `card`, `checkbox`, `footer`, `logo`, `menus` (`base-menu.directive`, `account-menu`, `notification-menu`, `menu-context.token`), `sidenav`/`sidenav-node`, `toolbar`.
 - `shared/directives/`: `overlay-scrollbar.service.ts`, `overlay-scrollbar.ts`.
 - `testing/transloco.testing.ts`, `transloco-loader.ts`, `app.routes.ts`, `app.config.ts`.
 - **TS totals:** 49 non-spec `.ts` + 16 `.spec.ts`.
 
 **Граф зависимостей (по grep/import анализу) — Confirmed:**
-- `features -> shared/core` есть (`features/context-demo/* -> core/services/sidenav`, `features/settings/expression-panel -> core/services/language/theme`, `features/auth/* -> shared/components/footer|logo`).
+- `features -> shared/core` есть (`features/settings/expression-panel -> core/services/language/theme`, `features/auth/* -> shared/components/footer|logo`).
 - `shared -> core` есть (`sidenav/toolbar/breadcrumbs/button/accessibility-dialog -> core/services/*`).
 - `core -> features/shared` импортов **не найдено**.
 - `shared -> features` импортов **не найдено**.
 - `core/services/transloco/transloco.providers.ts -> ../../../transloco-loader.ts` — пересечение слоя (core зависит от app-root файла). Кандидат на вынос в `core/i18n`.
-- `sidenav` — cross-cutting узел: сервис в core, UI в shared, фичи context-demo напрямую создают/регистрируют узлы сайденава. Главный кандидат на аккуратное разделение API/реализации.
+- `sidenav` — cross-cutting узел: сервис в core, UI в shared, конфигурация конкретного меню зашита прямо в `SidenavService`. Главный кандидат на аккуратное разделение API/реализации.
 - Циклических импортов по grep не видно (Inferred: не полное доказательство графа).
 
-**Текущее состояние git — Confirmed:** ветка `feat_right-sidenav`, есть незакоммиченные изменения и untracked файлы (`context-demo`, `button-panel`, spec для sidenav service и др.). Миграцию в Nx лучше начинать **после фиксации/стэша чистого состояния**, иначе будет трудно отделить миграционные изменения от продуктовых.
+**Текущее состояние git — Confirmed:** на момент аудита ветка `feat_right-sidenav` была грязной (untracked `button-panel`, spec для sidenav service и др.). Миграцию в Nx лучше начинать **после фиксации/стэша чистого состояния**, иначе будет трудно отделить миграционные изменения от продуктовых. Упоминавшийся тогда `context-demo` в репозиторий не попал.
 
 ## Целевая модель Nx (что даёт “заменяемость”)
 
@@ -120,9 +122,9 @@
 │   │   ├── auth/
 │   │   │   ├── login/
 │   │   │   └── register/
-│   │   ├── settings/
-│   │   ├── context-demo/
-│   │   └── ui-kit/                  # button/card/checkbox/toggle demo pages
+│   │   └── settings/
+│   │   # демо-страницы button/card/checkbox/button-toggle остаются в приложении,
+│   │   # но не становятся отдельными lib'ами (нет потребителей и контракта)
 ├── tools/
 ├── nx.json
 ├── tsconfig.base.json
@@ -145,13 +147,12 @@
 | `core/services/portal/*` | `libs/shared/util/portal` или `libs/core/portal` | util/core | Сервис порталов — UI-infrastructure; зависит от того, используется ли вне shell. |
 | `core/services/sidenav/*` | разделить: `libs/domain/navigation/api` + `libs/domain/navigation/data-access` | domain | **Ключевой рефакторинг.** Модели/контракт/context token — в `api`; реализация `SidenavService` — в `data-access`. Фичи зависят от `api` (или фасада), реализацию можно заменить. |
 | `shared/components/sidenav/*`, `toolbar`, `breadcrumbs` | `libs/shared/ui/shell` или несколько `shared/ui/*` | ui | UI shell-компоненты. Они могут зависеть от `domain/navigation/api`, но не от feature libs. |
-| `shared/components/button*`, `card`, `checkbox`, `button-toggle` | `libs/features/ui-kit/*` (или `features/demo-components/*`) | feature | Сейчас используются как routable demo-экраны; `button` дополнительно открывает правую панель через `PortalService` + `ButtonPanel`. Это feature/demo-сценарии, не чистый shared UI. |
+| `shared/components/button*`, `card`, `checkbox`, `button-toggle` | **остаются в приложении**, переводятся на lazy `loadComponent` | — | Routable demo-страницы без логики и без внешних потребителей. Выносить в lib'ы нецелесообразно: это не переиспользуемые компоненты и не контракт. |
 | `shared/components/logo`, `footer`, `menus`, `accessibility-dialog/button` | `libs/shared/ui/<component>` | ui | Презентационные/переиспользуемые компоненты. Стараться не тянуть feature/core implementation напрямую. |
 | `shared/directives/overlay-scrollbar*` | `libs/shared/util/overlay-scrollbar` | util | Техническая утилита/директива, не домен. |
 | `testing/transloco.testing.ts` | `libs/shared/testing` | testing | Общие test providers/helpers, не production code. |
 | `features/auth/login, register` | `libs/features/auth/login`, `libs/features/auth/register` или один `libs/features/auth` | feature | Если сценарии простые — одна feature-lib; если будут расти независимо — раздельно. |
 | `features/settings/*` | `libs/features/settings` | feature | Экран настроек и его локальные панели. |
-| `features/context-demo/*` | `libs/features/context-demo` | feature | Хороший шаблон lazy/route feature lib. |
 
 ## Теги и правила зависимостей (жёсткая схема)
 
@@ -284,7 +285,7 @@ export default [
 ### Фаза 0 — подготовка (без Nx)
 
 1. **Зафиксировать текущее состояние**: отдельный commit/branch point, зелёные `npm run lint`, `npm run test`, `npm run build`. Текущая ветка уже грязная — сначала разделить продуктовые изменения и миграцию.
-2. **Снять baseline**: сохранить вывод build/lint/test, список маршрутов, скриншоты ключевых экранов (особенно sidenav/context-demo/settings/auth).
+2. **Снять baseline**: сохранить вывод build/lint/test, список маршрутов, скриншоты ключевых экранов (особенно sidenav/settings/auth).
 3. **Ввести правило “миграция без функциональных изменений”**: первые PR — только перенос/конфиг/границы.
 4. **Договориться о naming**: scope пакетов (`@amk/*` или `@app/*`), схема тегов, где лежат public API.
 
@@ -349,11 +350,11 @@ export default [
 - Создать `libs/domain/navigation/api`: `SidenavNode`, `SidenavContext`, token/интерфейс `SidenavApi`.
 - Создать `libs/domain/navigation/data-access`: реализация `SidenavService`, provider `provideSidenav()`.
 - Вынести конфигурацию конкретного меню приложения из общего сервиса в app/shell composition, если `SidenavService` сейчас содержит app-specific menu data.
-- Фичи `context-demo` зависят только от `navigation/api` (или узкого фасада), не от внутренностей shared sidenav component.
+- Потребители навигации зависят только от `navigation/api` (или узкого фасада), не от внутренностей shared sidenav component.
 - UI sidenav зависит от `navigation/api`, получает данные через контракт. Это даст заменяемость: можно подменить реализацию навигации или UI.
 
 #### Шаг 4.5. Features
-- `auth/login`, `auth/register`, `settings`, `context-demo`, `ui-kit` — отдельные feature libs.
+- `auth/login`, `auth/register`, `settings` — отдельные feature libs. Демо-страницы остаются в приложении под lazy `loadComponent`.
 - В app routes использовать lazy loading на feature entry points/route providers:
 
 ```ts
@@ -364,8 +365,7 @@ export const routes: Routes = [
     loadComponent: () => import('@amk/shared/ui/shell').then(m => m.SidenavShellComponent),
     children: [
       { path: 'settings', loadChildren: () => import('@amk/features/settings').then(m => m.SETTINGS_ROUTES) },
-      { path: 'context-demo', loadChildren: () => import('@amk/features/context-demo').then(m => m.CONTEXT_DEMO_ROUTES) },
-      { path: 'button', loadChildren: () => import('@amk/features/ui-kit/button').then(m => m.BUTTON_ROUTES) },
+      { path: 'button', loadComponent: () => import('./features/ui-kit-demo/button/button').then(m => m.Button) },
     ],
   },
   { path: 'login', loadComponent: () => import('@amk/features/auth/login').then(m => m.LoginPageComponent) },
@@ -434,7 +434,7 @@ nx affected -t lint,test,build
 
 ## Тестовый долг, который стоит учитывать при миграции
 
-Specs есть у части core services и shared-компонентов, но отсутствуют у toolbar/sidenav UI, accessibility UI, auth/settings/context-demo, overlay-scrollbar directive/service, transloco loader/providers, paginator-intl. При выносе libs добавлять хотя бы smoke/unit tests на public API каждой новой lib; не переносить не покрытый тестами код “вслепую”.
+Specs есть у части core services и shared-компонентов, но отсутствуют у toolbar/sidenav UI, accessibility UI, auth/settings, overlay-scrollbar directive/service, transloco loader/providers, paginator-intl. При выносе libs добавлять хотя бы smoke/unit tests на public API каждой новой lib; не переносить не покрытый тестами код “вслепую”.
 
 ## Рекомендуемый первый приоритет именно здесь
 
@@ -442,7 +442,7 @@ Specs есть у части core services и shared-компонентов, н�
 2. Подключить Nx без переноса файлов.
 3. Вынести `shared/testing`, `overlay-scrollbar`, `logo/footer` — быстрые победы.
 4. Разрезать `sidenav` на `domain/navigation/api` + `data-access` + `shared/ui/sidenav`, вынеся app-specific menu data из общего сервиса.
-5. Перенести `settings`, `context-demo`, `auth`, `ui-kit` в feature libs с lazy routes.
+5. Перенести `settings`, `auth` в feature libs с lazy routes; демо-страницы оставить в приложении под lazy `loadComponent`.
 6. Включить строгие `depConstraints` и сделать lint обязательным в CI.
 
 ## Источники
