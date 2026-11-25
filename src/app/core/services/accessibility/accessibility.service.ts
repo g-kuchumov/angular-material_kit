@@ -328,7 +328,11 @@ export class AccessibilityService {
 
   private extractSelectedValue(element: HTMLElement): string {
     if (element instanceof HTMLSelectElement) {
-      return this.normalize(element.options[element.selectedIndex]?.textContent);
+      if (element.selectedIndex < 0) {
+        return '';
+      }
+
+      return this.normalize(element.options.item(element.selectedIndex)?.textContent);
     }
 
     if (element.matches(SELECT_SELECTOR)) {
@@ -849,7 +853,7 @@ export class AccessibilityService {
    * При входе фокусом в навигационный регион (например, боковое меню)
    * озвучивает название региона («Боковое меню»), чтобы пользователь понимал,
    * где он находится. Если в регионе есть собственный заголовок (например,
-   * название книги в меню учебника) — озвучивается и он, чтобы не терялся
+   * заголовок текущего контекста меню) — озвучивается и он, чтобы не терялся
    * контекст. При переходе между элементами внутри региона префикс не повторяется.
    */
   private withRegionPrefix(source: HTMLElement, text: string): string {
@@ -908,11 +912,11 @@ export class AccessibilityService {
   }
 
   /**
-   * Извлекает видимый заголовок региона (h1–h6 или элемент с заголовком
-   * меню учебника), не включая декоративные и скрытые элементы.
+   * Извлекает видимый заголовок региона (h1–h6 или заголовок текущего
+   * контекста меню), не включая декоративные и скрытые элементы.
    */
   private extractRegionHeading(region: HTMLElement): string {
-    const heading = region.querySelector<HTMLElement>('h1, h2, h3, h4, h5, h6, .book-title, [role="heading"]');
+    const heading = region.querySelector<HTMLElement>('h1, h2, h3, h4, h5, h6, .context-title, [role="heading"]');
 
     if (!heading) {
       return '';

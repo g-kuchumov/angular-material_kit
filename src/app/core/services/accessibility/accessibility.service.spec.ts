@@ -599,22 +599,22 @@ describe('AccessibilityService', () => {
       expect(text).toContain('свёрнуто');
     });
 
-    it('озвучивает заголовок книги при входе в меню учебника', async () => {
+    it('озвучивает заголовок текущего контекста в боковом меню', async () => {
       const service = createService();
       service.setSoundEnabled(true);
 
       const sidenav = document.createElement('mat-sidenav');
       sidenav.setAttribute('aria-label', 'Боковое меню');
 
-      const bookTitle = document.createElement('h2');
-      bookTitle.className = 'book-title';
-      bookTitle.textContent = 'Математика и химия сложных процессов';
+      const contextTitle = document.createElement('h2');
+      contextTitle.className = 'context-title';
+      contextTitle.textContent = 'Каталог компонентов';
 
       const item = document.createElement('button');
       item.type = 'button';
-      item.textContent = 'Содержание';
+      item.textContent = 'Пункт меню';
 
-      sidenav.append(bookTitle, item);
+      sidenav.append(contextTitle, item);
       document.body.append(sidenav);
 
       document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true }));
@@ -623,8 +623,8 @@ describe('AccessibilityService', () => {
 
       const text = speakMock.mock.calls.at(-1)?.[0].text ?? '';
       expect(text).toContain('Боковое меню');
-      expect(text).toContain('Математика и химия сложных процессов');
-      expect(text).toContain('Содержание');
+      expect(text).toContain('Каталог компонентов');
+      expect(text).toContain('Пункт меню');
     });
 
     it('озвучивает контекст панели для пункта внутри mat-nav-list без собственной метки', async () => {
@@ -634,19 +634,19 @@ describe('AccessibilityService', () => {
       const sidenav = document.createElement('mat-sidenav');
       sidenav.setAttribute('aria-label', 'Боковое меню');
 
-      const bookTitle = document.createElement('h2');
-      bookTitle.className = 'book-title';
-      bookTitle.textContent = 'Физика';
+      const contextTitle = document.createElement('h2');
+      contextTitle.className = 'context-title';
+      contextTitle.textContent = 'Раздел настроек';
 
       const navList = document.createElement('mat-nav-list');
       navList.setAttribute('role', 'navigation');
 
       const item = document.createElement('mat-list-item');
       item.setAttribute('role', 'listitem');
-      item.textContent = 'Содержание';
+      item.textContent = 'Пункт меню';
 
       navList.append(item);
-      sidenav.append(bookTitle, navList);
+      sidenav.append(contextTitle, navList);
       document.body.append(sidenav);
 
       document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true }));
@@ -655,8 +655,8 @@ describe('AccessibilityService', () => {
 
       const text = speakMock.mock.calls.at(-1)?.[0].text ?? '';
       expect(text).toContain('Боковое меню');
-      expect(text).toContain('Физика');
-      expect(text).toContain('Содержание');
+      expect(text).toContain('Раздел настроек');
+      expect(text).toContain('Пункт меню');
     });
   });
 

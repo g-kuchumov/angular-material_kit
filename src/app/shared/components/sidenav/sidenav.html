@@ -16,8 +16,10 @@
           <mat-progress-bar class="progress-bar" [attr.aria-label]="t('sidenav.progressLabel')" mode="indeterminate" />
         }
 
-        @if (isBookMode()) {
-          <h2 class="book-title" [attr.aria-label]="t(bookName())">{{ bookName() }}</h2>
+        @if (hasContext()) {
+          <h2 class="context-title" [attr.aria-label]="contextTitle()">
+            {{ contextTitle() }}
+          </h2>
         }
 
         <mat-nav-list class="shape-small height-medium" style="padding: 1rem 0">
@@ -34,12 +36,12 @@
 
         <span class="spacer"></span>
 
-        @if (isBookMode()) {
+        @if (hasContext()) {
           <mat-divider />
 
-          <button class="tertiary shape-none" (click)="onCloseBook()" matButton="text" type="button">
-            <mat-icon>library_books</mat-icon>
-            {{ backButtonText() }}
+          <button class="tertiary shape-none" (click)="goBack()" matButton="text" type="button">
+            <mat-icon>arrow_back</mat-icon>
+            {{ backLabel() }}
           </button>
         }
 

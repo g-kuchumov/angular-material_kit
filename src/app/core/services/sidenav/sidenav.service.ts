@@ -3,10 +3,19 @@ import { computed, inject, Injectable, signal, WritableSignal } from '@angular/c
 import { TranslocoService } from '@ngneat/transloco';
 import { createSidenavNode, insertSidenavNode, removeSidenavNode, SidenavNode } from './sidenav-node.model';
 
-export interface BookContext {
-  id: number;
-  name: string;
-  userRoleInCourse: 'teacher' | 'student';
+/**
+ * Меню конкретного контекста приложения (страницы со списком, страницы сущности и т.д.).
+ * Контекст объявляет та страница, на которую перешло приложение; сам сервис не знает,
+ * что именно находится внутри — только заголовок и список пунктов.
+ */
+export interface SidenavContext {
+  id: string;
+  title: string;
+  items: SidenavNode[];
+  /** Маршрут страницы, которой принадлежит контекст. Нужен для возврата к её контенту. */
+  route?: string;
+  /** Ключ перевода подписи кнопки возврата. По умолчанию используется `sidenav.back`. */
+  backLabelKey?: string;
 }
 
 export interface MenuItem {
@@ -39,11 +48,15 @@ const DEFAULT_NODES: SidenavNode[] = [
     node({ id: 'checkbox', label: 'Checkbox', icon: 'check_box', route: 'checkbox' }),
   ]),
 
+  node({ id: 'context-demo', label: 'Context demo', icon: 'account_tree', route: 'context-demo' }),
+
   node({ id: 'other', label: 'Other', icon: 'category' }, [
     node({ id: 'settings', label: 'Settings', icon: 'settings', route: 'settings' }),
     node({ id: 'info', label: 'About', icon: 'info', route: 'about' }),
   ]),
 ];
+
+const ROOT_ROUTE = '/';
 
 const OPERATION_DELAY_MS = 500;
 
@@ -61,13 +74,13 @@ export class SidenavService {
 
   public readonly busy = this.busyState.asReadonly();
 
-  private readonly activeBookContext = signal<BookContext | null>({
-    id: 1,
-    name: 'Математика и химия сложных процессов в строительстве минерального комбайна',
-    userRoleInCourse: 'student',
-  });
+  /**
+   * Стек контекстов: переход на страницу добавляет контекст, «Назад» снимает один
+   * и возвращает меню предыдущей страницы. Глубина не ограничена.
+   */
+  private readonly contextStack = signal<readonly SidenavContext[]>([]);
 
-  public readonly isBookMode = computed(() => this.activeBookContext() !== null);
+  public readonly hasContext = computed(() => this.contextStack().length > 0);
 
   private readonly rightOpenedState = signal(false);
 
@@ -125,51 +138,49 @@ export class SidenavService {
     panel.set(willOpen);
   }
 
-  public readonly menu = computed(() => {
-    const book = this.activeBookContext();
-    if (!book) {
-      return this.nodes();
+  /** Меню текущего контекста; без контекста показывается корневое меню приложения. */
+  public readonly menu = computed(() => this.contextStack().at(-1)?.items ?? this.nodes());
+
+  /** Заголовок текущего контекста; пустой на главной странице. */
+  public readonly contextTitle = computed(() => this.contextStack().at(-1)?.title ?? '');
+
+  /** Подпись кнопки возврата к предыдущему контексту. */
+  public readonly backLabel = computed(() =>
+    this.transloco.translate(this.contextStack().at(-1)?.backLabelKey ?? 'sidenav.back'),
+  );
+
+  /** Маршрут контента, который станет текущим после выхода из контекста. */
+  public readonly backRoute = computed<string | null>(() => {
+    const stack = this.contextStack();
+
+    if (stack.length === 0) {
+      return null;
     }
 
-    const bookId = book.id.toString();
-    return [
-      node({
-        id: 'book-content',
-        label: 'Содержание',
-        icon: 'auto_stories',
-        route: `book/${bookId}/content`,
-      }),
-      node({
-        id: 'book-tests',
-        label: 'Тесты и опросы',
-        icon: 'quiz',
-        route: `book/${bookId}/tests`,
-      }),
-      node({
-        id: 'book-files',
-        label: 'Файлы курса',
-        icon: 'folder_open',
-        route: `book/${bookId}/files`,
-      }),
-    ];
+    return stack.length === 1 ? ROOT_ROUTE : (stack[stack.length - 2]?.route ?? null);
   });
 
-  public readonly bookName = computed(() => {
-    const book = this.activeBookContext();
-    if (!book) return '';
+  /**
+   * Вызывается страницей при входе в её контекст. Повторный вход в уже текущий
+   * контекст (например, после навигации «Назад») обновляет его, но не добавляет уровень.
+   */
+  public enterContext(context: SidenavContext): void {
+    this.contextStack.update((stack) => {
+      if (stack.at(-1)?.id === context.id) {
+        return [...stack.slice(0, -1), context];
+      }
 
-    return book.name;
-  });
+      return [...stack, context];
+    });
+  }
 
-  public readonly backButtonText = computed(() => {
-    const book = this.activeBookContext();
-    if (!book) return '';
+  public goBack(): void {
+    this.contextStack.update((stack) => stack.slice(0, -1));
+  }
 
-    return this.transloco.translate(`sidenav.backButton.${book.userRoleInCourse}`);
-  });
-
-  public closeBook(): void {
-    this.activeBookContext.set(null);
+  /** Сбрасывает сразу все вложенные контексты — например, при возврате на главную. */
+  public resetContext(): void {
+    this.contextStack.set([]);
   }
 
   public addMenuItem(parentId: string | null, item: MenuItem): void {

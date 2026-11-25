@@ -4,7 +4,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { MatDivider, MatNavList } from '@angular/material/list';
 import { MatProgressBar } from '@angular/material/progress-bar';
 import { MatDrawerMode, MatSidenav, MatSidenavContainer, MatSidenavContent } from '@angular/material/sidenav';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { map } from 'rxjs';
 
 import { CdkPortalOutlet } from '@angular/cdk/portal';
@@ -61,6 +61,8 @@ export class Sidenav {
 
   private readonly transloco: TranslocoService = inject(TranslocoService);
 
+  private readonly router: Router = inject(Router);
+
   /** Активный портал боковой панели. */
   public readonly activePortal = this.portalService.activePortal;
 
@@ -79,6 +81,12 @@ export class Sidenav {
   private previousDualSidenavs: boolean | null = null;
 
   public readonly menu = this.sidenavService.menu;
+
+  public readonly hasContext = this.sidenavService.hasContext;
+
+  public readonly contextTitle = this.sidenavService.contextTitle;
+
+  public readonly backLabel = this.sidenavService.backLabel;
 
   public readonly opened = this.sidenavService.opened;
 
@@ -173,19 +181,13 @@ export class Sidenav {
     this.sidenavService.toggleRight();
   }
 
-  public isBookMode(): boolean {
-    return this.sidenavService.isBookMode();
-  }
+  public goBack(): void {
+    const route = this.sidenavService.backRoute();
 
-  public onCloseBook(): void {
-    this.sidenavService.closeBook();
-  }
+    this.sidenavService.goBack();
 
-  public backButtonText(): string {
-    return this.sidenavService.backButtonText();
-  }
-
-  public bookName(): string {
-    return this.sidenavService.bookName();
+    if (route !== null) {
+      void this.router.navigateByUrl(route);
+    }
   }
 }

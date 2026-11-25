@@ -70,7 +70,7 @@
     "navigationLabel": "Side menu",
     "menuLabel": "Application sections",
     "progressLabel": "Operation in progress",
-    "bookHeadingLabel": "Current textbook",
+    "back": "Back",
     "expand": "Expand",
     "collapse": "Collapse",
     "items": {
@@ -81,14 +81,7 @@
       "checkbox": "Checkboxes",
       "other": "Other",
       "settings": "Settings",
-      "about": "About",
-      "bookContent": "Contents",
-      "bookTests": "Tests and quizzes",
-      "bookFiles": "Course files"
-    },
-    "backButton": {
-      "teacher": "My Subjects",
-      "student": "My Textbooks"
+      "about": "About"
     },
     "footer": {
       "label": "Service information",

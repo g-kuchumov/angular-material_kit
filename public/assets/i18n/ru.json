@@ -70,7 +70,7 @@
     "navigationLabel": "Боковое меню",
     "menuLabel": "Разделы приложения",
     "progressLabel": "Выполняется операция",
-    "bookHeadingLabel": "Текущий учебник",
+    "back": "Назад",
     "expand": "Развернуть",
     "collapse": "Свернуть",
     "items": {
@@ -81,14 +81,7 @@
       "checkbox": "Флажки",
       "other": "Прочее",
       "settings": "Настройки",
-      "about": "О проекте",
-      "bookContent": "Содержание",
-      "bookTests": "Тесты и опросы",
-      "bookFiles": "Файлы курса"
-    },
-    "backButton": {
-      "teacher": "Мои предметы",
-      "student": "Мои учебники"
+      "about": "О проекте"
     },
     "footer": {
       "about": "О нас",
