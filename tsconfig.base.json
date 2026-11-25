@@ -10,7 +10,16 @@
       "@amk/shared-testing": ["./libs/shared/testing/src/index.ts"],
       "@amk/shared-util-overlay-scrollbar": ["./libs/shared/util/overlay-scrollbar/src/index.ts"],
       "@amk/core-ui": ["./libs/core/ui/src/index.ts"],
-      "@amk/shared-ui-logo": ["./libs/shared/ui/logo/src/index.ts"]
+      "@amk/shared-ui-logo": ["./libs/shared/ui/logo/src/index.ts"],
+      "@amk/shared-ui-footer": ["./libs/shared/ui/footer/src/index.ts"],
+      "@amk/shared-ui-menus": ["./libs/shared/ui/menus/src/index.ts"],
+      "@amk/core-portal": ["./libs/core/portal/src/index.ts"],
+      "@amk/core-accessibility": ["./libs/core/accessibility/src/index.ts"],
+      "@amk/core-navigation": ["./libs/core/navigation/src/index.ts"],
+      "@amk/shared-ui-breadcrumbs": ["./libs/shared/ui/breadcrumbs/src/index.ts"],
+      "@amk/shared-ui-accessibility": ["./libs/shared/ui/accessibility/src/index.ts"],
+      "@amk/shared-ui-toolbar": ["./libs/shared/ui/toolbar/src/index.ts"],
+      "@amk/shared-ui-sidenav": ["./libs/shared/ui/sidenav/src/index.ts"]
     }
   }
 }

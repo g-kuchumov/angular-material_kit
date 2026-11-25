@@ -1,3 +1,4 @@
+import { Footer } from '@amk/shared-ui-footer';
 import { Logo } from '@amk/shared-ui-logo';
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -8,7 +9,6 @@ import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { RouterLink } from '@angular/router';
 import { TranslocoDirective } from '@ngneat/transloco';
-import { Footer } from '../../../shared/components/footer/footer';
 
 @Component({
   selector: 'amk-register',

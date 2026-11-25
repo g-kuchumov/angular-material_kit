@@ -84,7 +84,7 @@ module.exports = (async () => {
               },
               {
                 sourceTag: 'type:ui',
-                onlyDependOnLibsWithTags: ['type:ui', 'type:domain-api', 'type:util', 'type:model', 'type:testing'],
+                onlyDependOnLibsWithTags: ['type:ui', 'type:core', 'type:domain-api', 'type:util', 'type:model', 'type:testing'],
                 bannedExternalImports: ['@angular/common/http'],
               },
               {

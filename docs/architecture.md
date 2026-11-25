@@ -16,13 +16,13 @@
 | `type:feature` | routable-фичи | ui, data-access, domain-api, util, model |
 | `type:data-access` | реализация портов, API | domain-api, core, util, model |
 | `type:domain-api` | контракты, типы, токены | model, util |
-| `type:ui` | презентационные компоненты | ui, domain-api, util, model |
+| `type:ui` | презентационные компоненты и оболочка | ui, core, domain-api, util, model |
 | `type:core` | инфраструктура, сервисы Angular | core, util, model |
 | `type:util` | чистые функции/классы | util, model |
 | `type:model` | только типы | model |
 | `type:testing` | тестовые провайдеры/моки | все слои |
 
-Дополнительные запреты внешних импортов: `util`/`model` не могут импортировать `@angular/*`, `domain-api` — `@angular/material`, `@angular/forms`, `@angular/common/http`, `@ngneat/transloco`, `ui` — `@angular/common/http`. `type:testing` разрешён как зависимость всем слоям: это тестовый провайдер, а не продуктовая связь.
+Дополнительные запреты внешних импортов: `util`/`model` не могут импортировать `@angular/*`, `domain-api` — `@angular/material`, `@angular/forms`, `@angular/common/http`, `@ngneat/transloco`, `ui` — `@angular/common/http`. `type:testing` разрешён как зависимость всем слоям: это тестовый провайдер, а не продуктовая связь. `type:ui` дополнительно может зависеть от `type:core`: оболочка (`sidenav`, `toolbar`, `breadcrumbs`) использует инфраструктурные сервисы `portal`, `navigation`, `accessibility`. HTTP для UI остаётся запрещён. Если оболочку нужно сделать подменяемой, сервисы переводятся в `domain/*/api` и UI переходит на контракт — тогда зависимость от `core` можно будет убрать.
 
 Спеки перенесённых lib'ов продолжает запускать единый target приложения. В `project.json` для него задан `include: ["**/*.spec.ts", "../libs/**/*.spec.ts"]`: glob'ы `@angular/build:unit-test` резолвятся относительно `sourceRoot` приложения (`src`), поэтому `../libs` — это корневая папка `libs`. Без второго паттерна спеки lib'ов молча перестают выполняться.
 
