@@ -9,7 +9,7 @@
     "lint": {
       "executor": "@angular-eslint/builder:lint",
       "options": {
-        "lintFilePatterns": ["libs/core/transloco/src/**/*.ts"]
+        "lintFilePatterns": ["libs/core/transloco/src/**/*.ts", "libs/core/transloco/src/**/*.html"]
       }
     },
     "typecheck": {

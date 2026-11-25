@@ -9,7 +9,10 @@
     "lint": {
       "executor": "@angular-eslint/builder:lint",
       "options": {
-        "lintFilePatterns": ["libs/domain/accessibility/data-access/src/**/*.ts"]
+        "lintFilePatterns": [
+          "libs/domain/accessibility/data-access/src/**/*.ts",
+          "libs/domain/accessibility/data-access/src/**/*.html"
+        ]
       }
     },
     "typecheck": {

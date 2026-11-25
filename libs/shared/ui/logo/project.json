@@ -9,7 +9,7 @@
     "lint": {
       "executor": "@angular-eslint/builder:lint",
       "options": {
-        "lintFilePatterns": ["libs/shared/ui/logo/src/**/*.ts"]
+        "lintFilePatterns": ["libs/shared/ui/logo/src/**/*.ts", "libs/shared/ui/logo/src/**/*.html"]
       }
     },
     "typecheck": {

@@ -9,7 +9,7 @@
     "lint": {
       "executor": "@angular-eslint/builder:lint",
       "options": {
-        "lintFilePatterns": ["libs/shared/ui/sidenav/src/**/*.ts"]
+        "lintFilePatterns": ["libs/shared/ui/sidenav/src/**/*.ts", "libs/shared/ui/sidenav/src/**/*.html"]
       }
     },
     "typecheck": {

@@ -106,7 +106,7 @@ project.targets = {
   ...(project.targets ?? {}),
   lint: {
     executor: '@angular-eslint/builder:lint',
-    options: { lintFilePatterns: [`${dir}/src/**/*.ts`] },
+    options: { lintFilePatterns: [`${dir}/src/**/*.ts`, `${dir}/src/**/*.html`] },
   },
   typecheck: {
     executor: 'nx:run-commands',

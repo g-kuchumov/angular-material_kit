@@ -54,6 +54,8 @@
 
 **Per-lib цели проверок (Confirmed):** у всех 22 lib'ов добавлен `typecheck` (`tsc -p tsconfig.lib.json --noEmit`). Target `test` добавлен 9 lib'ам, где есть спеки, с собственными `tsconfig.spec.json`; target приложения сужен до своих 5 спеков. `@angular/build:unit-test` не умеет проходить без найденных тестов, поэтому lib'ы без спеков `test`-цели не получают — генератор создаёт её только при наличии `*.spec.ts`. CI обновлён до `nx affected -t lint,typecheck,test,build`. `nx run-many -t lint,test,build,typecheck --skip-nx-cache`: 23 проекта, 10 test-таргетов, 16 файлов / 107 тестов, initial 931.33 kB — зелёное.
 
+**Линтинг HTML lib'ов (Confirmed):** в `lintFilePatterns` всех 22 lib'ов добавлен `src/**/*.html` — template-линтер (`templateRecommended` + `templateAccessibility` + Prettier) теперь проверяет 12 шаблонов оболочки и feature-страниц, которые ранее линтились только будучи в `src/app`. Генератор `tools/new-lib.mjs` добавляет HTML-паттерн автоматически.
+
 **Итог миграции:** все импорты между lib'ами идут только через `@amk/*`, границы `@nx/enforce-module-boundaries` соблюдены, `nx graph` без циклов. `src/styles.scss` — пользовательское изменение, в миграционные коммиты не включалось.
 
 ## Подтверждённые факты о текущем проекте

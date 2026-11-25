@@ -9,7 +9,7 @@
     "lint": {
       "executor": "@angular-eslint/builder:lint",
       "options": {
-        "lintFilePatterns": ["libs/core/paginator/src/**/*.ts"]
+        "lintFilePatterns": ["libs/core/paginator/src/**/*.ts", "libs/core/paginator/src/**/*.html"]
       }
     },
     "typecheck": {

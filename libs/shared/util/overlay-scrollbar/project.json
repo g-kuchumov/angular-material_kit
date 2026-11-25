@@ -9,7 +9,10 @@
     "lint": {
       "executor": "@angular-eslint/builder:lint",
       "options": {
-        "lintFilePatterns": ["libs/shared/util/overlay-scrollbar/src/**/*.ts"]
+        "lintFilePatterns": [
+          "libs/shared/util/overlay-scrollbar/src/**/*.ts",
+          "libs/shared/util/overlay-scrollbar/src/**/*.html"
+        ]
       }
     },
     "typecheck": {

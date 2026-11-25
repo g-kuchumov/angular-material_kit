@@ -9,7 +9,7 @@
     "lint": {
       "executor": "@angular-eslint/builder:lint",
       "options": {
-        "lintFilePatterns": ["libs/domain/portal/api/src/**/*.ts"]
+        "lintFilePatterns": ["libs/domain/portal/api/src/**/*.ts", "libs/domain/portal/api/src/**/*.html"]
       }
     },
     "typecheck": {
