@@ -76,4 +76,4 @@ npm run lib -- \
 nx affected -t lint,test,build --base=origin/master --head=HEAD
 ```
 
-`nx graph` смотреть на ревью крупных PR. Бюджет bundle перекалибровать после перевода features на lazy-загрузку.
+`nx graph` смотреть на ревью крупных PR. Бюджет bundle после перевода features на lazy-загрузку перекалиброван: `initial` — warning `1MB`, error `1.25MB` (factual initial total — 930.97 kB). Демо-страницы живут в `src/app/features/ui-kit-demo/*` и не становятся lib'ами: у них нет внешних потребителей и контракта.
