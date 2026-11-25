@@ -64,6 +64,8 @@
 
 **`type:testing` сужен (Confirmed):** провайдеры теперь могут зависеть только от `domain-api/core/util/model/testing` и не тянут `app`/`feature`/`data-access`/`ui`. Негативный тест: импорт `@amk/shared-ui-menus` из `shared-testing` дал `A project tagged with "type:testing" can only depend on libs tagged with "type:domain-api", "type:core", "type:util", "type:model", "type:testing"`.
 
+**Границы готовы к бизнес-доменам (Confirmed):** добавлен общий тег `scope:domain` для бизнес-доменов; `feature`, `shared` и `app` теперь могут зависеть от `scope:domain`, сами домены — от `domain`/`shared`. Из `type:feature` убран `type:data-access`: фича видит только `domain-api` и не может обойти контракт. Зафиксирован порядок вертикального среза `model → api → data-access → feature` и размещение тестовых дублей в `shared/testing`. Это снимает блокировку, при которой первая же бизнес-фича с `scope:orders` не смогла бы импортировать свой `@amk/domain-orders-api`.
+
 **Итог миграции:** все импорты между lib'ами идут только через `@amk/*`, границы `@nx/enforce-module-boundaries` соблюдены, `nx graph` без циклов. `src/styles.scss` — пользовательское изменение, в миграционные коммиты не включалось.
 
 ## Подтверждённые факты о текущем проекте

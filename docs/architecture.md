@@ -13,7 +13,7 @@
 | Тег                | Назначение                            | Может зависеть от                                                |
 | ------------------ | ------------------------------------- | ---------------------------------------------------------------- |
 | `type:app`         | композиция приложения                 | feature, core, data-access, domain-api, ui, util, model, testing |
-| `type:feature`     | routable-фичи                         | ui, core, data-access, domain-api, util, model                   |
+| `type:feature`     | routable-фичи                         | ui, core, domain-api, util, model, testing                       |
 | `type:data-access` | реализация портов, API                | domain-api, core, util, model                                    |
 | `type:domain-api`  | контракты, типы, токены               | model, util                                                      |
 | `type:ui`          | презентационные компоненты и оболочка | ui, domain-api, util, model                                      |
@@ -24,17 +24,20 @@
 
 Scope-ограничения накладываются поверх type-матрицы — проект должен пройти оба правила:
 
-| Тег                   | Может зависеть от scope                                                   |
-| --------------------- | ------------------------------------------------------------------------- |
-| `scope:app`           | app, core, feature, navigation, portal, accessibility, shared             |
-| `scope:core`          | core, shared                                                              |
-| `scope:feature`       | core, shared                                                              |
-| `scope:shared`        | shared, navigation, portal, accessibility (domain-api контракты оболочки) |
-| `scope:navigation`    | navigation, shared                                                        |
-| `scope:portal`        | portal, shared                                                            |
-| `scope:accessibility` | accessibility, shared                                                     |
+| Тег                   | Может зависеть от scope                                                  |
+| --------------------- | ------------------------------------------------------------------------ |
+| `scope:app`           | app, core, feature, domain, navigation, portal, accessibility, shared    |
+| `scope:core`          | core, shared                                                             |
+| `scope:feature`       | core, shared, domain                                                     |
+| `scope:shared`        | shared, domain, navigation, portal, accessibility (только api контракты) |
+| `scope:domain`        | domain, shared                                                           |
+| `scope:navigation`    | navigation, shared                                                       |
+| `scope:portal`        | portal, shared                                                           |
+| `scope:accessibility` | accessibility, shared                                                    |
 
 Дополнительные запреты внешних импортов: `util`/`model` не могут импортировать `@angular/*`, `domain-api` — `@angular/material`, `@angular/forms`, `@angular/common/http`, `@ngneat/transloco`, `ui` — `@angular/common/http`. `type:testing` разрешён как зависимость всем слоям, но сам не может тянуть `app`/`feature`/`ui`/`data-access`: это тестовый провайдер, а не продуктовая связь. `type:core` разрешён только для `feature` (settings использует `core-language`/`core-theme`) и `app` (композиция инфраструктуры). Для `type:ui` зависимость от `core` убрана: HTTP для UI по-прежнему запрещён. Навигация, портал и доступность вынесены из `core` в `domain/*`: оболочка (`sidenav`, `toolbar`, `breadcrumbs`, `accessibility-dialog`) зависит только от контрактов `SIDENAV_API`, `PORTAL_API`, `ACCESSIBILITY_API` (`type:domain-api`), реализации подключаются композицией через `provideSidenav()` / `providePortal()` / `provideAccessibility()`.
+
+Для бизнес-логики принят вертикальный срез: `libs/domain/<entity>/model` (`scope:domain,type:model`) хранит чистые типы без Angular/rxjs, `libs/domain/<entity>/api` (`scope:domain,type:domain-api`) — интерфейс и `InjectionToken`, `libs/domain/<entity>/data-access` (`scope:domain,type:data-access`) — реализация и `provide<Entity>()`, `libs/features/<feature>` (`scope:feature,type:feature`) — только UI через контракт. `type:feature` не может зависеть от `type:data-access`: конкретная реализация подключается только в `app.config.ts` (`type:app`). Тестовые дубли живут в `shared/testing` и зависят только от domain-api.
 
 У каждой lib есть цель `typecheck` (`tsc -p tsconfig.lib.json --noEmit`). Спеки вынесены в собственные цели `test` только у тех lib'ов, где они реально есть: `@angular/build:unit-test` падает, если include-паттерны не нашли ни одного файла. Target приложения теперь запускает только свои 5 спеков (`include: ["**/*.spec.ts"]`); остальные 11 спеков запускают 9 lib-проектов через свои `tsconfig.spec.json`. Итого по workspace — 16 файлов / 107 тестов. Генератор `tools/new-lib.mjs` создаёт `test` и `tsconfig.spec.json` автоматически, если в новую lib перенесены спеки; иначе создаётся только `typecheck`.
 

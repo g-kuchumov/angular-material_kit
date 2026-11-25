@@ -62,7 +62,6 @@ module.exports = (async () => {
                 onlyDependOnLibsWithTags: [
                   'type:ui',
                   'type:core',
-                  'type:data-access',
                   'type:domain-api',
                   'type:util',
                   'type:model',
@@ -109,12 +108,15 @@ module.exports = (async () => {
               // Scope-границы поверх type-ограничений: доменная реализация не должна
               // тянуть чужие домены, а оболочка — feature-слои. Ограничения складываются:
               // проект должен пройти и type-, и scope-правило одновременно.
+              // scope:domain — общий тег бизнес-доменов (model/api/data-access):
+              // фичи и тестовые дубли видят их api, но не конкретную реализацию.
               {
                 sourceTag: 'scope:app',
                 onlyDependOnLibsWithTags: [
                   'scope:app',
                   'scope:core',
                   'scope:feature',
+                  'scope:domain',
                   'scope:navigation',
                   'scope:portal',
                   'scope:accessibility',
@@ -127,11 +129,21 @@ module.exports = (async () => {
               },
               {
                 sourceTag: 'scope:feature',
-                onlyDependOnLibsWithTags: ['scope:core', 'scope:shared'],
+                onlyDependOnLibsWithTags: ['scope:core', 'scope:shared', 'scope:domain'],
               },
               {
                 sourceTag: 'scope:shared',
-                onlyDependOnLibsWithTags: ['scope:shared', 'scope:navigation', 'scope:portal', 'scope:accessibility'],
+                onlyDependOnLibsWithTags: [
+                  'scope:shared',
+                  'scope:domain',
+                  'scope:navigation',
+                  'scope:portal',
+                  'scope:accessibility',
+                ],
+              },
+              {
+                sourceTag: 'scope:domain',
+                onlyDependOnLibsWithTags: ['scope:domain', 'scope:shared'],
               },
               {
                 sourceTag: 'scope:navigation',
