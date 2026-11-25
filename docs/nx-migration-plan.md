@@ -58,6 +58,12 @@
 
 **Scope-ограничения включены (Confirmed):** в `depConstraints` добавлены правила `scope:app/core/feature/shared/navigation/portal/accessibility`. Доменные `data-access` зависят только от своего `domain-api` и `shared/testing`, оболочка (`scope:shared`) — от `shared` и domain-api контрактов навигации/портала/доступности, `feature` — от `core` и `shared`, `app` — от всех scope. Правило проверено негативным тестом: временный импорт `@amk/domain-navigation-api` из `features-auth` дал `A project tagged with "scope:feature" can only depend on libs tagged with "scope:core", "scope:shared"`, хотя по `type:*` такой импорт разрешён. `nx graph` — 23 ноды без циклов; `nx run-many -t lint,test,build,typecheck --skip-nx-cache` — зелёное.
 
+**Окружение зафиксировано (Confirmed):** добавлен `.nvmrc` с Node `24.18.0`, `package.json` получил `engines.node: ^24.18.0`; npm `11.16.0` из `packageManager` совпадает с npm в поставке Node 24.18.0. CI использует `node-version-file: .nvmrc` вместо плавающего мажора `22` — одна и та же версия локально и в GitHub Actions. Все проверки (`nx graph`, `nx run-many -t lint,test,build,typecheck --skip-nx-cache`) прогонялись под Node 24.18.0 и прошли.
+
+**README переписан под Nx (Confirmed):** команды `ng serve/build/test/e2e` и ссылки на отсутствующий `angular.json` заменены на `npm start/build/test/lint`, `npx nx graph`, `npx nx run-many -t lint,typecheck,test,build --skip-nx-cache` и `npm run lib`. Добавлены разделы про окружение, архитектуру и цели проверок.
+
+**`type:testing` сужен (Confirmed):** провайдеры теперь могут зависеть только от `domain-api/core/util/model/testing` и не тянут `app`/`feature`/`data-access`/`ui`. Негативный тест: импорт `@amk/shared-ui-menus` из `shared-testing` дал `A project tagged with "type:testing" can only depend on libs tagged with "type:domain-api", "type:core", "type:util", "type:model", "type:testing"`.
+
 **Итог миграции:** все импорты между lib'ами идут только через `@amk/*`, границы `@nx/enforce-module-boundaries` соблюдены, `nx graph` без циклов. `src/styles.scss` — пользовательское изменение, в миграционные коммиты не включалось.
 
 ## Подтверждённые факты о текущем проекте

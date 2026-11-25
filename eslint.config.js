@@ -104,17 +104,7 @@ module.exports = (async () => {
               },
               {
                 sourceTag: 'type:testing',
-                onlyDependOnLibsWithTags: [
-                  'type:app',
-                  'type:feature',
-                  'type:core',
-                  'type:data-access',
-                  'type:domain-api',
-                  'type:ui',
-                  'type:util',
-                  'type:model',
-                  'type:testing',
-                ],
+                onlyDependOnLibsWithTags: ['type:domain-api', 'type:core', 'type:util', 'type:model', 'type:testing'],
               },
               // Scope-границы поверх type-ограничений: доменная реализация не должна
               // тянуть чужие домены, а оболочка — feature-слои. Ограничения складываются:

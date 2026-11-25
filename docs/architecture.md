@@ -20,7 +20,7 @@
 | `type:core`        | инфраструктура, сервисы Angular       | core, util, model                                                |
 | `type:util`        | чистые функции/классы                 | util, model                                                      |
 | `type:model`       | только типы                           | model                                                            |
-| `type:testing`     | тестовые провайдеры/моки              | все слои                                                         |
+| `type:testing`     | тестовые провайдеры/моки              | domain-api, core, util, model, testing                           |
 
 Scope-ограничения накладываются поверх type-матрицы — проект должен пройти оба правила:
 
@@ -34,7 +34,7 @@ Scope-ограничения накладываются поверх type-мат
 | `scope:portal`        | portal, shared                                                            |
 | `scope:accessibility` | accessibility, shared                                                     |
 
-Дополнительные запреты внешних импортов: `util`/`model` не могут импортировать `@angular/*`, `domain-api` — `@angular/material`, `@angular/forms`, `@angular/common/http`, `@ngneat/transloco`, `ui` — `@angular/common/http`. `type:testing` разрешён как зависимость всем слоям: это тестовый провайдер, а не продуктовая связь. `type:core` разрешён только для `feature` (settings использует `core-language`/`core-theme`) и `app` (композиция инфраструктуры). Для `type:ui` зависимость от `core` убрана: HTTP для UI по-прежнему запрещён. Навигация, портал и доступность вынесены из `core` в `domain/*`: оболочка (`sidenav`, `toolbar`, `breadcrumbs`, `accessibility-dialog`) зависит только от контрактов `SIDENAV_API`, `PORTAL_API`, `ACCESSIBILITY_API` (`type:domain-api`), реализации подключаются композицией через `provideSidenav()` / `providePortal()` / `provideAccessibility()`.
+Дополнительные запреты внешних импортов: `util`/`model` не могут импортировать `@angular/*`, `domain-api` — `@angular/material`, `@angular/forms`, `@angular/common/http`, `@ngneat/transloco`, `ui` — `@angular/common/http`. `type:testing` разрешён как зависимость всем слоям, но сам не может тянуть `app`/`feature`/`ui`/`data-access`: это тестовый провайдер, а не продуктовая связь. `type:core` разрешён только для `feature` (settings использует `core-language`/`core-theme`) и `app` (композиция инфраструктуры). Для `type:ui` зависимость от `core` убрана: HTTP для UI по-прежнему запрещён. Навигация, портал и доступность вынесены из `core` в `domain/*`: оболочка (`sidenav`, `toolbar`, `breadcrumbs`, `accessibility-dialog`) зависит только от контрактов `SIDENAV_API`, `PORTAL_API`, `ACCESSIBILITY_API` (`type:domain-api`), реализации подключаются композицией через `provideSidenav()` / `providePortal()` / `provideAccessibility()`.
 
 У каждой lib есть цель `typecheck` (`tsc -p tsconfig.lib.json --noEmit`). Спеки вынесены в собственные цели `test` только у тех lib'ов, где они реально есть: `@angular/build:unit-test` падает, если include-паттерны не нашли ни одного файла. Target приложения теперь запускает только свои 5 спеков (`include: ["**/*.spec.ts"]`); остальные 11 спеков запускают 9 lib-проектов через свои `tsconfig.spec.json`. Итого по workspace — 16 файлов / 107 тестов. Генератор `tools/new-lib.mjs` создаёт `test` и `tsconfig.spec.json` автоматически, если в новую lib перенесены спеки; иначе создаётся только `typecheck`.
 
