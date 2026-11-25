@@ -1,0 +1,21 @@
+{
+  "name": "domain-navigation-data-access",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/domain/navigation/data-access/src",
+  "prefix": "amk",
+  "tags": [
+    "scope:navigation",
+    "type:data-access"
+  ],
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/domain/navigation/data-access/src/**/*.ts"
+        ]
+      }
+    }
+  }
+}

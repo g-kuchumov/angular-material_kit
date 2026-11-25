@@ -3,7 +3,7 @@ import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatToolbar } from '@angular/material/toolbar';
 
-import { SidenavService } from '@amk/core-navigation';
+import { SIDENAV_API, SidenavApi } from '@amk/domain-navigation-api';
 import { AccessibilityButton } from '@amk/shared-ui-accessibility';
 import { Logo } from '@amk/shared-ui-logo';
 import { AccountMenu, MENU_CONTEXT, NotificationMenu } from '@amk/shared-ui-menus';
@@ -31,15 +31,15 @@ import { TranslocoDirective } from '@ngneat/transloco';
   styleUrl: './toolbar.scss',
 })
 export class Toolbar {
-  private readonly sidenavService = inject(SidenavService);
+  private readonly navigation: SidenavApi = inject(SIDENAV_API);
 
-  public readonly menu = this.sidenavService.menu;
+  public readonly menu = this.navigation.menu;
 
-  public readonly opened = this.sidenavService.opened;
+  public readonly opened = this.navigation.opened;
 
-  public readonly busy = this.sidenavService.busy;
+  public readonly busy = this.navigation.busy;
 
-  public toggleSidenav() {
-    this.sidenavService.toggle();
+  public toggleSidenav(): void {
+    this.navigation.toggle();
   }
 }

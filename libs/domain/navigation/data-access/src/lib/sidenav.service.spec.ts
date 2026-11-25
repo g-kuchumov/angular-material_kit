@@ -1,8 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 
+import { createSidenavNode, SIDENAV_API, SidenavContext } from '@amk/domain-navigation-api';
 import { provideTestTransloco } from '@amk/shared-testing';
-import { createSidenavNode } from './sidenav-node.model';
-import { SidenavContext, SidenavService } from './sidenav.service';
+import { provideSidenav } from './provide-sidenav';
+import { SidenavService } from './sidenav.service';
 
 function context(id: string, route = `${id}-page`): SidenavContext {
   return {
@@ -13,12 +14,20 @@ function context(id: string, route = `${id}-page`): SidenavContext {
   };
 }
 
+const ROOT_NODES = [createSidenavNode({ id: 'root', label: 'Root' })];
+
 describe('SidenavService', () => {
   let service: SidenavService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({ providers: provideTestTransloco() });
+    TestBed.configureTestingModule({
+      providers: [...provideTestTransloco(), ...provideSidenav(ROOT_NODES)],
+    });
     service = TestBed.inject(SidenavService);
+  });
+
+  it('публикует реализацию через контракт SIDENAV_API', () => {
+    expect(TestBed.inject(SIDENAV_API)).toBe(service);
   });
 
   it('показывает корневое меню и не имеет заголовка контекста в начале', () => {

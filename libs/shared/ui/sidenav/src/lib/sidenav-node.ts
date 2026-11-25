@@ -1,4 +1,4 @@
-import { SidenavNode } from '@amk/core-navigation';
+import { SidenavNode } from '@amk/domain-navigation-api';
 import { Component, computed, input, output } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';

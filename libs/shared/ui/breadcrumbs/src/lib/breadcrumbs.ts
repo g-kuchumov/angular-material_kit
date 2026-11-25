@@ -4,7 +4,7 @@ import { MatIcon } from '@angular/material/icon';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { filter, map } from 'rxjs';
 
-import { SidenavService } from '@amk/core-navigation';
+import { SIDENAV_API, SidenavApi } from '@amk/domain-navigation-api';
 import { MatButton } from '@angular/material/button';
 
 interface Breadcrumb {
@@ -21,7 +21,7 @@ interface Breadcrumb {
 export class Breadcrumbs {
   private readonly router: Router = inject(Router);
 
-  private readonly sidenavService: SidenavService = inject(SidenavService);
+  private readonly navigation: SidenavApi = inject(SIDENAV_API);
 
   private readonly currentUrl = toSignal(
     this.router.events.pipe(
@@ -33,7 +33,7 @@ export class Breadcrumbs {
 
   public readonly breadcrumbs = computed<Breadcrumb[]>(() => {
     const url = this.currentUrl();
-    const flatMenu = this.sidenavService.flatMenu();
+    const flatMenu = this.navigation.flatMenu();
 
     const currentItem = flatMenu.find((item) => {
       if (!item.route || item.route === '#') {

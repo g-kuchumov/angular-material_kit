@@ -1,68 +1,29 @@
 import { computed, inject, Injectable, signal, WritableSignal } from '@angular/core';
 
+import {
+  createSidenavNode,
+  flattenSidenavNodes,
+  insertSidenavNode,
+  MenuItem,
+  removeSidenavNode,
+  SIDENAV_INITIAL_NODES,
+  SidenavApi,
+  SidenavContext,
+  SidenavNode,
+} from '@amk/domain-navigation-api';
 import { TranslocoService } from '@ngneat/transloco';
-import { createSidenavNode, insertSidenavNode, removeSidenavNode, SidenavNode } from './sidenav-node.model';
-
-/**
- * Меню конкретного контекста приложения (страницы со списком, страницы сущности и т.д.).
- * Контекст объявляет та страница, на которую перешло приложение; сам сервис не знает,
- * что именно находится внутри — только заголовок и список пунктов.
- */
-export interface SidenavContext {
-  id: string;
-  title: string;
-  items: SidenavNode[];
-  /** Маршрут страницы, которой принадлежит контекст. Нужен для возврата к её контенту. */
-  route?: string;
-  /** Ключ перевода подписи кнопки возврата. По умолчанию используется `sidenav.back`. */
-  backLabelKey?: string;
-}
-
-export interface MenuItem {
-  label: string;
-  route?: string;
-  icon?: string;
-}
-
-type PartialNode = Omit<SidenavNode, 'id' | 'children'> & Partial<Pick<SidenavNode, 'id'>>;
-
-function node(partial: PartialNode, children: SidenavNode[] = []): SidenavNode {
-  return createSidenavNode({ ...partial, children });
-}
-
-const DEFAULT_NODES: SidenavNode[] = [
-  node({ id: 'components', label: 'Components', icon: 'widgets', route: 'media' }, [
-    node({
-      id: 'button',
-      label: 'Button',
-      icon: 'smart_button',
-      route: 'button',
-    }),
-    node({
-      id: 'button-toggle',
-      label: 'Button Toggle',
-      icon: 'toggle',
-      route: 'button-toggle',
-    }),
-    node({ id: 'card', label: 'Card', icon: 'credit_card', route: 'card' }),
-    node({ id: 'checkbox', label: 'Checkbox', icon: 'check_box', route: 'checkbox' }),
-  ]),
-
-  node({ id: 'other', label: 'Other', icon: 'category' }, [
-    node({ id: 'settings', label: 'Settings', icon: 'settings', route: 'settings' }),
-    node({ id: 'info', label: 'About', icon: 'info', route: 'about' }),
-  ]),
-];
 
 const ROOT_ROUTE = '/';
 
 const OPERATION_DELAY_MS = 500;
 
-@Injectable({ providedIn: 'root' })
-export class SidenavService {
+@Injectable()
+export class SidenavService implements SidenavApi {
   private transloco = inject(TranslocoService);
 
-  private readonly nodes = signal<SidenavNode[]>(DEFAULT_NODES);
+  private readonly initialNodes = inject(SIDENAV_INITIAL_NODES);
+
+  private readonly nodes = signal<SidenavNode[]>([...this.initialNodes]);
 
   private readonly openedState = signal(false);
 
@@ -195,7 +156,7 @@ export class SidenavService {
   }
 
   public resetMenu(): void {
-    this.nodes.set(DEFAULT_NODES);
+    this.nodes.set([...this.initialNodes]);
   }
 
   private runBusy(action: () => void): void {
@@ -207,46 +168,5 @@ export class SidenavService {
     }, OPERATION_DELAY_MS);
   }
 
-  public readonly flatMenu = computed(() => this.flatten(this.nodes()));
-
-  private flatten(
-    nodes: readonly SidenavNode[],
-    parentPath = '',
-  ): {
-    id: string;
-    label: string;
-    path: string;
-    depth: number;
-    hasChildren: boolean;
-    route?: string;
-    icon?: string;
-  }[] {
-    const result: {
-      id: string;
-      label: string;
-      path: string;
-      depth: number;
-      hasChildren: boolean;
-      route?: string;
-      icon?: string;
-    }[] = [];
-
-    for (const node of nodes) {
-      const path = parentPath === '' ? node.label : `${parentPath} / ${node.label}`;
-
-      result.push({
-        id: node.id,
-        label: node.label,
-        path,
-        depth: parentPath === '' ? 0 : parentPath.split(' / ').length,
-        hasChildren: node.children.length > 0,
-        route: node.route,
-        icon: node.icon,
-      });
-
-      result.push(...this.flatten(node.children, path));
-    }
-
-    return result;
-  }
+  public readonly flatMenu = computed(() => flattenSidenavNodes(this.nodes()));
 }

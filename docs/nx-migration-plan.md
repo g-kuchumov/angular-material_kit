@@ -3,6 +3,7 @@
 ## Статус (обновлено после подключения Nx)
 
 **Фаза 1 выполнена (Confirmed):**
+
 - Установлены `nx@24.0.7`, `@nx/workspace@24.0.7`, `@nx/angular@24.0.7`, `@angular-devkit/core`, `@angular-devkit/schematics`, `@schematics/angular`. Angular версии остались на `22.0.x`.
 - `npx nx init` выполнен с `--plugins=@nx/angular --nxCloud=false --aiAgents=none --cacheable=build,test,lint`; созданы `nx.json`, `project.json`, `.vscode/extensions.json`; `angular.json` конвертирован в `project.json`; npm-скрипты `start/build/watch/test/lint` теперь вызывают `nx`.
 - `nx show projects` -> `["angular-material_kit"]`; `nx graph` строится; `defaultBase: master`.
@@ -12,6 +13,7 @@
 - Node в окружении `v22.22.1`, packages Angular 22 требуют `^22.22.3`: warnings EBADENGINE при установке, но сборка/тесты/lint работают.
 
 **Фаза 3 выполнена (Confirmed):**
+
 - Установлен `@nx/eslint-plugin@24.0.7` (вместе с зависимостями `@nx/js`, `@nx/devkit`); версия совпадает с `nx`/`@nx/angular`.
 - В `eslint.config.js` подключён `nx.configs['flat/base']` и правило `@nx/enforce-module-boundaries` (`error`) с `depConstraints` по тегам `type:*` из раздела «Теги и правила зависимостей» ниже. Включены `enforceBuildableLibDependency: true` и `banTransitiveDependencies: true`.
 - Добавлены жёсткие `bannedExternalImports`: `type:model` — `@angular/*`, `@ngneat/transloco`, `rxjs`; `type:util` — `@angular/*`, `@ngneat/transloco`; `type:domain-api` — `@angular/material`, `@angular/forms`, `@angular/common/http`, `@ngneat/transloco`; `type:ui` — `@angular/common/http`.
@@ -20,6 +22,7 @@
 - Финальная проверка `nx run-many -t lint,test,build --skip-nx-cache`: всё зелёное.
 
 **Фаза 4, шаг 4.1 выполнен (Confirmed):**
+
 - Созданы три lib через `@nx/angular:library` (с `--importPath`, `--tags`, `--unitTestRunner=none`, `--linter=none`):
   - `libs/shared/testing` — `@amk/shared-testing`, теги `scope:shared,type:testing`;
   - `libs/shared/util/overlay-scrollbar` — `@amk/shared-util-overlay-scrollbar`, теги `scope:shared,type:util`;
@@ -35,11 +38,14 @@
 
 **Фаза 4, шаг 4.2 выполнен (Confirmed):** все презентационные компоненты вынесены через `npm run lib` в `libs/shared/ui/*` с тегами `scope:shared,type:ui`: `logo`, `footer`, `menus`, `breadcrumbs`, `accessibility`, `toolbar`, `sidenav`. Импорты переведены на `@amk/*`, включая `app.routes.ts`. Заодно вынесены `core/portal`, `core/accessibility`, `core/navigation` (`type:core`) — без них UI-lib'ы импортировали бы сервисы из приложения, что запрещено границами. В `depConstraints` для `type:ui` добавлен `type:core`: UI-оболочка легально пользуется инфраструктурными сервисами (portal, navigation, accessibility); HTTP по-прежнему запрещён. `nx run-many -t lint,test,build --skip-nx-cache`: 14 проектов, 16 файлов / 104 теста, bundle 1.01 MB — зелёное. `nx graph` — 14 нод, без циклов.
 
-**Следующий шаг:** шаг 4.4 — разделить `core/navigation` на `domain/navigation/api` + `data-access`, чтобы UI зависел от контракта, а не от реализации. Затем 4.3 (остаток): `theme`, `language`, `paginator`, `transloco`, фикс путей `transloco.config.js` / `public/assets/i18n`. Демо-страницы `button/card/checkbox/button-toggle` остаются в приложении и переводятся на lazy `loadComponent`; feature libs нужны только для `auth` и `settings`.
+**Фаза 4, шаг 4.4 выполнен (Confirmed):** `core/navigation` разделён на `libs/domain/navigation/api` (`scope:navigation,type:domain-api`: `SidenavApi`, `SIDENAV_API`, `SIDENAV_INITIAL_NODES`, модели и helpers) и `libs/domain/navigation/data-access` (`scope:navigation,type:data-access`: `SidenavService implements SidenavApi`, `provideSidenav()`). Конкретное меню вынесено из сервиса в `src/app/app.navigation.ts` (`APP_SIDENAV_NODES`) и подключается в `app.config.ts`. UI (`sidenav`, `toolbar`, `breadcrumbs`, `sidenav-node`) инъектит только `SIDENAV_API`; для его тестов добавлен `provideTestSidenav()` в `shared/testing`. Старый алиас `@amk/core-navigation` удалён. `nx graph` — 15 нод, без циклов; `nx run-many -t lint,test,build --skip-nx-cache`: 15 проектов, 16 файлов / 105 тестов, bundle 1.01 MB — зелёное. Зависимость `type:ui -> type:core` оставлена только из-за `portal`.
+
+**Следующий шаг:** 4.3 (остаток) — `theme`, `language`, `paginator`, `transloco`, фикс путей `transloco.config.js` / `public/assets/i18n`. Затем демо-страницы `button/card/checkbox/button-toggle` переводятся на lazy `loadComponent` (без выноса в lib'ы), feature libs нужны только для `auth` и `settings`. После lazy — перекалибровка budget и CI с `nx affected`.
 
 ## Подтверждённые факты о текущем проекте
 
 **Стек (из `package.json`, `angular.json`, `tsconfig*.json`, `eslint.config.js`) — Confirmed:**
+
 - Angular **22.0.x** (`@angular/core`, `@angular/material`, `@angular/cdk`, `@angular/build:application`, esbuild/application builder).
 - Standalone bootstrap: `src/main.ts` + `provideRouter`/providers в `src/app/app.config.ts`, корень `amk-root` (`src/app/app.ts`) содержит только `<router-outlet />`.
 - TypeScript **~6.0.2**, `strict`-ориентированные флаги, `module: preserve`, project references (`tsconfig.json` -> `app/spec`).
@@ -49,6 +55,7 @@
 - Nx изначально в репозитории **отсутствовал** (Confirmed); подключён в фазе 1, см. статус выше. Нет NgRx/guards/interceptors/pipes/enums/environments/e2e.
 
 **Структура `src/app` — Confirmed (с корректировкой от 2026-11-25):**
+
 > ⚠️ Ранее здесь упоминался `features/context-demo (list/detail/documents)`. Этого кода нет ни в рабочем дереве, ни в одной ветке, ни в истории коммитов: на момент первого аудита это были untracked-файлы, которые так и не были закоммичены. Пункт меню `context-demo` был мёртвой ссылкой и удалён. Все упоминания `context-demo` как цели выноса ниже сняты с плана.
 
 - `core/services/`: `accessibility`, `language`, `paginator` (`MatPaginatorIntl`), `portal`, `sidenav` (`SidenavService` + `sidenav-node.model`), `theme`, `transloco` providers; есть index/barrel-файлы.
@@ -59,6 +66,7 @@
 - **TS totals:** 49 non-spec `.ts` + 16 `.spec.ts`.
 
 **Граф зависимостей (по grep/import анализу) — Confirmed:**
+
 - `features -> shared/core` есть (`features/settings/expression-panel -> core/services/language/theme`, `features/auth/* -> shared/components/footer|logo`).
 - `shared -> core` есть (`sidenav/toolbar/breadcrumbs/button/accessibility-dialog -> core/services/*`).
 - `core -> features/shared` импортов **не найдено**.
@@ -136,23 +144,23 @@
 
 ## Куда что выносить (конкретно для этого репозитория)
 
-| Текущее место | Куда | Тип | Почему / как сделать заменяемым |
-|---|---|---|---|
-| `src/app/app.config.ts`, `app.routes.ts`, `app.ts/html/scss` | `apps/material-kit/src/app/*` | app | Только композиция. В app не держать переиспользуемую логику. |
-| `core/services/theme/*` | `libs/core/theme` или `libs/shared/util/theme` | core/util | Тема/цветовая схема — app-wide concern. Экспортировать provider + service + model через `index.ts`. |
-| `core/services/language/*` | `libs/core/i18n` или `libs/core/language` | core | Язык/инициализация — инфраструктура. |
-| `core/services/transloco/*` + `app/transloco-loader.ts` | `libs/core/i18n` | core/data-access | Убрать импорт core->app-root. Loader/provider должны жить рядом и экспортироваться публичным API. |
-| `core/services/accessibility/*` | `libs/core/a11y` | core | Отдельный инфраструктурный домен; хорошо заменяется/выключается. |
-| `core/services/paginator/paginator-intl.ts` | `libs/core/material` или `libs/shared/ui/material` | core/shared | Адаптер Material i18n. Не смешивать с feature logic. |
-| `core/services/portal/*` | `libs/shared/util/portal` или `libs/core/portal` | util/core | Сервис порталов — UI-infrastructure; зависит от того, используется ли вне shell. |
-| `core/services/sidenav/*` | разделить: `libs/domain/navigation/api` + `libs/domain/navigation/data-access` | domain | **Ключевой рефакторинг.** Модели/контракт/context token — в `api`; реализация `SidenavService` — в `data-access`. Фичи зависят от `api` (или фасада), реализацию можно заменить. |
-| `shared/components/sidenav/*`, `toolbar`, `breadcrumbs` | `libs/shared/ui/shell` или несколько `shared/ui/*` | ui | UI shell-компоненты. Они могут зависеть от `domain/navigation/api`, но не от feature libs. |
-| `shared/components/button*`, `card`, `checkbox`, `button-toggle` | **остаются в приложении**, переводятся на lazy `loadComponent` | — | Routable demo-страницы без логики и без внешних потребителей. Выносить в lib'ы нецелесообразно: это не переиспользуемые компоненты и не контракт. |
-| `shared/components/logo`, `footer`, `menus`, `accessibility-dialog/button` | `libs/shared/ui/<component>` | ui | Презентационные/переиспользуемые компоненты. Стараться не тянуть feature/core implementation напрямую. |
-| `shared/directives/overlay-scrollbar*` | `libs/shared/util/overlay-scrollbar` | util | Техническая утилита/директива, не домен. |
-| `testing/transloco.testing.ts` | `libs/shared/testing` | testing | Общие test providers/helpers, не production code. |
-| `features/auth/login, register` | `libs/features/auth/login`, `libs/features/auth/register` или один `libs/features/auth` | feature | Если сценарии простые — одна feature-lib; если будут расти независимо — раздельно. |
-| `features/settings/*` | `libs/features/settings` | feature | Экран настроек и его локальные панели. |
+| Текущее место                                                              | Куда                                                                                    | Тип              | Почему / как сделать заменяемым                                                                                                                                                  |
+| -------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/app/app.config.ts`, `app.routes.ts`, `app.ts/html/scss`               | `apps/material-kit/src/app/*`                                                           | app              | Только композиция. В app не держать переиспользуемую логику.                                                                                                                     |
+| `core/services/theme/*`                                                    | `libs/core/theme` или `libs/shared/util/theme`                                          | core/util        | Тема/цветовая схема — app-wide concern. Экспортировать provider + service + model через `index.ts`.                                                                              |
+| `core/services/language/*`                                                 | `libs/core/i18n` или `libs/core/language`                                               | core             | Язык/инициализация — инфраструктура.                                                                                                                                             |
+| `core/services/transloco/*` + `app/transloco-loader.ts`                    | `libs/core/i18n`                                                                        | core/data-access | Убрать импорт core->app-root. Loader/provider должны жить рядом и экспортироваться публичным API.                                                                                |
+| `core/services/accessibility/*`                                            | `libs/core/a11y`                                                                        | core             | Отдельный инфраструктурный домен; хорошо заменяется/выключается.                                                                                                                 |
+| `core/services/paginator/paginator-intl.ts`                                | `libs/core/material` или `libs/shared/ui/material`                                      | core/shared      | Адаптер Material i18n. Не смешивать с feature logic.                                                                                                                             |
+| `core/services/portal/*`                                                   | `libs/shared/util/portal` или `libs/core/portal`                                        | util/core        | Сервис порталов — UI-infrastructure; зависит от того, используется ли вне shell.                                                                                                 |
+| `core/services/sidenav/*`                                                  | разделить: `libs/domain/navigation/api` + `libs/domain/navigation/data-access`          | domain           | **Ключевой рефакторинг.** Модели/контракт/context token — в `api`; реализация `SidenavService` — в `data-access`. Фичи зависят от `api` (или фасада), реализацию можно заменить. |
+| `shared/components/sidenav/*`, `toolbar`, `breadcrumbs`                    | `libs/shared/ui/shell` или несколько `shared/ui/*`                                      | ui               | UI shell-компоненты. Они могут зависеть от `domain/navigation/api`, но не от feature libs.                                                                                       |
+| `shared/components/button*`, `card`, `checkbox`, `button-toggle`           | **остаются в приложении**, переводятся на lazy `loadComponent`                          | —                | Routable demo-страницы без логики и без внешних потребителей. Выносить в lib'ы нецелесообразно: это не переиспользуемые компоненты и не контракт.                                |
+| `shared/components/logo`, `footer`, `menus`, `accessibility-dialog/button` | `libs/shared/ui/<component>`                                                            | ui               | Презентационные/переиспользуемые компоненты. Стараться не тянуть feature/core implementation напрямую.                                                                           |
+| `shared/directives/overlay-scrollbar*`                                     | `libs/shared/util/overlay-scrollbar`                                                    | util             | Техническая утилита/директива, не домен.                                                                                                                                         |
+| `testing/transloco.testing.ts`                                             | `libs/shared/testing`                                                                   | testing          | Общие test providers/helpers, не production code.                                                                                                                                |
+| `features/auth/login, register`                                            | `libs/features/auth/login`, `libs/features/auth/register` или один `libs/features/auth` | feature          | Если сценарии простые — одна feature-lib; если будут расти независимо — раздельно.                                                                                               |
+| `features/settings/*`                                                      | `libs/features/settings`                                                                | feature          | Экран настроек и его локальные панели.                                                                                                                                           |
 
 ## Теги и правила зависимостей (жёсткая схема)
 
@@ -160,32 +168,33 @@
 
 ### Предлагаемые теги
 
-| Проект/папка | Теги |
-|---|---|
-| `apps/material-kit` | `scope:app`, `type:app` |
-| `libs/core/*` | `scope:core`, `type:core` |
-| `libs/domain/*/api` | `scope:<domain>`, `type:domain-api` |
+| Проект/папка                | Теги                                 |
+| --------------------------- | ------------------------------------ |
+| `apps/material-kit`         | `scope:app`, `type:app`              |
+| `libs/core/*`               | `scope:core`, `type:core`            |
+| `libs/domain/*/api`         | `scope:<domain>`, `type:domain-api`  |
 | `libs/domain/*/data-access` | `scope:<domain>`, `type:data-access` |
-| `libs/features/*` | `scope:<feature>`, `type:feature` |
-| `libs/shared/ui/*` | `scope:shared`, `type:ui` |
-| `libs/shared/util/*` | `scope:shared`, `type:util` |
-| `libs/shared/models/*` | `scope:shared`, `type:model` |
-| `libs/shared/testing/*` | `scope:shared`, `type:testing` |
+| `libs/features/*`           | `scope:<feature>`, `type:feature`    |
+| `libs/shared/ui/*`          | `scope:shared`, `type:ui`            |
+| `libs/shared/util/*`        | `scope:shared`, `type:util`          |
+| `libs/shared/models/*`      | `scope:shared`, `type:model`         |
+| `libs/shared/testing/*`     | `scope:shared`, `type:testing`       |
 
 ### Матрица зависимостей
 
-| Source tag | Может зависеть от |
-|---|---|
-| `type:app` | `type:feature`, `type:core`, `type:ui`, `type:util`, `type:model`, `type:data-access`, `type:domain-api` |
-| `type:feature` | `type:ui`, `type:data-access`, `type:domain-api`, `type:util`, `type:model` |
-| `type:data-access` | `type:domain-api`, `type:util`, `type:model`, `type:core` (ограниченно; лучше через токены) |
-| `type:domain-api` | `type:model`, `type:util` |
-| `type:ui` | `type:ui`, `type:util`, `type:model`, `type:domain-api` (только контракты/типы) |
-| `type:util` | `type:util`, `type:model` |
-| `type:model` | `type:model` |
-| `type:testing` | всё, кроме `type:app` (или по необходимости) |
+| Source tag         | Может зависеть от                                                                                        |
+| ------------------ | -------------------------------------------------------------------------------------------------------- |
+| `type:app`         | `type:feature`, `type:core`, `type:ui`, `type:util`, `type:model`, `type:data-access`, `type:domain-api` |
+| `type:feature`     | `type:ui`, `type:data-access`, `type:domain-api`, `type:util`, `type:model`                              |
+| `type:data-access` | `type:domain-api`, `type:util`, `type:model`, `type:core` (ограниченно; лучше через токены)              |
+| `type:domain-api`  | `type:model`, `type:util`                                                                                |
+| `type:ui`          | `type:ui`, `type:util`, `type:model`, `type:domain-api` (только контракты/типы)                          |
+| `type:util`        | `type:util`, `type:model`                                                                                |
+| `type:model`       | `type:model`                                                                                             |
+| `type:testing`     | всё, кроме `type:app` (или по необходимости)                                                             |
 
 **Жёсткие запреты:**
+
 - `feature -> feature` (кроме явно разрешённого редкого случая; лучше запретить).
 - `ui -> feature`, `ui -> data-access`, `ui -> core`.
 - `domain-api -> data-access/feature/app`.
@@ -330,23 +339,27 @@ export default [
 Порядок — от наименее связанного к наиболее связному. После каждого шага: `nx affected -t lint,test,build`, smoke UI.
 
 #### Шаг 4.1. Shared/util + testing
+
 - `testing/transloco.testing.ts` -> `libs/shared/testing`.
 - `overlay-scrollbar` directive/service -> `libs/shared/util/overlay-scrollbar`.
 - Низкий риск, мало доменной связности.
 
 #### Шаг 4.2. Shared UI (презентационные)
+
 - Начать с “листовых” компонентов: `logo`, `footer`.
 - Затем составные: `menus`, `accessibility` UI, `breadcrumbs`, `sidenav` UI.
 - Правило: UI lib не импортирует `features/*`, не делает HTTP, не знает маршруты домена. Вход/выход — через inputs/outputs/signals.
 - `button/card/checkbox/button-toggle` **не** считать чистым shared UI в текущем виде: они используются как routable demo-экраны; `button` управляет правой панелью через portal. Их лучше вынести в `features/ui-kit`.
 
 #### Шаг 4.3. Core/infrastructure
+
 - `theme`, `language`, `accessibility`, `paginator-intl`, `transloco` — в `libs/core/*`.
 - `transloco-loader` перенести рядом с i18n provider, убрать cross-layer import.
 - В `app.config.ts` оставить только композицию providers из публичных API libs.
 - Сверить `transloco.config.js` (`rootTranslationsPath: 'src/assets/i18n/'`) с фактическим расположением/runtime путём (`public/assets/i18n`, `/assets/i18n/${lang}.json`).
 
 #### Шаг 4.4. Domain navigation (развязка sidenav)
+
 - Создать `libs/domain/navigation/api`: `SidenavNode`, `SidenavContext`, token/интерфейс `SidenavApi`.
 - Создать `libs/domain/navigation/data-access`: реализация `SidenavService`, provider `provideSidenav()`.
 - Вынести конфигурацию конкретного меню приложения из общего сервиса в app/shell composition, если `SidenavService` сейчас содержит app-specific menu data.
@@ -354,6 +367,7 @@ export default [
 - UI sidenav зависит от `navigation/api`, получает данные через контракт. Это даст заменяемость: можно подменить реализацию навигации или UI.
 
 #### Шаг 4.5. Features
+
 - `auth/login`, `auth/register`, `settings` — отдельные feature libs. Демо-страницы остаются в приложении под lazy `loadComponent`.
 - В app routes использовать lazy loading на feature entry points/route providers:
 
@@ -362,17 +376,17 @@ export default [
 export const routes: Routes = [
   {
     path: '',
-    loadComponent: () => import('@amk/shared/ui/shell').then(m => m.SidenavShellComponent),
+    loadComponent: () => import('@amk/shared/ui/shell').then((m) => m.SidenavShellComponent),
     children: [
-      { path: 'settings', loadChildren: () => import('@amk/features/settings').then(m => m.SETTINGS_ROUTES) },
-      { path: 'button', loadComponent: () => import('./features/ui-kit-demo/button/button').then(m => m.Button) },
+      { path: 'settings', loadChildren: () => import('@amk/features/settings').then((m) => m.SETTINGS_ROUTES) },
+      { path: 'button', loadComponent: () => import('./features/ui-kit-demo/button/button').then((m) => m.Button) },
     ],
   },
-  { path: 'login', loadComponent: () => import('@amk/features/auth/login').then(m => m.LoginPageComponent) },
+  { path: 'login', loadComponent: () => import('@amk/features/auth/login').then((m) => m.LoginPageComponent) },
 ];
 ```
 
-*Имена — пример; подстройте под реальный export.*
+_Имена — пример; подстройте под реальный export._
 
 ### Фаза 5 — закрепление архитектуры
 

@@ -7,8 +7,8 @@ import { MatDrawerMode, MatSidenav, MatSidenavContainer, MatSidenavContent } fro
 import { Router, RouterOutlet } from '@angular/router';
 import { map } from 'rxjs';
 
-import { SidenavService } from '@amk/core-navigation';
 import { PortalService } from '@amk/core-portal';
+import { SIDENAV_API, SidenavApi } from '@amk/domain-navigation-api';
 import { Breadcrumbs } from '@amk/shared-ui-breadcrumbs';
 import { Footer } from '@amk/shared-ui-footer';
 import { Toolbar } from '@amk/shared-ui-toolbar';
@@ -55,7 +55,7 @@ const RIGHT_OVER_MODE_QUERY = `(max-width: ${String(RIGHT_SIDENAV_WIDTH_REM + MI
   encapsulation: ViewEncapsulation.None,
 })
 export class Sidenav {
-  private readonly sidenavService: SidenavService = inject(SidenavService);
+  private readonly navigation: SidenavApi = inject(SIDENAV_API);
 
   private readonly portalService: PortalService = inject(PortalService);
 
@@ -70,7 +70,7 @@ export class Sidenav {
   public readonly hasRightContent = this.portalService.hasPortal;
 
   /** Состояние открытия боковой панели. */
-  public readonly sidePanelOpened = this.sidenavService.isRightOpened;
+  public readonly sidePanelOpened = this.navigation.isRightOpened;
 
   public readonly sidePanelToggleLabel = computed(() =>
     this.sidePanelOpened() ? this.transloco.translate('sidenav.collapse') : this.transloco.translate('sidenav.expand'),
@@ -80,17 +80,17 @@ export class Sidenav {
 
   private previousDualSidenavs: boolean | null = null;
 
-  public readonly menu = this.sidenavService.menu;
+  public readonly menu = this.navigation.menu;
 
-  public readonly hasContext = this.sidenavService.hasContext;
+  public readonly hasContext = this.navigation.hasContext;
 
-  public readonly contextTitle = this.sidenavService.contextTitle;
+  public readonly contextTitle = this.navigation.contextTitle;
 
-  public readonly backLabel = this.sidenavService.backLabel;
+  public readonly backLabel = this.navigation.backLabel;
 
-  public readonly opened = this.sidenavService.opened;
+  public readonly opened = this.navigation.opened;
 
-  public readonly busy = this.sidenavService.busy;
+  public readonly busy = this.navigation.busy;
 
   public readonly expandedIds = signal<ReadonlySet<string>>(new Set());
 
@@ -137,14 +137,14 @@ export class Sidenav {
     effect(() => {
       const dualSidenavs = this.isDualSidenavs();
 
-      this.sidenavService.setSinglePanelMode(!dualSidenavs);
+      this.navigation.setSinglePanelMode(!dualSidenavs);
 
       if (this.previousDualSidenavs === null) {
         if (dualSidenavs) {
-          this.sidenavService.open();
+          this.navigation.open();
         }
       } else if (this.previousDualSidenavs !== dualSidenavs && dualSidenavs) {
-        this.sidenavService.open();
+        this.navigation.open();
       }
 
       this.previousDualSidenavs = dualSidenavs;
@@ -152,7 +152,7 @@ export class Sidenav {
 
     effect(() => {
       if (!this.hasRightContent()) {
-        this.sidenavService.closeRight();
+        this.navigation.closeRight();
       }
     });
   }
@@ -170,21 +170,21 @@ export class Sidenav {
   }
 
   public close(): void {
-    this.sidenavService.close();
+    this.navigation.close();
   }
 
   public closeRight(): void {
-    this.sidenavService.closeRight();
+    this.navigation.closeRight();
   }
 
   public toggleSidePanel(): void {
-    this.sidenavService.toggleRight();
+    this.navigation.toggleRight();
   }
 
   public goBack(): void {
-    const route = this.sidenavService.backRoute();
+    const route = this.navigation.backRoute();
 
-    this.sidenavService.goBack();
+    this.navigation.goBack();
 
     if (route !== null) {
       void this.router.navigateByUrl(route);
