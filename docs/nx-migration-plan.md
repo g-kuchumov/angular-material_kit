@@ -56,6 +56,8 @@
 
 **Линтинг HTML lib'ов (Confirmed):** в `lintFilePatterns` всех 22 lib'ов добавлен `src/**/*.html` — template-линтер (`templateRecommended` + `templateAccessibility` + Prettier) теперь проверяет 12 шаблонов оболочки и feature-страниц, которые ранее линтились только будучи в `src/app`. Генератор `tools/new-lib.mjs` добавляет HTML-паттерн автоматически.
 
+**Scope-ограничения включены (Confirmed):** в `depConstraints` добавлены правила `scope:app/core/feature/shared/navigation/portal/accessibility`. Доменные `data-access` зависят только от своего `domain-api` и `shared/testing`, оболочка (`scope:shared`) — от `shared` и domain-api контрактов навигации/портала/доступности, `feature` — от `core` и `shared`, `app` — от всех scope. Правило проверено негативным тестом: временный импорт `@amk/domain-navigation-api` из `features-auth` дал `A project tagged with "scope:feature" can only depend on libs tagged with "scope:core", "scope:shared"`, хотя по `type:*` такой импорт разрешён. `nx graph` — 23 ноды без циклов; `nx run-many -t lint,test,build,typecheck --skip-nx-cache` — зелёное.
+
 **Итог миграции:** все импорты между lib'ами идут только через `@amk/*`, границы `@nx/enforce-module-boundaries` соблюдены, `nx graph` без циклов. `src/styles.scss` — пользовательское изменение, в миграционные коммиты не включалось.
 
 ## Подтверждённые факты о текущем проекте

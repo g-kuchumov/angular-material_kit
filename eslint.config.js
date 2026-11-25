@@ -116,6 +116,45 @@ module.exports = (async () => {
                   'type:testing',
                 ],
               },
+              // Scope-границы поверх type-ограничений: доменная реализация не должна
+              // тянуть чужие домены, а оболочка — feature-слои. Ограничения складываются:
+              // проект должен пройти и type-, и scope-правило одновременно.
+              {
+                sourceTag: 'scope:app',
+                onlyDependOnLibsWithTags: [
+                  'scope:app',
+                  'scope:core',
+                  'scope:feature',
+                  'scope:navigation',
+                  'scope:portal',
+                  'scope:accessibility',
+                  'scope:shared',
+                ],
+              },
+              {
+                sourceTag: 'scope:core',
+                onlyDependOnLibsWithTags: ['scope:core', 'scope:shared'],
+              },
+              {
+                sourceTag: 'scope:feature',
+                onlyDependOnLibsWithTags: ['scope:core', 'scope:shared'],
+              },
+              {
+                sourceTag: 'scope:shared',
+                onlyDependOnLibsWithTags: ['scope:shared', 'scope:navigation', 'scope:portal', 'scope:accessibility'],
+              },
+              {
+                sourceTag: 'scope:navigation',
+                onlyDependOnLibsWithTags: ['scope:navigation', 'scope:shared'],
+              },
+              {
+                sourceTag: 'scope:portal',
+                onlyDependOnLibsWithTags: ['scope:portal', 'scope:shared'],
+              },
+              {
+                sourceTag: 'scope:accessibility',
+                onlyDependOnLibsWithTags: ['scope:accessibility', 'scope:shared'],
+              },
             ],
           },
         ],
