@@ -15,6 +15,7 @@
   },
   "sourceRoot": "src",
   "prefix": "amk",
+  "tags": ["scope:app", "type:app"],
   "targets": {
     "build": {
       "executor": "@angular/build:application",

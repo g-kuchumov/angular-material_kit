@@ -4,6 +4,7 @@ const tseslint = require('typescript-eslint');
 const angular = require('angular-eslint');
 const eslintConfigPrettier = require('eslint-config-prettier');
 const eslintPluginPrettier = require('eslint-plugin-prettier');
+const nx = require('@nx/eslint-plugin');
 
 module.exports = (async () => {
   const rxjsXPlugin = await import('eslint-plugin-rxjs-x');
@@ -11,6 +12,7 @@ module.exports = (async () => {
 
   return tseslint.config(
     { ignores: ['dist/**', '.angular/**', 'node_modules/**'] },
+    ...nx.configs['flat/base'],
     {
       files: ['**/*.ts'],
       extends: [
@@ -34,6 +36,82 @@ module.exports = (async () => {
       },
       processor: angular.processInlineTemplates,
       rules: {
+        // Жёсткие архитектурные границы Nx: проект может зависеть только от разрешённых типов библиотек.
+        '@nx/enforce-module-boundaries': [
+          'error',
+          {
+            enforceBuildableLibDependency: true,
+            banTransitiveDependencies: true,
+            allow: [],
+            depConstraints: [
+              {
+                sourceTag: 'type:app',
+                onlyDependOnLibsWithTags: [
+                  'type:feature',
+                  'type:core',
+                  'type:data-access',
+                  'type:domain-api',
+                  'type:ui',
+                  'type:util',
+                  'type:model',
+                  'type:testing',
+                ],
+              },
+              {
+                sourceTag: 'type:feature',
+                onlyDependOnLibsWithTags: [
+                  'type:ui',
+                  'type:data-access',
+                  'type:domain-api',
+                  'type:util',
+                  'type:model',
+                ],
+              },
+              {
+                sourceTag: 'type:data-access',
+                onlyDependOnLibsWithTags: ['type:domain-api', 'type:core', 'type:util', 'type:model'],
+              },
+              {
+                sourceTag: 'type:domain-api',
+                onlyDependOnLibsWithTags: ['type:model', 'type:util'],
+                bannedExternalImports: ['@angular/material', '@angular/forms', '@angular/common/http', '@ngneat/transloco'],
+              },
+              {
+                sourceTag: 'type:ui',
+                onlyDependOnLibsWithTags: ['type:ui', 'type:domain-api', 'type:util', 'type:model'],
+                bannedExternalImports: ['@angular/common/http'],
+              },
+              {
+                sourceTag: 'type:core',
+                onlyDependOnLibsWithTags: ['type:core', 'type:util', 'type:model'],
+              },
+              {
+                sourceTag: 'type:util',
+                onlyDependOnLibsWithTags: ['type:util', 'type:model'],
+                bannedExternalImports: ['@angular/*', '@ngneat/transloco'],
+              },
+              {
+                sourceTag: 'type:model',
+                onlyDependOnLibsWithTags: ['type:model'],
+                bannedExternalImports: ['@angular/*', '@ngneat/transloco', 'rxjs'],
+              },
+              {
+                sourceTag: 'type:testing',
+                onlyDependOnLibsWithTags: [
+                  'type:app',
+                  'type:feature',
+                  'type:core',
+                  'type:data-access',
+                  'type:domain-api',
+                  'type:ui',
+                  'type:util',
+                  'type:model',
+                  'type:testing',
+                ],
+              },
+            ],
+          },
+        ],
         '@angular-eslint/directive-selector': [
           'error',
           {
