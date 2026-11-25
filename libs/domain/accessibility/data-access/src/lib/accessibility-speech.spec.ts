@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { provideTestTransloco } from '@amk/shared-testing';
 import { AccessibilityService } from './accessibility.service';
+import { provideAccessibility } from './provide-accessibility';
 
 class MockUtterance {
   public lang = '';
@@ -25,7 +26,7 @@ describe('AccessibilityService: язык первого речевого зап�
     getVoices.mockReset().mockReturnValue([]);
     vi.stubGlobal('SpeechSynthesisUtterance', MockUtterance);
     vi.stubGlobal('speechSynthesis', { speak, getVoices, cancel: vi.fn() });
-    TestBed.configureTestingModule({ providers: provideTestTransloco() });
+    TestBed.configureTestingModule({ providers: [...provideTestTransloco(), ...provideAccessibility()] });
   });
 
   afterEach(() => {

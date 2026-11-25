@@ -1,0 +1,21 @@
+{
+  "name": "domain-accessibility-data-access",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/domain/accessibility/data-access/src",
+  "prefix": "amk",
+  "tags": [
+    "scope:accessibility",
+    "type:data-access"
+  ],
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/domain/accessibility/data-access/src/**/*.ts"
+        ]
+      }
+    }
+  }
+}

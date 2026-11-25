@@ -1,0 +1,21 @@
+{
+  "name": "domain-accessibility-api",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/domain/accessibility/api/src",
+  "prefix": "amk",
+  "tags": [
+    "scope:accessibility",
+    "type:domain-api"
+  ],
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/domain/accessibility/api/src/**/*.ts"
+        ]
+      }
+    }
+  }
+}

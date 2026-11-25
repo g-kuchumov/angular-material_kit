@@ -7,7 +7,8 @@ import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { TranslocoDirective } from '@ngneat/transloco';
 
 import {
-  AccessibilityService,
+  ACCESSIBILITY_API,
+  AccessibilityApi,
   FONT_SIZES,
   FontSize,
   IMAGE_MODES,
@@ -16,7 +17,7 @@ import {
   LetterSpacing,
   LINE_SPACINGS,
   LineSpacing,
-} from '@amk/core-accessibility';
+} from '@amk/domain-accessibility-api';
 
 @Component({
   selector: 'amk-accessibility-dialog',
@@ -35,7 +36,7 @@ import {
   styleUrl: './accessibility-dialog.scss',
 })
 export class AccessibilityDialog {
-  private readonly accessibilityService: AccessibilityService = inject(AccessibilityService);
+  private readonly accessibilityService: AccessibilityApi = inject(ACCESSIBILITY_API);
 
   private readonly dialogRef = inject(MatDialogRef) as MatDialogRef<AccessibilityDialog, void>;
 

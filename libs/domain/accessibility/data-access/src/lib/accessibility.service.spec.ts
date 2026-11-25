@@ -2,8 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { TranslocoService } from '@ngneat/transloco';
 import { firstValueFrom } from 'rxjs';
 
-import { provideTestTransloco } from '@amk/shared-testing';
 import {
+  ACCESSIBILITY_API,
   CONTRAST_CLASS,
   CONTRAST_STORAGE_KEY,
   FONT_SIZE_CLASS_PREFIX,
@@ -15,8 +15,10 @@ import {
   LINE_SPACING_CLASS_PREFIX,
   LINE_SPACING_STORAGE_KEY,
   SOUND_STORAGE_KEY,
-} from './accessibility.model';
+} from '@amk/domain-accessibility-api';
+import { provideTestTransloco } from '@amk/shared-testing';
 import { AccessibilityService } from './accessibility.service';
+import { provideAccessibility } from './provide-accessibility';
 
 class MockUtterance {
   public lang = '';
@@ -31,7 +33,7 @@ describe('AccessibilityService', () => {
 
   beforeEach(async () => {
     localStorage.clear();
-    TestBed.configureTestingModule({ providers: provideTestTransloco() });
+    TestBed.configureTestingModule({ providers: [...provideTestTransloco(), ...provideAccessibility()] });
 
     const transloco = TestBed.inject(TranslocoService);
     await firstValueFrom(transloco.load('ru'));
@@ -51,6 +53,10 @@ describe('AccessibilityService', () => {
       `${LETTER_SPACING_CLASS_PREFIX}increased`,
       `${LETTER_SPACING_CLASS_PREFIX}large`,
     );
+  });
+
+  it('публикует реализацию через контракт ACCESSIBILITY_API', () => {
+    expect(TestBed.inject(ACCESSIBILITY_API)).toBe(createService());
   });
 
   it('должен использовать значения по умолчанию, когда в хранилище ничего нет', () => {

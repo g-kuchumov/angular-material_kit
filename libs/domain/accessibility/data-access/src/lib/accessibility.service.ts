@@ -1,8 +1,9 @@
 import { DOCUMENT } from '@angular/common';
-import { DestroyRef, effect, inject, Injectable, Provider, signal } from '@angular/core';
+import { DestroyRef, effect, inject, Injectable, signal } from '@angular/core';
 import { TranslocoService } from '@ngneat/transloco';
 
 import {
+  AccessibilityApi,
   CONTRAST_CLASS,
   CONTRAST_STORAGE_KEY,
   DEFAULT_CLICK_ANNOUNCEMENT_ENABLED,
@@ -27,7 +28,7 @@ import {
   LINE_SPACING_STORAGE_KEY,
   LineSpacing,
   SOUND_STORAGE_KEY,
-} from './accessibility.model';
+} from '@amk/domain-accessibility-api';
 
 const STATEFUL_SELECTOR = [
   'mat-checkbox',
@@ -66,8 +67,8 @@ const OPENED_SELECT_SELECTOR = SELECT_SELECTOR.split(',')
   .map((selector) => `${selector.trim()}[aria-expanded="true"]`)
   .join(',');
 
-@Injectable({ providedIn: 'root' })
-export class AccessibilityService {
+@Injectable()
+export class AccessibilityService implements AccessibilityApi {
   private readonly document: Document = inject(DOCUMENT);
 
   private readonly translocoService: TranslocoService = inject(TranslocoService);
@@ -972,5 +973,3 @@ export class AccessibilityService {
     });
   }
 }
-
-export const provideAccessibilityService: Provider[] = [AccessibilityService];
