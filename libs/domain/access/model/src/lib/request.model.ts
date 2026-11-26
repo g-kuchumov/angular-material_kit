@@ -1,10 +1,12 @@
 import { UserId } from '@amk/domain-users-model';
 
+import { BranchScope } from './branch-scope.model';
 import { Permission } from './permission.model';
 import { RoleId } from './role.model';
 import { AccessScope } from './scope.model';
 
-export type AccessRequestKind = 'GRANT_ROLE' | 'REVOKE_ROLE' | 'CREATE_ROLE' | 'UPDATE_ROLE' | 'DELETE_ROLE';
+export type AccessRequestKind =
+  'GRANT_ROLE' | 'REVOKE_ROLE' | 'UPDATE_BRANCH_SCOPE' | 'CREATE_ROLE' | 'UPDATE_ROLE' | 'DELETE_ROLE';
 
 export type AccessRequestStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'APPLIED';
 
@@ -14,6 +16,7 @@ export interface AccessRequestTarget {
   readonly assignmentId?: string;
   readonly permissions?: readonly Permission[];
   readonly scope?: AccessScope;
+  readonly branchScope?: BranchScope;
   readonly roleDefinition?: {
     readonly code: string;
     readonly name: string;
