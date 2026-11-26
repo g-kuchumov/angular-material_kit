@@ -23,7 +23,7 @@ const TEST_ROLES: readonly Role[] = [
     id: 'r-basic',
     code: 'BASIC_USER',
     name: 'Базовый пользователь',
-    permissions: ['users:read:self'],
+    permissions: ['users:read:self', 'branches:read', 'dormitories:read', 'students:read'],
     system: true,
     sensitive: false,
   },
