@@ -179,6 +179,67 @@
       "empty": "No users found"
     }
   },
+  "access": {
+    "permissions": {
+      "users:read:self": "Read own profile",
+      "users:read:all": "Read user directory",
+      "users:manage-status": "Manage user status",
+      "roles:read": "Read roles",
+      "roles:create": "Create roles",
+      "roles:update": "Update roles",
+      "roles:delete": "Delete roles",
+      "grants:read": "Read assignments",
+      "grants:assign": "Assign roles",
+      "grants:revoke": "Revoke roles",
+      "access:approve": "Approve requests",
+      "audit:read": "Read audit log"
+    },
+    "scopes": {
+      "global": "Whole system",
+      "department": {
+        "it": "IT",
+        "hr": "HR",
+        "finance": "Finance"
+      }
+    },
+    "roles": {
+      "title": "Roles and permissions",
+      "note": "The permission catalog is immutable. Every role change creates a request that another user must approve.",
+      "pending": "Pending approval, request:",
+      "catalog": "Roles",
+      "code": "Code",
+      "name": "Name",
+      "permissions": "Permissions",
+      "actions": "Actions",
+      "select": "Select",
+      "delete": "Delete",
+      "empty": "No roles found",
+      "createTitle": "New role",
+      "create": "Create",
+      "updateTitle": "Permissions of selected role",
+      "update": "Update"
+    },
+    "grants": {
+      "title": "Role assignments",
+      "note": "You only see users in your own department. Assigning or revoking your own role is forbidden; every change goes to an approver.",
+      "pending": "Pending approval, request:",
+      "error": "Assignment rejected",
+      "selfGrant": "You cannot assign a role to yourself",
+      "selfRevoke": "You cannot revoke your own role",
+      "failed": "Could not create the request",
+      "assignTitle": "New assignment",
+      "assign": "Assign",
+      "user": "User",
+      "role": "Role",
+      "scope": "Scope",
+      "reason": "Reason",
+      "listTitle": "Active assignments",
+      "grantedBy": "Granted by",
+      "actions": "Actions",
+      "revoke": "Revoke",
+      "empty": "No assignments"
+    }
+  },
   "settings": {
     "title": "Settings",
     "theme": {

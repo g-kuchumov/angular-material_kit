@@ -1,0 +1,48 @@
+.roles-card {
+  margin: 1rem auto;
+
+  .roles-note {
+    max-width: 70ch;
+    opacity: 0.8;
+  }
+
+  .roles-pending {
+    color: var(--mat-sys-primary);
+  }
+
+  .roles-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th,
+    td {
+      padding: 0.5rem;
+      border-bottom: 1px solid var(--mat-sys-outline-variant);
+      text-align: left;
+      vertical-align: top;
+    }
+  }
+
+  .roles-permission {
+    display: inline-block;
+    margin: 0 0.25rem 0.25rem 0;
+    padding: 0.1rem 0.35rem;
+    border: 1px solid var(--mat-sys-outline-variant);
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+  }
+
+  .roles-forms {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-top: 1.5rem;
+  }
+
+  .roles-form {
+    display: flex;
+    flex: 1 1 320px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

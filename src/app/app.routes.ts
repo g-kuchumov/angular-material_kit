@@ -36,6 +36,16 @@ export const routes: Routes = [
         loadComponent: () => import('@amk/features-users-list').then((m) => m.UsersList),
       },
       {
+        path: 'access/roles',
+        canMatch: [permissionGuard('roles:read')],
+        loadComponent: () => import('@amk/features-access-roles').then((m) => m.AccessRoles),
+      },
+      {
+        path: 'access/grants',
+        canMatch: [permissionGuard('grants:read')],
+        loadComponent: () => import('@amk/features-access-grants').then((m) => m.AccessGrants),
+      },
+      {
         path: 'button-toggle',
         loadComponent: () => import('./features/ui-kit-demo/button-toggle/button-toggle').then((m) => m.ButtonToggle),
       },

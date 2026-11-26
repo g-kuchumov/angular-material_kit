@@ -1,0 +1,86 @@
+<ng-container *transloco="let t">
+  <mat-card class="grants-card">
+    <mat-card-header>
+      <mat-card-title>{{ t('access.grants.title') }}</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <p class="grants-note">{{ t('access.grants.note') }}</p>
+
+      @if (error(); as errorKey) {
+        <p class="grants-error" role="alert">{{ t(errorKey) }}</p>
+      }
+
+      @if (pending(); as requestId) {
+        <p class="grants-pending" role="status">{{ t('access.grants.pending') }} {{ requestId }}</p>
+      }
+
+      <h2>{{ t('access.grants.assignTitle') }}</h2>
+      <form class="grants-form" [formGroup]="form" (ngSubmit)="assign()" novalidate>
+        <mat-form-field appearance="outline">
+          <mat-label id="grant-user-label">{{ t('access.grants.user') }}</mat-label>
+          <mat-select aria-labelledby="grant-user-label" formControlName="userId" required>
+            @for (user of visibleUsers(); track user.id) {
+              <mat-option [value]="user.id">{{ user.displayName }} — {{ user.email }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label id="grant-role-label">{{ t('access.grants.role') }}</mat-label>
+          <mat-select aria-labelledby="grant-role-label" formControlName="roleId" required>
+            @for (role of roles(); track role.id) {
+              <mat-option [value]="role.id">{{ role.name }} ({{ role.code }})</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label id="grant-scope-label">{{ t('access.grants.scope') }}</mat-label>
+          <mat-select aria-labelledby="grant-scope-label" formControlName="scope" required>
+            @for (scope of availableScopes(); track scope) {
+              <mat-option [value]="scope">{{ t(scopeKey(scope)) }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label id="grant-reason-label">{{ t('access.grants.reason') }}</mat-label>
+          <input aria-labelledby="grant-reason-label" formControlName="reason" matInput required type="text" />
+        </mat-form-field>
+
+        <button matButton="outlined" type="submit">{{ t('access.grants.assign') }}</button>
+      </form>
+
+      <h2>{{ t('access.grants.listTitle') }}</h2>
+      @if (grants().length) {
+        <table class="grants-table">
+          <thead>
+            <tr>
+              <th>{{ t('access.grants.user') }}</th>
+              <th>{{ t('access.grants.role') }}</th>
+              <th>{{ t('access.grants.scope') }}</th>
+              <th>{{ t('access.grants.grantedBy') }}</th>
+              <th>{{ t('access.grants.actions') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (grant of grants(); track grant.id) {
+              <tr>
+                <td>{{ userName(grant.userId) }}</td>
+                <td>{{ roleName(grant.roleId) }}</td>
+                <td>{{ t(scopeKey(grant.scope)) }}</td>
+                <td>{{ userName(grant.grantedBy) }}</td>
+                <td>
+                  <button (click)="revoke(grant)" matButton type="button">{{ t('access.grants.revoke') }}</button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      } @else {
+        <p>{{ t('access.grants.empty') }}</p>
+      }
+    </mat-card-content>
+  </mat-card>
+</ng-container>

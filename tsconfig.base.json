@@ -39,7 +39,9 @@
       "@amk/domain-auth-data-access": ["./libs/domain/auth/data-access/src/index.ts"],
       "@amk/domain-access-data-access": ["./libs/domain/access/data-access/src/index.ts"],
       "@amk/features-users-profile": ["./libs/features/users/profile/src/index.ts"],
-      "@amk/features-users-list": ["./libs/features/users/list/src/index.ts"]
+      "@amk/features-users-list": ["./libs/features/users/list/src/index.ts"],
+      "@amk/features-access-roles": ["./libs/features/access/roles/src/index.ts"],
+      "@amk/features-access-grants": ["./libs/features/access/grants/src/index.ts"]
     }
   }
 }

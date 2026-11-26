@@ -21,6 +21,15 @@ const TEST_USERS: readonly UserDetail[] = [
     updatedAt: '2026-01-01T00:00:00.000Z',
   },
   {
+    id: 'test-it',
+    email: 'it@amk.local',
+    displayName: 'Сотрудник ИТ',
+    departmentId: 'it',
+    status: 'active',
+    createdAt: '2026-01-01T00:00:00.000Z',
+    updatedAt: '2026-01-01T00:00:00.000Z',
+  },
+  {
     id: 'test-hr',
     email: 'hr@amk.local',
     displayName: 'Сотрудник HR',

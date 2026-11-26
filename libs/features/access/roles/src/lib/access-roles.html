@@ -1,0 +1,94 @@
+<ng-container *transloco="let t">
+  <mat-card class="roles-card">
+    <mat-card-header>
+      <mat-card-title>{{ t('access.roles.title') }}</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <p class="roles-note">{{ t('access.roles.note') }}</p>
+
+      @if (pending(); as requestId) {
+        <p class="roles-pending" role="status">{{ t('access.roles.pending') }} {{ requestId }}</p>
+      }
+
+      <h2>{{ t('access.roles.catalog') }}</h2>
+      @if (roles().length) {
+        <table class="roles-table">
+          <thead>
+            <tr>
+              <th>{{ t('access.roles.code') }}</th>
+              <th>{{ t('access.roles.name') }}</th>
+              <th>{{ t('access.roles.permissions') }}</th>
+              <th>{{ t('access.roles.actions') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (role of roles(); track role.id) {
+              <tr>
+                <td>{{ role.code }}</td>
+                <td>{{ role.name }}</td>
+                <td>
+                  @for (permission of role.permissions; track permission) {
+                    <span class="roles-permission">{{ t('access.permissions.' + permission) }}</span>
+                  }
+                </td>
+                <td>
+                  <button (click)="selectRole(role)" matButton type="button">{{ t('access.roles.select') }}</button>
+                  @if (!role.system) {
+                    <button (click)="deleteRole(role.id)" matButton type="button">
+                      {{ t('access.roles.delete') }}
+                    </button>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      } @else {
+        <p>{{ t('access.roles.empty') }}</p>
+      }
+
+      <div class="roles-forms">
+        <form class="roles-form" [formGroup]="createForm" (ngSubmit)="createRole()" novalidate>
+          <h3>{{ t('access.roles.createTitle') }}</h3>
+
+          <mat-form-field appearance="outline">
+            <mat-label id="role-code-label">{{ t('access.roles.code') }}</mat-label>
+            <input aria-labelledby="role-code-label" formControlName="code" matInput required type="text" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label id="role-name-label">{{ t('access.roles.name') }}</mat-label>
+            <input aria-labelledby="role-name-label" formControlName="name" matInput required type="text" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label id="create-permissions-label">{{ t('access.roles.permissions') }}</mat-label>
+            <mat-select aria-labelledby="create-permissions-label" formControlName="permissions" multiple>
+              @for (permission of catalog; track permission) {
+                <mat-option [value]="permission">{{ t('access.permissions.' + permission) }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <button matButton="outlined" type="submit">{{ t('access.roles.create') }}</button>
+        </form>
+
+        <form class="roles-form" [formGroup]="editForm" (ngSubmit)="updateRole()" novalidate>
+          <h3>{{ t('access.roles.updateTitle') }}</h3>
+
+          <mat-form-field appearance="outline">
+            <mat-label id="edit-permissions-label">{{ t('access.roles.permissions') }}</mat-label>
+            <mat-select aria-labelledby="edit-permissions-label" formControlName="permissions" multiple>
+              @for (permission of catalog; track permission) {
+                <mat-option [value]="permission">{{ t('access.permissions.' + permission) }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <button matButton="outlined" type="submit">{{ t('access.roles.update') }}</button>
+        </form>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</ng-container>

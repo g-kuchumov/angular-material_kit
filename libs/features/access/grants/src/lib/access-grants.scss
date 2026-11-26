@@ -1,0 +1,36 @@
+.grants-card {
+  margin: 1rem auto;
+
+  .grants-note {
+    max-width: 70ch;
+    opacity: 0.8;
+  }
+
+  .grants-error {
+    color: var(--mat-sys-error);
+  }
+
+  .grants-pending {
+    color: var(--mat-sys-primary);
+  }
+
+  .grants-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .grants-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th,
+    td {
+      padding: 0.5rem;
+      border-bottom: 1px solid var(--mat-sys-outline-variant);
+      text-align: left;
+    }
+  }
+}
