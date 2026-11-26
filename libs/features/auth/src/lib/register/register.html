@@ -49,6 +49,23 @@
           </mat-form-field>
 
           <mat-form-field appearance="outline">
+            <mat-label id="department-label">{{ t('auth.register.department') }}</mat-label>
+            <mat-select
+              id="department-select"
+              aria-labelledby="department-label"
+              formControlName="departmentId"
+              required
+            >
+              @for (department of departments; track department) {
+                <mat-option [value]="department">{{ t('auth.register.departments.' + department) }}</mat-option>
+              }
+            </mat-select>
+            @if (form.controls.departmentId.hasError('required')) {
+              <mat-error>{{ t('auth.register.departmentRequired') }}</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
             <mat-label id="password-label">{{ t('auth.register.password') }}</mat-label>
             <input
               id="password-input"
@@ -83,12 +100,18 @@
               <mat-error>{{ t('auth.register.confirmPasswordRequired') }}</mat-error>
             } @else if (form.controls.confirmPassword.hasError('minlength')) {
               <mat-error>{{ t('auth.register.confirmPasswordMinLength') }}</mat-error>
+            } @else if (form.hasError('passwordMismatch')) {
+              <mat-error>{{ t('auth.register.passwordMismatch') }}</mat-error>
             }
           </mat-form-field>
 
           <mat-checkbox class="register-agree" formControlName="agreeTerms" required>
             {{ t('auth.register.agreeTerms') }}
           </mat-checkbox>
+
+          @if (error(); as errorKey) {
+            <p class="register-error" role="alert">{{ t(errorKey) }}</p>
+          }
 
           <button class="register-button" matButton="outlined" type="submit">
             {{ t('auth.register.submit') }}

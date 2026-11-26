@@ -31,5 +31,10 @@
         gap: 0.2rem;
       }
     }
+
+    .register-error {
+      color: var(--mat-sys-error);
+      margin: 0 0 0.75rem;
+    }
   }
 }

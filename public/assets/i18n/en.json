@@ -103,7 +103,9 @@
       "rememberMe": "Remember me",
       "submit": "Sign In",
       "noAccount": "Don't have an account?",
-      "register": "Sign up"
+      "register": "Sign up",
+      "failed": "Sign in failed. Check your email and password.",
+      "demoAccounts": "Demo logins (any password): anna@amk.local — BASIC_USER; boris@amk.local — USER_ADMIN (HR); victor@amk.local — ROLE_ADMIN (Finance); access@amk.local — ACCESS_ADMIN (IT); approver@amk.local — APPROVER; auditor@amk.local — AUDITOR."
     },
     "register": {
       "title": "Sign Up",
@@ -113,16 +115,25 @@
       "email": "Email",
       "emailRequired": "Email is required",
       "emailInvalid": "Please enter a valid email address",
+      "department": "Department",
+      "departmentRequired": "Select a department",
+      "departments": {
+        "it": "IT",
+        "hr": "HR",
+        "finance": "Finance"
+      },
       "password": "Password",
       "passwordRequired": "Password is required",
       "passwordMinLength": "Password must be at least 6 characters long",
       "confirmPassword": "Confirm Password",
       "confirmPasswordRequired": "Confirm password is required",
       "confirmPasswordMinLength": "Confirm password must be at least 6 characters long",
+      "passwordMismatch": "Passwords do not match",
       "agreeTerms": "I agree to the terms and conditions",
       "submit": "Sign Up",
       "haveAccount": "Already have an account?",
-      "login": "Sign In"
+      "login": "Sign In",
+      "failed": "Registration failed. Check the form data."
     }
   },
   "settings": {

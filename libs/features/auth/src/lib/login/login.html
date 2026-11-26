@@ -52,6 +52,10 @@
             {{ t('auth.login.rememberMe') }}
           </mat-checkbox>
 
+          @if (error(); as errorKey) {
+            <p class="login-error" role="alert">{{ t(errorKey) }}</p>
+          }
+
           <button class="login-button" matButton="outlined" type="submit">
             {{ t('auth.login.submit') }}
           </button>
@@ -63,6 +67,8 @@
             </button>
           </div>
         </form>
+
+        <p class="login-demo-accounts">{{ t('auth.login.demoAccounts') }}</p>
       </mat-card-content>
     </mat-card>
 

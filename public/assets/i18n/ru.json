@@ -105,7 +105,9 @@
       "rememberMe": "Запомнить меня",
       "submit": "Войти",
       "noAccount": "Нет аккаунта?",
-      "register": "Зарегистрироваться"
+      "register": "Зарегистрироваться",
+      "failed": "Не удалось войти. Проверьте адрес и пароль.",
+      "demoAccounts": "Демо-входы (пароль любой): anna@amk.local — BASIC_USER; boris@amk.local — USER_ADMIN (HR); victor@amk.local — ROLE_ADMIN (Finance); access@amk.local — ACCESS_ADMIN (IT); approver@amk.local — APPROVER; auditor@amk.local — AUDITOR."
     },
     "register": {
       "title": "Регистрация",
@@ -118,16 +120,25 @@
       "email": "Электронная почта",
       "emailRequired": "Введите адрес электронной почты",
       "emailInvalid": "Введите корректный адрес электронной почты",
+      "department": "Подразделение",
+      "departmentRequired": "Выберите подразделение",
+      "departments": {
+        "it": "ИТ",
+        "hr": "Кадры",
+        "finance": "Финансы"
+      },
       "password": "Пароль",
       "passwordRequired": "Введите пароль",
       "passwordMinLength": "Пароль должен содержать не менее 6 символов",
       "confirmPassword": "Подтверждение пароля",
       "confirmPasswordRequired": "Подтвердите пароль",
       "confirmPasswordMinLength": "Пароль должен содержать не менее 6 символов",
+      "passwordMismatch": "Пароли не совпадают",
       "agreeTerms": "Я согласен с условиями использования",
       "submit": "Зарегистрироваться",
       "haveAccount": "Уже есть аккаунт?",
-      "login": "Войти"
+      "login": "Войти",
+      "failed": "Не удалось зарегистрироваться. Проверьте данные формы."
     }
   },
   "settings": {

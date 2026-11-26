@@ -17,6 +17,14 @@
       "options": {
         "command": "tsc -p libs/features/auth/tsconfig.lib.json --noEmit"
       }
+    },
+    "test": {
+      "executor": "@angular/build:unit-test",
+      "options": {
+        "buildTarget": "angular-material_kit:build:development",
+        "tsConfig": "libs/features/auth/tsconfig.spec.json",
+        "include": ["**/*.spec.ts", "**/*.test.ts"]
+      }
     }
   }
 }
