@@ -136,6 +136,11 @@
       "failed": "Registration failed. Check the form data."
     }
   },
+  "forbidden": {
+    "title": "Insufficient permissions",
+    "description": "Your account does not have the permission or scope required for this section. Contact an access administrator.",
+    "back": "Back to profile"
+  },
   "settings": {
     "title": "Settings",
     "theme": {

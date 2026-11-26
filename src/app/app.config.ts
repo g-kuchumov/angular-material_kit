@@ -9,10 +9,13 @@ import { CustomPaginatorIntl } from '@amk/core-paginator';
 import { provideThemeService, ThemeService } from '@amk/core-theme';
 import { provideAppTransloco } from '@amk/core-transloco';
 import { OverlayScrollbarService } from '@amk/core-ui';
+import { provideAccess } from '@amk/domain-access-data-access';
 import { ACCESSIBILITY_API } from '@amk/domain-accessibility-api';
 import { provideAccessibility } from '@amk/domain-accessibility-data-access';
+import { provideAuth } from '@amk/domain-auth-data-access';
 import { provideSidenav } from '@amk/domain-navigation-data-access';
 import { providePortal } from '@amk/domain-portal-data-access';
+import { provideUsers } from '@amk/domain-users-data-access';
 import { MAT_ICON_DEFAULT_OPTIONS } from '@angular/material/icon';
 import { APP_SIDENAV_NODES } from './app.navigation';
 import { routes } from './app.routes';
@@ -29,6 +32,9 @@ export const appConfig: ApplicationConfig = {
     ...provideAccessibility(),
     ...provideSidenav(APP_SIDENAV_NODES),
     ...providePortal(),
+    ...provideAuth(),
+    ...provideUsers(),
+    ...provideAccess(),
     ...provideAppTransloco(),
     {
       provide: MAT_ICON_DEFAULT_OPTIONS,

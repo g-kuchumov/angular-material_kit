@@ -12,6 +12,10 @@ export const routes: Routes = [
     loadComponent: () => import('@amk/features-auth').then((m) => m.Register),
   },
   {
+    path: 'forbidden',
+    loadComponent: () => import('./features/forbidden/forbidden').then((m) => m.Forbidden),
+  },
+  {
     path: '',
     component: Sidenav,
     children: [
