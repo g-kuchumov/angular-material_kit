@@ -1,0 +1,45 @@
+<ng-container *transloco="let t">
+  <mat-card class="profile-card">
+    <mat-card-header>
+      <mat-card-title>{{ t('users.profile.title') }}</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      @if (user(); as current) {
+        <dl class="profile-summary">
+          <dt>{{ t('users.profile.email') }}</dt>
+          <dd>{{ current.email }}</dd>
+          <dt>{{ t('users.profile.department') }}</dt>
+          <dd>{{ t('users.profile.departments.' + current.departmentId) }}</dd>
+          <dt>{{ t('users.profile.status') }}</dt>
+          <dd>{{ t('users.profile.statuses.' + current.status) }}</dd>
+        </dl>
+
+        <form class="profile-form" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+          <mat-form-field appearance="outline">
+            <mat-label id="display-name-label">{{ t('users.profile.displayName') }}</mat-label>
+            <input aria-labelledby="display-name-label" formControlName="displayName" matInput required type="text" />
+            @if (form.controls.displayName.hasError('required')) {
+              <mat-error>{{ t('users.profile.displayNameRequired') }}</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label id="avatar-url-label">{{ t('users.profile.avatarUrl') }}</mat-label>
+            <input aria-labelledby="avatar-url-label" formControlName="avatarUrl" matInput type="url" />
+          </mat-form-field>
+
+          <button class="profile-save" matButton="outlined" type="submit">
+            {{ t('users.profile.save') }}
+          </button>
+        </form>
+
+        @if (saved()) {
+          <p class="profile-saved" role="status">{{ t('users.profile.saved') }}</p>
+        }
+      } @else {
+        <p>{{ t('users.profile.loading') }}</p>
+      }
+    </mat-card-content>
+  </mat-card>
+</ng-container>

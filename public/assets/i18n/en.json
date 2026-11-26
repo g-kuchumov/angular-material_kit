@@ -141,6 +141,44 @@
     "description": "Your account does not have the permission or scope required for this section. Contact an access administrator.",
     "back": "Back to profile"
   },
+  "users": {
+    "profile": {
+      "title": "My profile",
+      "email": "Email",
+      "department": "Department",
+      "status": "Status",
+      "departments": {
+        "it": "IT",
+        "hr": "HR",
+        "finance": "Finance"
+      },
+      "statuses": {
+        "active": "Active",
+        "disabled": "Disabled",
+        "pending": "Pending"
+      },
+      "displayName": "Name",
+      "displayNameRequired": "Name is required",
+      "avatarUrl": "Avatar URL",
+      "save": "Save",
+      "saved": "Changes saved",
+      "loading": "Loading profile…"
+    },
+    "list": {
+      "title": "User directory",
+      "search": "Search by name or email",
+      "department": "Department",
+      "allDepartments": "All departments",
+      "searchButton": "Search",
+      "name": "Name",
+      "email": "Email",
+      "status": "Status",
+      "actions": "Actions",
+      "disable": "Disable",
+      "enable": "Enable",
+      "empty": "No users found"
+    }
+  },
   "settings": {
     "title": "Settings",
     "theme": {

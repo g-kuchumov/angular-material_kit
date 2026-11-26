@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 
 import { Sidenav } from '@amk/shared-ui-sidenav';
+import { authGuard, permissionGuard } from './guards';
 
 export const routes: Routes = [
   {
@@ -19,6 +20,21 @@ export const routes: Routes = [
     path: '',
     component: Sidenav,
     children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'users/me',
+      },
+      {
+        path: 'users/me',
+        canActivate: [authGuard],
+        loadComponent: () => import('@amk/features-users-profile').then((m) => m.UserProfile),
+      },
+      {
+        path: 'users',
+        canMatch: [permissionGuard('users:read:all')],
+        loadComponent: () => import('@amk/features-users-list').then((m) => m.UsersList),
+      },
       {
         path: 'button-toggle',
         loadComponent: () => import('./features/ui-kit-demo/button-toggle/button-toggle').then((m) => m.ButtonToggle),

@@ -3,6 +3,15 @@ import { createSidenavNode, SidenavNode } from '@amk/domain-navigation-api';
 /** Конкретное меню приложения — часть композиции, а не реализации навигации. */
 export const APP_SIDENAV_NODES: readonly SidenavNode[] = [
   createSidenavNode({
+    id: 'access',
+    label: 'Access',
+    icon: 'shield',
+    children: [
+      createSidenavNode({ id: 'profile', label: 'My profile', icon: 'person', route: 'users/me' }),
+      createSidenavNode({ id: 'users', label: 'Users', icon: 'group', route: 'users' }),
+    ],
+  }),
+  createSidenavNode({
     id: 'components',
     label: 'Components',
     icon: 'widgets',

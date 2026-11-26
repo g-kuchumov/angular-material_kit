@@ -1,0 +1,65 @@
+<ng-container *transloco="let t">
+  <mat-card class="users-card">
+    <mat-card-header>
+      <mat-card-title>{{ t('users.list.title') }}</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form class="users-filters" [formGroup]="form" (ngSubmit)="search()">
+        <mat-form-field appearance="outline">
+          <mat-label id="users-search-label">{{ t('users.list.search') }}</mat-label>
+          <input aria-labelledby="users-search-label" formControlName="search" matInput type="search" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label id="users-department-label">{{ t('users.list.department') }}</mat-label>
+          <mat-select
+            id="users-department-select"
+            aria-labelledby="users-department-label"
+            formControlName="departmentId"
+          >
+            <mat-option value="">{{ t('users.list.allDepartments') }}</mat-option>
+            @for (department of departments; track department) {
+              <mat-option [value]="department">{{ t('users.profile.departments.' + department) }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <button matButton="outlined" type="submit">{{ t('users.list.searchButton') }}</button>
+      </form>
+
+      @if (usersList().length) {
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>{{ t('users.list.name') }}</th>
+              <th>{{ t('users.list.email') }}</th>
+              <th>{{ t('users.list.department') }}</th>
+              <th>{{ t('users.list.status') }}</th>
+              <th>{{ t('users.list.actions') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of usersList(); track item.id) {
+              <tr>
+                <td>{{ item.displayName }}</td>
+                <td>{{ item.email }}</td>
+                <td>{{ t('users.profile.departments.' + item.departmentId) }}</td>
+                <td>{{ t('users.profile.statuses.' + item.status) }}</td>
+                <td>
+                  @if (canManageStatus()) {
+                    <button (click)="toggleStatus(item.id, item.status)" matButton type="button">
+                      {{ t(item.status === 'active' ? 'users.list.disable' : 'users.list.enable') }}
+                    </button>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      } @else {
+        <p>{{ t('users.list.empty') }}</p>
+      }
+    </mat-card-content>
+  </mat-card>
+</ng-container>
