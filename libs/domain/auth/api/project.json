@@ -1,0 +1,22 @@
+{
+  "name": "domain-auth-api",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/domain/auth/api/src",
+  "prefix": "amk",
+  "tags": ["scope:domain", "type:domain-api"],
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "options": {
+        "lintFilePatterns": ["libs/domain/auth/api/src/**/*.ts", "libs/domain/auth/api/src/**/*.html"]
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc -p libs/domain/auth/api/tsconfig.lib.json --noEmit"
+      }
+    }
+  }
+}

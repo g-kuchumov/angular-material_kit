@@ -33,7 +33,10 @@
       "@amk/domain-users-api": ["./libs/domain/users/api/src/index.ts"],
       "@amk/domain-users-data-access": ["./libs/domain/users/data-access/src/index.ts"],
       "@amk/domain-access-model": ["./libs/domain/access/model/src/index.ts"],
-      "@amk/domain-access-api": ["./libs/domain/access/api/src/index.ts"]
+      "@amk/domain-access-api": ["./libs/domain/access/api/src/index.ts"],
+      "@amk/domain-auth-model": ["./libs/domain/auth/model/src/index.ts"],
+      "@amk/domain-auth-api": ["./libs/domain/auth/api/src/index.ts"],
+      "@amk/domain-auth-data-access": ["./libs/domain/auth/data-access/src/index.ts"]
     }
   }
 }
