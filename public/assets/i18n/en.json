@@ -199,6 +199,15 @@
       "access:approve": "Approve requests",
       "audit:read": "Read audit log"
     },
+    "denied": {
+      "navigation": {
+        "title": "Section unavailable",
+        "message": "Your account does not have the permission required for this section. You have stayed on the current page — your input is preserved.",
+        "confirm": "Got it"
+      },
+      "mutation": "Insufficient permissions to make this change. The action was not performed and your form data is preserved.",
+      "dismiss": "Dismiss"
+    },
     "scopes": {
       "global": "Whole system",
       "department": {
