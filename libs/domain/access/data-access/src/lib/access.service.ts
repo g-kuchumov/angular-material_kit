@@ -94,6 +94,30 @@ const SEED_GRANTS: readonly RoleAssignment[] = [
     grantedBy: 'bootstrap',
     grantedAt: '2026-01-01T00:00:00.000Z',
   },
+  {
+    id: 'g-4',
+    userId: 'u-4',
+    roleId: 'r-access-admin',
+    scope: 'department:it',
+    grantedBy: 'bootstrap',
+    grantedAt: '2026-01-01T00:00:00.000Z',
+  },
+  {
+    id: 'g-5',
+    userId: 'u-5',
+    roleId: 'r-approver',
+    scope: 'global',
+    grantedBy: 'bootstrap',
+    grantedAt: '2026-01-01T00:00:00.000Z',
+  },
+  {
+    id: 'g-6',
+    userId: 'u-6',
+    roleId: 'r-auditor',
+    scope: 'global',
+    grantedBy: 'bootstrap',
+    grantedAt: '2026-01-01T00:00:00.000Z',
+  },
 ];
 
 /**

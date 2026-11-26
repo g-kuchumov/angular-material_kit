@@ -27,4 +27,16 @@ describe('AuthService', () => {
 
     await expect(api.login({ email: '', password: '' })).rejects.toThrow('Введите email и пароль');
   });
+
+  it('демо-вход под ключевые роли даёт разные сессии без суперадмина', async () => {
+    const api = TestBed.inject(AUTH_API);
+
+    await api.login({ email: 'boris@amk.local', password: 'secret' });
+    expect(api.session()?.userId).toBe('u-2');
+    expect(api.session()?.departmentId).toBe('hr');
+
+    await api.login({ email: 'approver@amk.local', password: 'secret' });
+    expect(api.session()?.userId).toBe('u-5');
+    expect(api.session()?.departmentId).toBe('it');
+  });
 });

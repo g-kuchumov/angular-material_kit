@@ -45,6 +45,33 @@ const SEED_USERS: readonly UserDetail[] = [
     createdAt: '2026-01-12T09:00:00.000Z',
     updatedAt: '2026-01-12T09:00:00.000Z',
   },
+  {
+    id: 'u-4',
+    email: 'access@amk.local',
+    displayName: 'Администратор доступа',
+    departmentId: 'it',
+    status: 'active',
+    createdAt: '2026-01-13T09:00:00.000Z',
+    updatedAt: '2026-01-13T09:00:00.000Z',
+  },
+  {
+    id: 'u-5',
+    email: 'approver@amk.local',
+    displayName: 'Подписант заявок',
+    departmentId: 'it',
+    status: 'active',
+    createdAt: '2026-01-14T09:00:00.000Z',
+    updatedAt: '2026-01-14T09:00:00.000Z',
+  },
+  {
+    id: 'u-6',
+    email: 'auditor@amk.local',
+    displayName: 'Аудитор',
+    departmentId: 'it',
+    status: 'active',
+    createdAt: '2026-01-15T09:00:00.000Z',
+    updatedAt: '2026-01-15T09:00:00.000Z',
+  },
 ];
 
 function toSummary(user: UserDetail): UserSummary {
