@@ -70,6 +70,42 @@
 
 **Итог миграции:** все импорты между lib'ами идут только через `@amk/*`, границы `@nx/enforce-module-boundaries` соблюдены, `nx graph` без циклов. `src/styles.scss` — пользовательское изменение, закоммичено отдельно от миграции (`style: добавить фон и тень шапки media-viewer`).
 
+## Ветка `feat/rbac-k1` (K1-модель доступа, Confirmed)
+
+Ветка создана от `master` (`9995ceb`), содержит 12 атомарных коммитов, **не запушена**:
+
+| Коммит    | Что добавлено                                                                               |
+| --------- | ------------------------------------------------------------------------------------------- |
+| `79f2ac5` | `domain/users/{model,api,data-access}`, `USERS_API`, `provideUsers()`, отделы it/hr/finance |
+| `bed00a2` | `domain/access/model`: каталог прав, роли, SoD, скоупы, `AccessRequest`, аудит              |
+| `733c3e1` | `domain/access/api`: `ACCESS_API`, `CreateRoleInput`, `AssignRoleInput`                     |
+| `6d25878` | `domain/auth/{model,api,data-access}`: сессия, вход, регистрация, refresh                   |
+| `24787d7` | `AccessService`: dual-control, SoD, запрет self-grant/self-approve, скоупы                  |
+| `abd4ec8` | дубли `AUTH_API`/`USERS_API`/`ACCESS_API` в `shared/testing`                                |
+| `b661c71` | демо-аккаунты для каждой роли, без «суперадмина»                                            |
+| `a23855b` | формы входа/регистрации подключены к `AUTH_API`, выбор отдела, спеки                        |
+| `b07c99c` | провайдеры доменов, `authGuard`, `permissionGuard()`, `/forbidden`                          |
+| `8d0aaa5` | `features-users-profile`, `features-users-list`, маршруты `/users/me`, `/users`             |
+| `c4e6fb1` | `features-access-roles`, `features-access-grants`, маршруты и навигация                     |
+| `9c4513e` | `features-access-approvals`, `features-access-audit`, интеграционная проверка dual control  |
+
+Итого добавлено 15 lib'ов (9 доменных + 6 feature), `features-auth` enhancement вместо дублирования. Все lib'ы созданы через `npm run lib` с тегами `scope:*`/`type:*`, импорты только через `@amk/*`.
+
+Модель K1:
+
+- Привилегированные роли `USER_ADMIN`, `ROLE_ADMIN`, `ACCESS_ADMIN`, `APPROVER`, `AUDITOR` попарно несовместимы; `BASIC_USER` не конфликтует. `PERMISSION_CATALOG` неизменяем, wildcard-прав нет.
+- Все изменения ролей/прав/назначений идут через `AccessRequest`: инициатор ≠ подписант, самоназначение и самоотзыв запрещены. `ACCESS_ADMIN` ограничен скоупом `department:<свой отдел>`.
+- Backend остаётся авторитетным источником прав; проверки в `hasPermission()` и гардах — только UX. Контракт делится на `/api/v1/auth/*`, `/api/v1/users/*`, `/api/v1/access/*`.
+- Маршруты: `/users/me`, `/users`, `/access/roles`, `/access/grants`, `/access/approvals`, `/access/audit`; каждый защищён `authGuard` или `permissionGuard(<permission>)`, при отказе — `/forbidden`. Переводы живут в `public/assets/i18n/{ru,en}.json` с префиксами `auth.`, `users.`, `access.`, `forbidden.`.
+
+Проверки под Node `24.18.0` / npm `11.16.0` (без pushed-коммитов):
+
+- `nx graph` — 38 нод (37 lib + app), без циклов.
+- `nx run-many -t lint,test,build,typecheck --skip-nx-cache --output-style=static` — зелёное для всех 38 проектов; 31 спец-файл / 145 тестов.
+- Initial bundle `951.89 kB`, transfer `189.96 kB` — ниже предупредительного порога `1MB`.
+
+Демо-входы (любой пароль): `anna@amk.local` (BASIC_USER), `boris@amk.local` (USER_ADMIN/hr), `victor@amk.local` (ROLE_ADMIN/finance), `access@amk.local` (ACCESS_ADMIN/it), `approver@amk.local` (APPROVER), `auditor@amk.local` (AUDITOR).
+
 ## Подтверждённые факты о текущем проекте
 
 **Стек (из `package.json`, `angular.json`, `tsconfig*.json`, `eslint.config.js`) — Confirmed:**

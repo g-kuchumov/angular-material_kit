@@ -39,7 +39,21 @@ Scope-ограничения накладываются поверх type-мат
 
 Для бизнес-логики принят вертикальный срез: `libs/domain/<entity>/model` (`scope:domain,type:model`) хранит чистые типы без Angular/rxjs, `libs/domain/<entity>/api` (`scope:domain,type:domain-api`) — интерфейс и `InjectionToken`, `libs/domain/<entity>/data-access` (`scope:domain,type:data-access`) — реализация и `provide<Entity>()`, `libs/features/<feature>` (`scope:feature,type:feature`) — только UI через контракт. `type:feature` не может зависеть от `type:data-access`: конкретная реализация подключается только в `app.config.ts` (`type:app`). Тестовые дубли живут в `shared/testing` и зависят только от domain-api.
 
-У каждой lib есть цель `typecheck` (`tsc -p tsconfig.lib.json --noEmit`). Спеки вынесены в собственные цели `test` только у тех lib'ов, где они реально есть: `@angular/build:unit-test` падает, если include-паттерны не нашли ни одного файла. Target приложения теперь запускает только свои 5 спеков (`include: ["**/*.spec.ts"]`); остальные 12 спеков запускают 10 lib-проектов через свои `tsconfig.spec.json`. Итого по workspace — 17 файлов / 109 тестов. Генератор `tools/new-lib.mjs` создаёт `test` и `tsconfig.spec.json` автоматически, если в новую lib перенесены спеки; иначе создаётся только `typecheck`.
+## Модель доступа K1
+
+Приложение разделено на три ограниченных контекста: `auth` (сессия, вход, регистрация, refresh), `users` (профиль, каталог, статус) и `access` (роли, права, назначения, заявки, аудит). Регистрация принадлежит `auth`; `users` не знает ни о паролях, ни о токенах. Контракты backend: `/api/v1/auth/*`, `/api/v1/users/*`, `/api/v1/access/*`; `/users/me` и `/access/me` разделяют профиль и эффективный доступ.
+
+Ключевые ограничения модели:
+
+- **Нет универсального администратора.** Привилегированные роли `USER_ADMIN`, `ROLE_ADMIN`, `ACCESS_ADMIN`, `APPROVER`, `AUDITOR` попарно несовместимы (`findRoleConflict`, `MUTUALLY_EXCLUSIVE_ROLE_CODES`); `BASIC_USER` с ними не конфликтует. В демо-данных нет роли `SUPERADMIN` и ни одного пользователя со всеми правами.
+- **Каталог прав неизменяем.** `PERMISSION_CATALOG` задан в коде, права не создаются через API, wildcard-ролей нет. Роли создаются и изменяются только через `AccessRequest`.
+- **Разделение по отделам.** `RoleAssignment.scope` — `global` или `department:<id>`; `scopeAllows()` — только UX-проверка. `ACCESS_ADMIN` действует внутри своего отдела и не видит пользователей других отделов.
+- **Двойной контроль.** Инициатор не может подписать свою заявку; самоназначение и самоотзыв роли запрещены. `AccessService` — демонстрационная реализация всех проверок; окончательное решение всегда принимает отдельный backend.
+- **Гарды — только UX.** `authGuard` и `permissionGuard()` в `src/app/guards` скрывают маршруты, но не заменяют серверные проверки. Feature-слои работают только с `AUTH_API`, `USERS_API`, `ACCESS_API`.
+
+Демо-входы (пароль любой): `anna@amk.local` → `BASIC_USER`, `boris@amk.local` → `USER_ADMIN` (hr), `victor@amk.local` → `ROLE_ADMIN` (finance), `access@amk.local` → `ACCESS_ADMIN` (it), `approver@amk.local` → `APPROVER`, `auditor@amk.local` → `AUDITOR`. Все страницы `/users/me`, `/users`, `/access/roles`, `/access/grants`, `/access/approvals`, `/access/audit` доступны с соответствующим входом; прямой переход без права ведёт на `/forbidden`.
+
+У каждой lib есть цель `typecheck` (`tsc -p tsconfig.lib.json --noEmit`). Спеки вынесены в собственные цели `test` только у тех lib'ов, где они реально есть: `@angular/build:unit-test` падает, если include-паттерны не нашли ни одного файла. Target приложения запускает свои 7 спеков; остальные спеков запускают lib-проекты через свои `tsconfig.spec.json`. Итого по workspace после K1 — 31 файл / 145 тестов на 38 проектов (37 lib + app). Генератор `tools/new-lib.mjs` создаёт `test` и `tsconfig.spec.json` автоматически, если в новую lib перенесены спеки; иначе создаётся только `typecheck`.
 
 Для компонентных тестов приложения и фич используется `provideTestApp()` из `@amk/shared-testing`: он подключает router/http, Transloco и дубли всех доменных API (`SIDENAV_API`, `PORTAL_API`, `ACCESSIBILITY_API`). Дубли не зависят от реализаций — никаких DOM-эффектов, localStorage и реального PortalService в тестах.
 
@@ -93,4 +107,4 @@ npm run lib -- \
 nx affected -t lint,test,build --base=origin/master --head=HEAD
 ```
 
-`nx graph` смотреть на ревью крупных PR. Бюджет bundle после перевода features на lazy-загрузку перекалиброван: `initial` — warning `1MB`, error `1.25MB` (factual initial total — 930.97 kB). Демо-страницы живут в `src/app/features/ui-kit-demo/*` и не становятся lib'ами: у них нет внешних потребителей и контракта.
+`nx graph` смотреть на ревью крупных PR. Бюджет bundle после перевода features на lazy-загрузку перекалиброван: `initial` — warning `1MB`, error `1.25MB` (после K1 initial total — 951.89 kB, transfer 189.96 kB; лимит предупреждения не превышен). Демо-страницы живут в `src/app/features/ui-kit-demo/*` и не становятся lib'ами: у них нет внешних потребителей и контракта.
