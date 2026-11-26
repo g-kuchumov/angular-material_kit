@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { createSidenavNode, SIDENAV_API, SidenavContext } from '@amk/domain-navigation-api';
+import { createSidenavNode, SIDENAV_API, SIDENAV_VISIBILITY_CHECKER, SidenavContext } from '@amk/domain-navigation-api';
 import { provideTestTransloco } from '@amk/shared-testing';
 import { provideSidenav } from './provide-sidenav';
 import { SidenavService } from './sidenav.service';
@@ -44,7 +44,7 @@ describe('SidenavService', () => {
     service.enterContext(current);
 
     expect(service.hasContext()).toBe(true);
-    expect(service.menu()).toBe(current.items);
+    expect(service.menu().map((node) => node.id)).toEqual(['current-item']);
     expect(service.contextTitle()).toBe(current.title);
   });
 
@@ -52,24 +52,24 @@ describe('SidenavService', () => {
     const first = context('first');
     const second = context('second');
     const third = context('third');
-    const rootMenu = service.menu();
+    const rootIds = service.menu().map((node) => node.id);
 
     service.enterContext(first);
     service.enterContext(second);
     service.enterContext(third);
 
-    expect(service.menu()).toBe(third.items);
+    expect(service.menu().map((node) => node.id)).toEqual(['third-item']);
 
     service.goBack();
-    expect(service.menu()).toBe(second.items);
+    expect(service.menu().map((node) => node.id)).toEqual(['second-item']);
     expect(service.contextTitle()).toBe(second.title);
 
     service.goBack();
-    expect(service.menu()).toBe(first.items);
+    expect(service.menu().map((node) => node.id)).toEqual(['first-item']);
     expect(service.contextTitle()).toBe(first.title);
 
     service.goBack();
-    expect(service.menu()).toBe(rootMenu);
+    expect(service.menu().map((node) => node.id)).toEqual(rootIds);
     expect(service.hasContext()).toBe(false);
     expect(service.contextTitle()).toBe('');
   });
@@ -104,22 +104,69 @@ describe('SidenavService', () => {
   });
 
   it('не выходит за пределы корневого меню', () => {
-    const rootMenu = service.menu();
+    const rootIds = service.menu().map((node) => node.id);
 
     service.goBack();
 
-    expect(service.menu()).toBe(rootMenu);
+    expect(service.menu().map((node) => node.id)).toEqual(rootIds);
     expect(service.hasContext()).toBe(false);
   });
 
   it('сбрасывает сразу все контексты', () => {
-    const rootMenu = service.menu();
+    const rootIds = service.menu().map((node) => node.id);
 
     service.enterContext(context('first'));
     service.enterContext(context('second'));
     service.resetContext();
 
-    expect(service.menu()).toBe(rootMenu);
+    expect(service.menu().map((node) => node.id)).toEqual(rootIds);
     expect(service.hasContext()).toBe(false);
+  });
+});
+
+describe('SidenavService видимость узлов', () => {
+  const denied = createSidenavNode({
+    id: 'denied',
+    label: 'Denied',
+    visibility: { permission: 'roles:read' },
+  });
+  const allowed = createSidenavNode({
+    id: 'allowed',
+    label: 'Allowed',
+    visibility: { permission: 'audit:read' },
+  });
+  const demo = createSidenavNode({
+    id: 'demo',
+    label: 'Demo',
+    visibility: { permission: 'audit:read', alwaysVisible: true },
+  });
+  const group = createSidenavNode({ id: 'group', label: 'Group', children: [denied, allowed] });
+
+  let service: SidenavService;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        ...provideTestTransloco(),
+        ...provideSidenav([group, demo]),
+        {
+          provide: SIDENAV_VISIBILITY_CHECKER,
+          useValue: { canSee: (node: typeof denied) => node.visibility?.permission === 'audit:read' },
+        },
+      ],
+    });
+    service = TestBed.inject(SidenavService);
+  });
+
+  it('скрывает узлы без права и сохраняет демонстрационные исключения', () => {
+    const menu = service.menu();
+    const groupNode = menu.find((node) => node.id === 'group');
+
+    expect(menu.map((node) => node.id)).toEqual(['group', 'demo']);
+    expect(groupNode?.children.map((node) => node.id)).toEqual(['allowed']);
+  });
+
+  it('исключает скрытые узлы из плоского меню', () => {
+    expect(service.flatMenu().map((node) => node.id)).toEqual(['group', 'allowed', 'demo']);
   });
 });

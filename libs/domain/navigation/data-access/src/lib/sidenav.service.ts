@@ -7,6 +7,7 @@ import {
   MenuItem,
   removeSidenavNode,
   SIDENAV_INITIAL_NODES,
+  SIDENAV_VISIBILITY_CHECKER,
   SidenavApi,
   SidenavContext,
   SidenavNode,
@@ -22,6 +23,8 @@ export class SidenavService implements SidenavApi {
   private transloco = inject(TranslocoService);
 
   private readonly initialNodes = inject(SIDENAV_INITIAL_NODES);
+
+  private readonly visibilityChecker = inject(SIDENAV_VISIBILITY_CHECKER);
 
   private readonly nodes = signal<SidenavNode[]>([...this.initialNodes]);
 
@@ -98,7 +101,7 @@ export class SidenavService implements SidenavApi {
   }
 
   /** Меню текущего контекста; без контекста показывается корневое меню приложения. */
-  public readonly menu = computed(() => this.contextStack().at(-1)?.items ?? this.nodes());
+  public readonly menu = computed(() => this.visibleNodes(this.contextStack().at(-1)?.items ?? this.nodes()));
 
   /** Заголовок текущего контекста; пустой на главной странице. */
   public readonly contextTitle = computed(() => this.contextStack().at(-1)?.title ?? '');
@@ -168,5 +171,23 @@ export class SidenavService implements SidenavApi {
     }, OPERATION_DELAY_MS);
   }
 
-  public readonly flatMenu = computed(() => flattenSidenavNodes(this.nodes()));
+  public readonly flatMenu = computed(() => flattenSidenavNodes(this.visibleNodes(this.nodes())));
+
+  /**
+   * Неразрешённые разделы скрываются до рендера: проверка остаётся UX-слоем,
+   * сервер всё равно обязан отклонять запросы к недоступным ресурсам.
+   */
+  private visibleNodes(nodes: readonly SidenavNode[]): SidenavNode[] {
+    return nodes
+      .filter((node) => this.canSee(node))
+      .map((node) => ({ ...node, children: this.visibleNodes(node.children) }));
+  }
+
+  private canSee(node: SidenavNode): boolean {
+    if (node.visibility?.alwaysVisible || !node.visibility?.permission) {
+      return true;
+    }
+
+    return this.visibilityChecker.canSee(node);
+  }
 }

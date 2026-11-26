@@ -1,8 +1,11 @@
+import { SidenavVisibility } from './sidenav-visibility';
+
 export interface SidenavNode {
   id: string;
   label: string;
   icon?: string;
   route?: string;
+  visibility?: SidenavVisibility;
   children: SidenavNode[];
 }
 
@@ -49,6 +52,7 @@ export function createSidenavNode(
     label: partial.label,
     icon: partial.icon,
     route: partial.route,
+    visibility: partial.visibility,
     children: partial.children ?? [],
   };
 }

@@ -1,4 +1,5 @@
 import { SidenavNode } from './sidenav-node.model';
+import { SidenavVisibility } from './sidenav-visibility';
 
 /**
  * Меню конкретного контекста приложения (страницы со списком, страницы сущности и т.д.).
@@ -19,4 +20,5 @@ export interface MenuItem {
   label: string;
   route?: string;
   icon?: string;
+  visibility?: SidenavVisibility;
 }
