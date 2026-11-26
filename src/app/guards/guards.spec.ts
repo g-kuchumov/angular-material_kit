@@ -3,6 +3,7 @@ import {
   ActivatedRouteSnapshot,
   PartialMatchRouteSnapshot,
   Route,
+  Router,
   RouterStateSnapshot,
   UrlSegment,
   UrlTree,
@@ -11,6 +12,7 @@ import {
 import { ACCESS_API } from '@amk/domain-access-api';
 import { AUTH_API } from '@amk/domain-auth-api';
 import { provideTestApp } from '@amk/shared-testing';
+import { AccessFeedbackService } from '@amk/shared-ui-feedback';
 import { authGuard, permissionGuard } from './index';
 
 function urlOf(result: unknown): string {
@@ -24,8 +26,18 @@ describe('guards', () => {
   const segments: UrlSegment[] = [];
   const snapshot = {} as PartialMatchRouteSnapshot;
 
+  const feedback = {
+    navigationDenied: vi.fn<() => Promise<void>>(),
+    mutationDenied: vi.fn<() => void>(),
+  };
+
   beforeEach(async () => {
-    await TestBed.configureTestingModule({ providers: [provideTestApp()] }).compileComponents();
+    feedback.navigationDenied.mockReset().mockResolvedValue(undefined);
+    feedback.mutationDenied.mockReset();
+
+    await TestBed.configureTestingModule({
+      providers: [provideTestApp(), { provide: AccessFeedbackService, useValue: feedback }],
+    }).compileComponents();
   });
 
   it('authGuard пускает только аутентифицированного пользователя', async () => {
@@ -52,6 +64,7 @@ describe('guards', () => {
 
     const denied = await TestBed.runInInjectionContext(() => guard(matchRoute, segments, snapshot));
     expect(urlOf(denied)).toContain('/forbidden');
+    expect(feedback.navigationDenied).toHaveBeenCalledOnce();
 
     const access = TestBed.inject(ACCESS_API);
     const request = await access.assignRole({
@@ -64,5 +77,21 @@ describe('guards', () => {
 
     const granted = await TestBed.runInInjectionContext(() => guard(matchRoute, segments, snapshot));
     expect(granted).toBe(true);
+  });
+
+  it('при отказе внутри приложения показывает окно и остаётся на текущей странице', async () => {
+    await TestBed.inject(AUTH_API).login({ email: 'test@amk.local', password: 'secret' });
+
+    const router = TestBed.inject(Router);
+    Object.defineProperty(router, 'currentNavigation', {
+      configurable: true,
+      value: () => ({ previousNavigation: {} }) as unknown as ReturnType<Router['currentNavigation']>,
+    });
+
+    const guard = permissionGuard('roles:read');
+    const result = await TestBed.runInInjectionContext(() => guard(matchRoute, segments, snapshot));
+
+    expect(result).toBe(false);
+    expect(feedback.navigationDenied).toHaveBeenCalledOnce();
   });
 });
