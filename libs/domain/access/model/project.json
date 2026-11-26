@@ -1,0 +1,30 @@
+{
+  "name": "domain-access-model",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/domain/access/model/src",
+  "prefix": "amk",
+  "tags": ["scope:domain", "type:model"],
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "options": {
+        "lintFilePatterns": ["libs/domain/access/model/src/**/*.ts", "libs/domain/access/model/src/**/*.html"]
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc -p libs/domain/access/model/tsconfig.lib.json --noEmit"
+      }
+    },
+    "test": {
+      "executor": "@angular/build:unit-test",
+      "options": {
+        "buildTarget": "angular-material_kit:build:development",
+        "tsConfig": "libs/domain/access/model/tsconfig.spec.json",
+        "include": ["**/*.spec.ts", "**/*.test.ts"]
+      }
+    }
+  }
+}

@@ -31,7 +31,8 @@
       "@amk/domain-accessibility-data-access": ["./libs/domain/accessibility/data-access/src/index.ts"],
       "@amk/domain-users-model": ["./libs/domain/users/model/src/index.ts"],
       "@amk/domain-users-api": ["./libs/domain/users/api/src/index.ts"],
-      "@amk/domain-users-data-access": ["./libs/domain/users/data-access/src/index.ts"]
+      "@amk/domain-users-data-access": ["./libs/domain/users/data-access/src/index.ts"],
+      "@amk/domain-access-model": ["./libs/domain/access/model/src/index.ts"]
     }
   }
 }
