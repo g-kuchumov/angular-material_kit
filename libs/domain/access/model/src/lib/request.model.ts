@@ -4,15 +4,23 @@ import { Permission } from './permission.model';
 import { RoleId } from './role.model';
 import { AccessScope } from './scope.model';
 
-export type AccessRequestKind = 'GRANT_ROLE' | 'REVOKE_ROLE' | 'CREATE_ROLE' | 'UPDATE_ROLE';
+export type AccessRequestKind = 'GRANT_ROLE' | 'REVOKE_ROLE' | 'CREATE_ROLE' | 'UPDATE_ROLE' | 'DELETE_ROLE';
 
 export type AccessRequestStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'APPLIED';
 
 export interface AccessRequestTarget {
   readonly userId?: UserId;
   readonly roleId?: RoleId;
+  readonly assignmentId?: string;
   readonly permissions?: readonly Permission[];
   readonly scope?: AccessScope;
+  readonly roleDefinition?: {
+    readonly code: string;
+    readonly name: string;
+    readonly description?: string;
+    readonly permissions: readonly Permission[];
+    readonly sensitive?: boolean;
+  };
 }
 
 /**
