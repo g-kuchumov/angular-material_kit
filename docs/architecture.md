@@ -53,7 +53,15 @@ Scope-ограничения накладываются поверх type-мат
 
 Демо-входы (пароль любой): `anna@amk.local` → `BASIC_USER`, `boris@amk.local` → `USER_ADMIN` (hr), `victor@amk.local` → `ROLE_ADMIN` (finance), `access@amk.local` → `ACCESS_ADMIN` (it), `approver@amk.local` → `APPROVER`, `auditor@amk.local` → `AUDITOR`. Все страницы `/users/me`, `/users`, `/access/roles`, `/access/grants`, `/access/approvals`, `/access/audit` доступны с соответствующим входом; прямой переход без права ведёт на `/forbidden`.
 
-У каждой lib есть цель `typecheck` (`tsc -p tsconfig.lib.json --noEmit`). Спеки вынесены в собственные цели `test` только у тех lib'ов, где они реально есть: `@angular/build:unit-test` падает, если include-паттерны не нашли ни одного файла. Target приложения запускает свои 7 спеков; остальные спеков запускают lib-проекты через свои `tsconfig.spec.json`. Итого по workspace после K1 — 31 файл / 145 тестов на 38 проектов (37 lib + app). Генератор `tools/new-lib.mjs` создаёт `test` и `tsconfig.spec.json` автоматически, если в новую lib перенесены спеки; иначе создаётся только `typecheck`.
+## Филиалы: RBAC + ABAC (ветка `feat/branch-scopes`)
+
+Добавлен четвёртый домен `branches`: каталог филиалов (`domain-branches-{model,api,data-access}`) с плоской структурой и опциональным `parentId`. Иерархия используется только для дерева в UI: права от родителя **не наследуются**.
+
+Разрешение на данные теперь двухмерное: `RoleAssignment.scope` задаёт отдел, а `RoleAssignment.branchScope` — `'all'` или явный список `BranchId`. Пункт «Все филиалы» — отдельное значение, а не wildcard. Проверка по набору филиалов использует **all-of**: доступ ко всем запрошенным филиалам; для фильтрации списков есть `visibleBranchIds()`. Изменение `branchScope` проходит через `AccessRequest` (`UPDATE_BRANCH_SCOPE`) и аудит; для чувствительных ролей `'all'` требует dual-control.
+
+Маршрут `/access/branches` и feature `features-access-branches` показывают производную матрицу «нет прав / чтение / изменение» и проверку набора филиалов. Это UX-проекция политики, а не источник истины: итоговое решение принимает backend. Полный контракт для backend лежит вне репозитория: `../BACKEND_ACCESS_CONTRACT.md`.
+
+У каждой lib есть цель `typecheck` (`tsc -p tsconfig.lib.json --noEmit`). Спеки вынесены в собственные цели `test` только у тех lib'ов, где они реально есть: `@angular/build:unit-test` падает, если include-паттерны не нашли ни одного файла. Target приложения запускает свои 7 спеков; остальные спеков запускают lib-проекты через свои `tsconfig.spec.json`. После K1 — 31 файл / 145 тестов на 38 проектов (37 lib + app); после ветки филиалов — 34 файла / 153 теста на 42 проекта (41 lib + app). Генератор `tools/new-lib.mjs` создаёт `test` и `tsconfig.spec.json` автоматически, если в новую lib перенесены спеки; иначе создаётся только `typecheck`.
 
 Для компонентных тестов приложения и фич используется `provideTestApp()` из `@amk/shared-testing`: он подключает router/http, Transloco и дубли всех доменных API (`SIDENAV_API`, `PORTAL_API`, `ACCESSIBILITY_API`). Дубли не зависят от реализаций — никаких DOM-эффектов, localStorage и реального PortalService в тестах.
 
@@ -107,4 +115,4 @@ npm run lib -- \
 nx affected -t lint,test,build --base=origin/master --head=HEAD
 ```
 
-`nx graph` смотреть на ревью крупных PR. Бюджет bundle после перевода features на lazy-загрузку перекалиброван: `initial` — warning `1MB`, error `1.25MB` (после K1 initial total — 951.89 kB, transfer 189.96 kB; лимит предупреждения не превышен). Демо-страницы живут в `src/app/features/ui-kit-demo/*` и не становятся lib'ами: у них нет внешних потребителей и контракта.
+`nx graph` смотреть на ревью крупных PR. Бюджет bundle после перевода features на lazy-загрузку перекалиброван: `initial` — warning `1MB`, error `1.25MB` (после K1 initial total — 951.89 kB, transfer 189.96 kB; после филиалов — 956.12 kB, transfer 190.64 kB; лимит предупреждения не превышен). Демо-страницы живут в `src/app/features/ui-kit-demo/*` и не становятся lib'ами: у них нет внешних потребителей и контракта.

@@ -106,6 +106,29 @@
 
 Демо-входы (любой пароль): `anna@amk.local` (BASIC_USER), `boris@amk.local` (USER_ADMIN/hr), `victor@amk.local` (ROLE_ADMIN/finance), `access@amk.local` (ACCESS_ADMIN/it), `approver@amk.local` (APPROVER), `auditor@amk.local` (AUDITOR).
 
+## Ветка `feat/branch-scopes` (филиалы, готово; не запушена)
+
+Ветка создана от `feat/rbac-k1` (`a67e7c0`), **не запушена**. После merge K1 в `master` запланирован rebase на `master`. Коммиты:
+
+| Коммит    | Что добавлено                                                                                          |
+| --------- | ------------------------------------------------------------------------------------------------------ |
+| `08008c9` | `domain-branches-{model,api,data-access}`, `BRANCH_API`, `provideBranches()`, каталог b-root/b-spb/... |
+| `d307314` | `BranchScope`, правила доступа к филиалам, новые права в `PERMISSION_CATALOG`                          |
+| `5f1dc97` | `hasBranchPermission()`, `updateBranchScope()`, `AccessRequest.kind=UPDATE_BRANCH_SCOPE`, дубли        |
+| `c402830` | уточнение демо-прав: BASIC_USER читает свой филиал, USER_ADMIN меняет общаги                           |
+| `8a244b7` | `features-access-branches`, маршрут `/access/branches`, навигация, переводы, `provideBranches()`       |
+| —         | обновление архитектуры и плана; backend-контракт хранится вне репозитория                              |
+
+Модель: гибрид RBAC+ABAC. Роль даёт права, `department scope` + `branchScope` ограничивают экземпляры. `branchScope: 'all' | BranchId[]`; проверка набора — all-of, `visibleBranches()` — отдельная фильтрация для UI. Дерево по `parentId` не наследует права. Матрица «нет прав / чтение / изменение» — производная view model; backend остаётся авторитетным.
+
+Первая итерация: модель, проверки и демо `/access/branches` (`features-access-branches`) без CRUD общаг/студентов. Контракт для backend лежит вне репозитория: `../BACKEND_ACCESS_CONTRACT.md`.
+
+Проверки под Node `24.18.0` / npm `11.16.0` (без pushed-коммитов):
+
+- `nx graph` — 42 ноды (41 lib + app), без циклов.
+- `nx run-many -t lint,test,build,typecheck --skip-nx-cache` — зелёное для всех 42 проектов; 34 спец-файла / 153 теста.
+- Initial bundle `956.12 kB`, transfer `190.64 kB` — ниже предупредительного порога `1MB`.
+
 ## Подтверждённые факты о текущем проекте
 
 **Стек (из `package.json`, `angular.json`, `tsconfig*.json`, `eslint.config.js`) — Confirmed:**
