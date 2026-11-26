@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
+import { ACCESS_API } from '@amk/domain-access-api';
 import { USERS_API } from '@amk/domain-users-api';
 import { provideTestApp } from '@amk/shared-testing';
 import { UsersList } from './users-list';
@@ -10,6 +11,8 @@ describe('UsersList', () => {
       imports: [UsersList],
       providers: [provideTestApp()],
     }).compileComponents();
+
+    vi.spyOn(TestBed.inject(ACCESS_API), 'hasPermission').mockReturnValue(true);
   });
 
   it('фильтрует каталог по отделу', async () => {

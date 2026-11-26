@@ -14,6 +14,9 @@ describe('AccessGrants', () => {
     }).compileComponents();
 
     await TestBed.inject(AUTH_API).login({ email: 'test@amk.local', password: 'secret' });
+    vi.spyOn(TestBed.inject(ACCESS_API), 'hasPermission').mockImplementation(
+      (permission, scope) => (permission === 'grants:assign' || permission === 'grants:revoke') && scope !== 'global',
+    );
   });
 
   it('запрещает самоназначение роли', async () => {

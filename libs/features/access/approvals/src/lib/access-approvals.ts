@@ -11,6 +11,8 @@ import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { TranslocoDirective } from '@ngneat/transloco';
 
+import { AccessFeedbackService } from '@amk/shared-ui-feedback';
+
 /**
  * Заявки на чувствительные изменения доступа. Подписать может только другой
  * пользователь: инициатор своей заявки не видит кнопок решения.
@@ -39,11 +41,15 @@ export class AccessApprovals {
 
   private readonly auth = inject(AUTH_API);
 
+  private readonly feedback = inject(AccessFeedbackService);
+
   public readonly requests = this.access.requests;
 
   public readonly usersList = this.users.users;
 
   public readonly pendingRequests = computed(() => this.requests().filter((request) => request.status === 'PENDING'));
+
+  public readonly canApprove = computed(() => this.access.hasPermission('access:approve'));
 
   public readonly error = signal<string | null>(null);
 
@@ -57,6 +63,7 @@ export class AccessApprovals {
   constructor() {
     void this.users.search();
     void this.access.loadRequests();
+    void this.access.loadMyAccess();
   }
 
   public canDecide(request: AccessRequest): boolean {
@@ -82,6 +89,11 @@ export class AccessApprovals {
   }
 
   public approve(request: AccessRequest): void {
+    if (!this.canApprove()) {
+      this.feedback.mutationDenied();
+      return;
+    }
+
     if (!this.canDecide(request)) {
       this.error.set('access.approvals.selfApprove');
       return;
@@ -99,6 +111,11 @@ export class AccessApprovals {
   }
 
   public startReject(request: AccessRequest): void {
+    if (!this.canApprove()) {
+      this.feedback.mutationDenied();
+      return;
+    }
+
     if (!this.canDecide(request)) {
       this.error.set('access.approvals.selfApprove');
       return;
@@ -109,6 +126,11 @@ export class AccessApprovals {
   }
 
   public reject(): void {
+    if (!this.canApprove()) {
+      this.feedback.mutationDenied();
+      return;
+    }
+
     if (this.rejectForm.invalid) {
       return;
     }

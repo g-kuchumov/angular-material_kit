@@ -10,6 +10,8 @@ import { MatInput } from '@angular/material/input';
 import { MatOption, MatSelect } from '@angular/material/select';
 import { TranslocoDirective } from '@ngneat/transloco';
 
+import { AccessFeedbackService } from '@amk/shared-ui-feedback';
+
 const DEPARTMENTS: readonly DepartmentId[] = ['it', 'hr', 'finance'];
 
 /** Каталог пользователей. Управление статусом показывается только при праве. */
@@ -37,6 +39,8 @@ export class UsersList {
 
   private readonly access = inject(ACCESS_API);
 
+  private readonly feedback = inject(AccessFeedbackService);
+
   public readonly departments = DEPARTMENTS;
 
   public readonly usersList = this.users.users;
@@ -59,6 +63,11 @@ export class UsersList {
   }
 
   public toggleStatus(id: string, status: UserStatus): void {
+    if (!this.canManageStatus()) {
+      this.feedback.mutationDenied();
+      return;
+    }
+
     void this.users.setStatus(id, status === 'active' ? 'disabled' : 'active');
   }
 }

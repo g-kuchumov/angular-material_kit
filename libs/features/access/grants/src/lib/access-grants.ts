@@ -12,6 +12,8 @@ import { MatInput } from '@angular/material/input';
 import { MatOption, MatSelect } from '@angular/material/select';
 import { TranslocoDirective } from '@ngneat/transloco';
 
+import { AccessFeedbackService } from '@amk/shared-ui-feedback';
+
 const DEPARTMENTS: readonly DepartmentId[] = ['it', 'hr', 'finance'];
 
 /**
@@ -44,6 +46,8 @@ export class AccessGrants {
   private readonly users = inject(USERS_API);
 
   private readonly auth = inject(AUTH_API);
+
+  private readonly feedback = inject(AccessFeedbackService);
 
   public readonly departments = DEPARTMENTS;
 
@@ -108,6 +112,11 @@ export class AccessGrants {
     }
 
     const { userId, roleId, scope, reason } = this.form.getRawValue();
+
+    if (!this.access.hasPermission('grants:assign', scope)) {
+      this.feedback.mutationDenied();
+      return;
+    }
     if (userId === this.auth.session()?.userId) {
       this.error.set('access.grants.selfGrant');
       return;
@@ -124,6 +133,11 @@ export class AccessGrants {
   }
 
   public revoke(grant: RoleAssignment): void {
+    if (!this.access.hasPermission('grants:revoke', grant.scope)) {
+      this.feedback.mutationDenied();
+      return;
+    }
+
     if (grant.userId === this.auth.session()?.userId) {
       this.error.set('access.grants.selfRevoke');
       return;

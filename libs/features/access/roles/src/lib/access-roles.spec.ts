@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { ACCESS_API } from '@amk/domain-access-api';
 import { provideTestApp } from '@amk/shared-testing';
+import { AccessFeedbackService } from '@amk/shared-ui-feedback';
 import { AccessRoles } from './access-roles';
 
 describe('AccessRoles', () => {
@@ -10,6 +11,8 @@ describe('AccessRoles', () => {
       imports: [AccessRoles],
       providers: [provideTestApp()],
     }).compileComponents();
+
+    vi.spyOn(TestBed.inject(ACCESS_API), 'hasPermission').mockReturnValue(true);
   });
 
   it('создание роли порождает заявку, а не применяет права сразу', async () => {
@@ -64,5 +67,26 @@ describe('AccessRoles', () => {
     await fixture.whenStable();
 
     expect(createSpy).not.toHaveBeenCalled();
+  });
+
+  it('без права показывает snackbar вместо тихого отказа', async () => {
+    const access = TestBed.inject(ACCESS_API);
+    vi.spyOn(access, 'hasPermission').mockReturnValue(false);
+    const createSpy = vi.spyOn(access, 'createRole');
+    const feedbackSpy = vi.spyOn(TestBed.inject(AccessFeedbackService), 'mutationDenied');
+
+    const fixture = TestBed.createComponent(AccessRoles);
+    await fixture.whenStable();
+
+    fixture.componentInstance.createForm.setValue({
+      code: 'CUSTOM_ROLE',
+      name: 'Пользовательская роль',
+      permissions: ['grants:read'],
+    });
+    fixture.componentInstance.createRole();
+    await fixture.whenStable();
+
+    expect(createSpy).not.toHaveBeenCalled();
+    expect(feedbackSpy).toHaveBeenCalledOnce();
   });
 });

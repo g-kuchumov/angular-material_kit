@@ -24,6 +24,7 @@ describe('AccessApprovals: dual control', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(AccessApprovals);
+    vi.spyOn(TestBed.inject(ACCESS_API), 'hasPermission').mockReturnValue(true);
   });
 
   it('инициатор не может подписать свою заявку, подписант может', async () => {
@@ -31,6 +32,7 @@ describe('AccessApprovals: dual control', () => {
     const access = TestBed.inject(ACCESS_API);
 
     await auth.login({ email: 'boris@amk.local', password: 'secret' });
+    await access.loadMyAccess();
     const created = await access.assignRole({
       userId: 'u-1',
       roleId: 'r-basic',
@@ -47,6 +49,7 @@ describe('AccessApprovals: dual control', () => {
     expect(access.requests().find((item) => item.id === created.id)?.status).toBe('PENDING');
 
     await auth.login({ email: 'approver@amk.local', password: 'secret' });
+    await access.loadMyAccess();
     fixture.componentInstance.approve(created);
     await fixture.whenStable();
 
@@ -59,6 +62,7 @@ describe('AccessApprovals: dual control', () => {
     const access = TestBed.inject(ACCESS_API);
 
     await auth.login({ email: 'boris@amk.local', password: 'secret' });
+    await access.loadMyAccess();
     const created = await access.assignRole({
       userId: 'u-1',
       roleId: 'r-basic',
@@ -67,6 +71,7 @@ describe('AccessApprovals: dual control', () => {
     });
 
     await auth.login({ email: 'approver@amk.local', password: 'secret' });
+    await access.loadMyAccess();
     await fixture.whenStable();
 
     fixture.componentInstance.startReject(created);

@@ -26,6 +26,7 @@ describe('AccessApprovals', () => {
     }).compileComponents();
 
     await TestBed.inject(AUTH_API).login({ email: 'test@amk.local', password: 'secret' });
+    vi.spyOn(TestBed.inject(ACCESS_API), 'hasPermission').mockReturnValue(true);
   });
 
   it('не даёт подписать собственную заявку', async () => {
