@@ -1,0 +1,24 @@
+.audit-card {
+  margin: 1rem auto;
+
+  .audit-note {
+    max-width: 70ch;
+    opacity: 0.8;
+  }
+
+  mat-form-field {
+    width: min(100%, 320px);
+  }
+
+  .audit-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th,
+    td {
+      padding: 0.5rem;
+      border-bottom: 1px solid var(--mat-sys-outline-variant);
+      text-align: left;
+    }
+  }
+}

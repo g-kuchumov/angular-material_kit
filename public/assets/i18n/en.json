@@ -238,6 +238,56 @@
       "actions": "Actions",
       "revoke": "Revoke",
       "empty": "No assignments"
+    },
+    "requests": {
+      "kinds": {
+        "GRANT_ROLE": "Grant role",
+        "REVOKE_ROLE": "Revoke role",
+        "CREATE_ROLE": "Create role",
+        "UPDATE_ROLE": "Update role permissions",
+        "DELETE_ROLE": "Delete role"
+      },
+      "statuses": {
+        "PENDING": "Pending",
+        "APPROVED": "Approved",
+        "REJECTED": "Rejected",
+        "APPLIED": "Applied"
+      }
+    },
+    "approvals": {
+      "title": "Access requests",
+      "note": "The initiator cannot approve their own request: another user with approval rights decides.",
+      "pendingTitle": "Pending approval",
+      "empty": "No requests",
+      "request": "Request",
+      "kind": "Type",
+      "initiator": "Initiator",
+      "target": "Change",
+      "reason": "Reason",
+      "actions": "Actions",
+      "user": "User",
+      "role": "Role",
+      "scope": "Scope",
+      "permissions": "Permissions",
+      "ownRequest": "You cannot approve your own request",
+      "approve": "Approve",
+      "reject": "Reject",
+      "confirmReject": "Reject with reason",
+      "approved": "Request approved and applied",
+      "rejected": "Request rejected",
+      "failed": "Could not process the request",
+      "historyTitle": "Request history"
+    },
+    "audit": {
+      "title": "Audit log",
+      "note": "Events are read-only; the client contract does not allow modifying or deleting them.",
+      "filter": "Search by action, target or trace",
+      "time": "Time",
+      "actor": "Actor",
+      "action": "Action",
+      "target": "Target",
+      "trace": "Trace",
+      "empty": "No events found"
     }
   },
   "settings": {

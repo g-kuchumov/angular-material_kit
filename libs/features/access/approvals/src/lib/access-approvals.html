@@ -1,0 +1,99 @@
+<ng-container *transloco="let t">
+  <mat-card class="approvals-card">
+    <mat-card-header>
+      <mat-card-title>{{ t('access.approvals.title') }}</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <p class="approvals-note">{{ t('access.approvals.note') }}</p>
+
+      @if (error(); as errorKey) {
+        <p class="approvals-error" role="alert">{{ t(errorKey) }}</p>
+      }
+      @if (message(); as messageKey) {
+        <p class="approvals-message" role="status">{{ t(messageKey) }}</p>
+      }
+
+      <h2>{{ t('access.approvals.pendingTitle') }}</h2>
+      @if (pendingRequests().length) {
+        <table class="approvals-table">
+          <thead>
+            <tr>
+              <th>{{ t('access.approvals.request') }}</th>
+              <th>{{ t('access.approvals.kind') }}</th>
+              <th>{{ t('access.approvals.initiator') }}</th>
+              <th>{{ t('access.approvals.target') }}</th>
+              <th>{{ t('access.approvals.reason') }}</th>
+              <th>{{ t('access.approvals.actions') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (request of pendingRequests(); track request.id) {
+              <tr>
+                <td>{{ request.id }}</td>
+                <td>{{ t(kindKey(request)) }}</td>
+                <td>{{ userName(request.requestedBy) }}</td>
+                <td>
+                  @if (request.target.userId; as userId) {
+                    <span>{{ t('access.approvals.user') }}: {{ userName(userId) }}</span>
+                  }
+                  @if (request.target.roleId; as roleId) {
+                    <span>{{ t('access.approvals.role') }}: {{ roleId }}</span>
+                  }
+                  @if (request.target.scope; as scope) {
+                    <span>{{ t('access.approvals.scope') }}: {{ t(scopeKey(scope)) }}</span>
+                  }
+                  @if (request.target.permissions; as permissions) {
+                    <span>{{ t('access.approvals.permissions') }}: {{ permissions.length }}</span>
+                  }
+                  @if (request.target.roleDefinition; as definition) {
+                    <span>{{ definition.code }} ({{ definition.permissions.length }})</span>
+                  }
+                </td>
+                <td>{{ request.reason }}</td>
+                <td>
+                  @if (canDecide(request)) {
+                    <button (click)="approve(request)" matButton type="button">
+                      {{ t('access.approvals.approve') }}
+                    </button>
+                    <button (click)="startReject(request)" matButton type="button">
+                      {{ t('access.approvals.reject') }}
+                    </button>
+                  } @else {
+                    <span>{{ t('access.approvals.ownRequest') }}</span>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      } @else {
+        <p>{{ t('access.approvals.empty') }}</p>
+      }
+
+      @if (rejectForm.controls.requestId.value) {
+        <form class="approvals-reject" [formGroup]="rejectForm" (ngSubmit)="reject()" novalidate>
+          <mat-form-field appearance="outline">
+            <mat-label id="reject-reason-label">{{ t('access.approvals.reason') }}</mat-label>
+            <input aria-labelledby="reject-reason-label" formControlName="reason" matInput required type="text" />
+          </mat-form-field>
+          <button matButton="outlined" type="submit">{{ t('access.approvals.confirmReject') }}</button>
+        </form>
+      }
+
+      @if (requests().length) {
+        <h2>{{ t('access.approvals.historyTitle') }}</h2>
+        <ul class="approvals-history">
+          @for (request of requests(); track request.id) {
+            <li>
+              {{ request.id }} — {{ t(kindKey(request)) }} — {{ t(statusKey(request)) }}
+              @if (request.approverId; as approverId) {
+                — {{ userName(approverId) }}
+              }
+            </li>
+          }
+        </ul>
+      }
+    </mat-card-content>
+  </mat-card>
+</ng-container>

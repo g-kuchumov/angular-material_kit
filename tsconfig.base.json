@@ -41,7 +41,9 @@
       "@amk/features-users-profile": ["./libs/features/users/profile/src/index.ts"],
       "@amk/features-users-list": ["./libs/features/users/list/src/index.ts"],
       "@amk/features-access-roles": ["./libs/features/access/roles/src/index.ts"],
-      "@amk/features-access-grants": ["./libs/features/access/grants/src/index.ts"]
+      "@amk/features-access-grants": ["./libs/features/access/grants/src/index.ts"],
+      "@amk/features-access-approvals": ["./libs/features/access/approvals/src/index.ts"],
+      "@amk/features-access-audit": ["./libs/features/access/audit/src/index.ts"]
     }
   }
 }

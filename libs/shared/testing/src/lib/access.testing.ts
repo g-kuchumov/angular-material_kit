@@ -50,6 +50,27 @@ const TEST_ROLES: readonly Role[] = [
   },
 ];
 
+const TEST_AUDIT: readonly AuditEvent[] = [
+  {
+    id: 'audit-1',
+    actorId: 'bootstrap',
+    action: 'ACCESS_GRANTED',
+    targetType: 'RoleAssignment',
+    targetId: 'g-1',
+    traceId: 'trace-1',
+    occurredAt: '2026-01-01T00:00:00.000Z',
+  },
+  {
+    id: 'audit-2',
+    actorId: 'test-user',
+    action: 'ACCESS_REQUEST_APPLIED',
+    targetType: 'AccessRequest',
+    targetId: 'req-1',
+    traceId: 'trace-2',
+    occurredAt: '2026-01-02T00:00:00.000Z',
+  },
+];
+
 /** Тестовый дублёр управления доступом: те же заявки, но без HTTP и серверных ошибок. */
 class TestAccessApi implements AccessApi {
   private readonly auth = inject(AUTH_API);
@@ -64,7 +85,7 @@ class TestAccessApi implements AccessApi {
 
   private readonly requestState = signal<readonly AccessRequest[]>([]);
 
-  private readonly auditState = signal<readonly AuditEvent[]>([]);
+  private readonly auditState = signal<readonly AuditEvent[]>(TEST_AUDIT);
 
   private readonly loadingState = signal(false);
 

@@ -1,0 +1,43 @@
+<ng-container *transloco="let t">
+  <mat-card class="audit-card">
+    <mat-card-header>
+      <mat-card-title>{{ t('access.audit.title') }}</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <p class="audit-note">{{ t('access.audit.note') }}</p>
+
+      <mat-form-field appearance="outline">
+        <mat-label id="audit-filter-label">{{ t('access.audit.filter') }}</mat-label>
+        <input [formControl]="filter" aria-labelledby="audit-filter-label" matInput type="search" />
+      </mat-form-field>
+
+      @if (filteredEvents().length) {
+        <table class="audit-table">
+          <thead>
+            <tr>
+              <th>{{ t('access.audit.time') }}</th>
+              <th>{{ t('access.audit.actor') }}</th>
+              <th>{{ t('access.audit.action') }}</th>
+              <th>{{ t('access.audit.target') }}</th>
+              <th>{{ t('access.audit.trace') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (event of filteredEvents(); track event.id) {
+              <tr>
+                <td>{{ event.occurredAt }}</td>
+                <td>{{ actorName(event.actorId) }}</td>
+                <td>{{ event.action }}</td>
+                <td>{{ event.targetType }} / {{ event.targetId }}</td>
+                <td>{{ event.traceId }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      } @else {
+        <p>{{ t('access.audit.empty') }}</p>
+      }
+    </mat-card-content>
+  </mat-card>
+</ng-container>

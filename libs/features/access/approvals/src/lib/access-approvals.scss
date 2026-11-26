@@ -1,0 +1,45 @@
+.approvals-card {
+  margin: 1rem auto;
+
+  .approvals-note {
+    max-width: 70ch;
+    opacity: 0.8;
+  }
+
+  .approvals-error {
+    color: var(--mat-sys-error);
+  }
+
+  .approvals-message {
+    color: var(--mat-sys-primary);
+  }
+
+  .approvals-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th,
+    td {
+      padding: 0.5rem;
+      border-bottom: 1px solid var(--mat-sys-outline-variant);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    td span {
+      display: block;
+    }
+  }
+
+  .approvals-reject {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .approvals-history {
+    padding-left: 1.25rem;
+  }
+}
