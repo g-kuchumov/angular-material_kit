@@ -5,12 +5,14 @@ import {
   AccessScope,
   AccessSnapshot,
   AuditEvent,
+  BranchScope,
   Permission,
   Role,
   RoleAssignment,
   RoleId,
 } from '@amk/domain-access-model';
-import { UserId } from '@amk/domain-users-model';
+import { BranchId } from '@amk/domain-branches-model';
+import { DepartmentId, UserId } from '@amk/domain-users-model';
 
 export interface CreateRoleInput {
   readonly code: string;
@@ -24,7 +26,15 @@ export interface AssignRoleInput {
   readonly userId: UserId;
   readonly roleId: RoleId;
   readonly scope: AccessScope;
+  /** По умолчанию пустой список: роль дана, но доступа к данным филиалов нет. */
+  readonly branchScope?: BranchScope;
   readonly reason: string;
+}
+
+/** Ресурс, доступ к которому проверяется по филиалам и отделу. */
+export interface BranchResourceContext {
+  readonly branchIds: readonly BranchId[];
+  readonly departmentId?: DepartmentId;
 }
 
 /**
@@ -53,12 +63,20 @@ export interface AccessApi {
 
   assignRole(input: AssignRoleInput): Promise<AccessRequest>;
   revokeRole(assignmentId: string): Promise<AccessRequest>;
+  /** Изменение доступа к филиалам всегда уходит подписанту. */
+  updateBranchScope(assignmentId: string, branchScope: BranchScope, reason: string): Promise<AccessRequest>;
 
   approveRequest(requestId: string): Promise<void>;
   rejectRequest(requestId: string, reason: string): Promise<void>;
 
   /** UX-проверка: считает скоуп и права. Решение сервера — обязательное. */
   hasPermission(permission: Permission, scope?: AccessScope): boolean;
+
+  /**
+   * UX-проверка доступа к данным филиала.
+   * Требует доступ ко всем запрошенным филиалам; отдел тоже должен совпасть.
+   */
+  hasBranchPermission(permission: Permission, resource: BranchResourceContext): boolean;
 }
 
 export const ACCESS_API = new InjectionToken<AccessApi>('ACCESS_API');

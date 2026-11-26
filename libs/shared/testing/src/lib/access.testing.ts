@@ -1,12 +1,15 @@
 import { inject, Provider, signal } from '@angular/core';
 
-import { ACCESS_API, AccessApi, AssignRoleInput, CreateRoleInput } from '@amk/domain-access-api';
+import { ACCESS_API, AccessApi, AssignRoleInput, BranchResourceContext, CreateRoleInput } from '@amk/domain-access-api';
 import {
   AccessRequest,
   AccessRequestKind,
   AccessScope,
   AccessSnapshot,
   AuditEvent,
+  BranchScope,
+  branchScopeAllowsAll,
+  departmentScope,
   Permission,
   Role,
   RoleAssignment,
@@ -28,7 +31,14 @@ const TEST_ROLES: readonly Role[] = [
     id: 'r-access-admin',
     code: 'ACCESS_ADMIN',
     name: 'Администратор доступа',
-    permissions: ['users:read:self', 'users:read:all', 'grants:read', 'grants:assign', 'grants:revoke'],
+    permissions: [
+      'users:read:self',
+      'users:read:all',
+      'branches:read',
+      'grants:read',
+      'grants:assign',
+      'grants:revoke',
+    ],
     system: true,
     sensitive: true,
   },
@@ -36,7 +46,7 @@ const TEST_ROLES: readonly Role[] = [
     id: 'r-approver',
     code: 'APPROVER',
     name: 'Подписант',
-    permissions: ['users:read:self', 'users:read:all', 'roles:read', 'grants:read', 'access:approve'],
+    permissions: ['users:read:self', 'users:read:all', 'branches:read', 'roles:read', 'grants:read', 'access:approve'],
     system: true,
     sensitive: true,
   },
@@ -44,7 +54,16 @@ const TEST_ROLES: readonly Role[] = [
     id: 'r-auditor',
     code: 'AUDITOR',
     name: 'Аудитор',
-    permissions: ['users:read:self', 'users:read:all', 'roles:read', 'grants:read', 'audit:read'],
+    permissions: [
+      'users:read:self',
+      'users:read:all',
+      'branches:read',
+      'roles:read',
+      'grants:read',
+      'audit:read',
+      'dormitories:read',
+      'students:read',
+    ],
     system: true,
     sensitive: true,
   },
@@ -117,6 +136,7 @@ class TestAccessApi implements AccessApi {
       roles: roles.map((role) => role.id),
       permissions: [...new Set(roles.flatMap((role) => role.permissions))],
       scopes: [...new Set(grants.map((grant) => grant.scope))],
+      branchScopes: [...new Set(grants.map((grant) => grant.branchScope))],
     });
     return Promise.resolve();
   }
@@ -155,7 +175,7 @@ class TestAccessApi implements AccessApi {
     return Promise.resolve(
       this.createRequest(
         'GRANT_ROLE',
-        { userId: input.userId, roleId: input.roleId, scope: input.scope },
+        { userId: input.userId, roleId: input.roleId, scope: input.scope, branchScope: input.branchScope ?? [] },
         input.reason,
       ),
     );
@@ -165,13 +185,17 @@ class TestAccessApi implements AccessApi {
     return Promise.resolve(this.createRequest('REVOKE_ROLE', { assignmentId }, 'Отзыв роли'));
   }
 
+  public updateBranchScope(assignmentId: string, branchScope: BranchScope, reason: string): Promise<AccessRequest> {
+    return Promise.resolve(this.createRequest('UPDATE_BRANCH_SCOPE', { assignmentId, branchScope }, reason));
+  }
+
   public approveRequest(requestId: string): Promise<void> {
     const request = this.requestState().find((item) => item.id === requestId);
     if (request?.status !== 'PENDING') {
       return Promise.reject(new Error('Заявка не найдена'));
     }
 
-    const { userId, roleId, scope, assignmentId, permissions, roleDefinition } = request.target;
+    const { userId, roleId, scope, assignmentId, permissions, branchScope, roleDefinition } = request.target;
     if (request.kind === 'GRANT_ROLE' && userId && roleId && scope) {
       this.grantState.update((grants) => [
         ...grants,
@@ -180,6 +204,7 @@ class TestAccessApi implements AccessApi {
           userId,
           roleId,
           scope,
+          branchScope: branchScope ?? [],
           grantedBy: request.requestedBy,
           grantedAt: new Date().toISOString(),
         },
@@ -187,6 +212,11 @@ class TestAccessApi implements AccessApi {
     }
     if (request.kind === 'REVOKE_ROLE' && assignmentId) {
       this.grantState.update((grants) => grants.filter((grant) => grant.id !== assignmentId));
+    }
+    if (request.kind === 'UPDATE_BRANCH_SCOPE' && assignmentId && branchScope) {
+      this.grantState.update((grants) =>
+        grants.map((grant) => (grant.id === assignmentId ? { ...grant, branchScope } : grant)),
+      );
     }
     if (request.kind === 'UPDATE_ROLE' && roleId && permissions) {
       this.roleState.update((roles) => roles.map((role) => (role.id === roleId ? { ...role, permissions } : role)));
@@ -237,6 +267,24 @@ class TestAccessApi implements AccessApi {
       .map((grant) => grant.scope);
 
     return !scope || scopeAllows(scopes, scope);
+  }
+
+  public hasBranchPermission(permission: Permission, resource: BranchResourceContext): boolean {
+    const snapshot = this.snapshot();
+    if (!snapshot?.permissions.includes(permission) || resource.branchIds.length === 0) {
+      return false;
+    }
+
+    const requiredScope = resource.departmentId ? departmentScope(resource.departmentId) : undefined;
+    const scopes = this.grantState()
+      .filter((grant) => grant.userId === snapshot.userId)
+      .filter((grant) =>
+        this.roleState().some((role) => role.id === grant.roleId && role.permissions.includes(permission)),
+      )
+      .filter((grant) => !requiredScope || scopeAllows([grant.scope], requiredScope))
+      .map((grant) => grant.branchScope);
+
+    return branchScopeAllowsAll(scopes, resource.branchIds);
   }
 
   private createRequest(kind: AccessRequestKind, target: AccessRequest['target'], reason: string): AccessRequest {

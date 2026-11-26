@@ -1,6 +1,7 @@
 export * from './lib/access.testing';
 export * from './lib/accessibility.testing';
 export * from './lib/auth.testing';
+export * from './lib/branches.testing';
 export * from './lib/portal.testing';
 export * from './lib/provide-test-app';
 export * from './lib/sidenav.testing';

@@ -1,13 +1,16 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 
-import { AccessApi, AssignRoleInput, CreateRoleInput } from '@amk/domain-access-api';
+import { AccessApi, AssignRoleInput, BranchResourceContext, CreateRoleInput } from '@amk/domain-access-api';
 import {
   AccessRequest,
   AccessRequestKind,
   AccessScope,
   AccessSnapshot,
   AuditEvent,
+  BranchScope,
+  branchScopeAllowsAll,
   BUILTIN_ROLE_CODES,
+  departmentScope,
   findRoleConflict,
   Permission,
   Role,
@@ -31,7 +34,15 @@ const SEED_ROLES: readonly Role[] = [
     id: 'r-user-admin',
     code: 'USER_ADMIN',
     name: 'Администратор пользователей',
-    permissions: ['users:read:self', 'users:read:all', 'users:manage-status'],
+    permissions: [
+      'users:read:self',
+      'users:read:all',
+      'users:manage-status',
+      'branches:read',
+      'dormitories:read',
+      'students:read',
+      'students:update',
+    ],
     system: true,
     sensitive: true,
   },
@@ -39,7 +50,7 @@ const SEED_ROLES: readonly Role[] = [
     id: 'r-role-admin',
     code: 'ROLE_ADMIN',
     name: 'Администратор ролей',
-    permissions: ['users:read:self', 'roles:read', 'roles:create', 'roles:update', 'roles:delete'],
+    permissions: ['users:read:self', 'branches:read', 'roles:read', 'roles:create', 'roles:update', 'roles:delete'],
     system: true,
     sensitive: true,
   },
@@ -47,7 +58,14 @@ const SEED_ROLES: readonly Role[] = [
     id: 'r-access-admin',
     code: 'ACCESS_ADMIN',
     name: 'Администратор доступа',
-    permissions: ['users:read:self', 'users:read:all', 'grants:read', 'grants:assign', 'grants:revoke'],
+    permissions: [
+      'users:read:self',
+      'users:read:all',
+      'branches:read',
+      'grants:read',
+      'grants:assign',
+      'grants:revoke',
+    ],
     system: true,
     sensitive: true,
   },
@@ -55,7 +73,7 @@ const SEED_ROLES: readonly Role[] = [
     id: 'r-approver',
     code: 'APPROVER',
     name: 'Подписант',
-    permissions: ['users:read:self', 'users:read:all', 'roles:read', 'grants:read', 'access:approve'],
+    permissions: ['users:read:self', 'users:read:all', 'branches:read', 'roles:read', 'grants:read', 'access:approve'],
     system: true,
     sensitive: true,
   },
@@ -63,7 +81,16 @@ const SEED_ROLES: readonly Role[] = [
     id: 'r-auditor',
     code: 'AUDITOR',
     name: 'Аудитор',
-    permissions: ['users:read:self', 'users:read:all', 'roles:read', 'grants:read', 'audit:read'],
+    permissions: [
+      'users:read:self',
+      'users:read:all',
+      'branches:read',
+      'roles:read',
+      'grants:read',
+      'audit:read',
+      'dormitories:read',
+      'students:read',
+    ],
     system: true,
     sensitive: true,
   },
@@ -75,6 +102,7 @@ const SEED_GRANTS: readonly RoleAssignment[] = [
     userId: 'u-1',
     roleId: 'r-basic',
     scope: 'global',
+    branchScope: [],
     grantedBy: 'bootstrap',
     grantedAt: '2026-01-01T00:00:00.000Z',
   },
@@ -83,6 +111,7 @@ const SEED_GRANTS: readonly RoleAssignment[] = [
     userId: 'u-2',
     roleId: 'r-user-admin',
     scope: 'department:hr',
+    branchScope: ['b-spb', 'b-kzn'],
     grantedBy: 'bootstrap',
     grantedAt: '2026-01-01T00:00:00.000Z',
   },
@@ -91,6 +120,7 @@ const SEED_GRANTS: readonly RoleAssignment[] = [
     userId: 'u-3',
     roleId: 'r-role-admin',
     scope: 'department:finance',
+    branchScope: [],
     grantedBy: 'bootstrap',
     grantedAt: '2026-01-01T00:00:00.000Z',
   },
@@ -99,6 +129,7 @@ const SEED_GRANTS: readonly RoleAssignment[] = [
     userId: 'u-4',
     roleId: 'r-access-admin',
     scope: 'department:it',
+    branchScope: ['b-spb'],
     grantedBy: 'bootstrap',
     grantedAt: '2026-01-01T00:00:00.000Z',
   },
@@ -107,6 +138,7 @@ const SEED_GRANTS: readonly RoleAssignment[] = [
     userId: 'u-5',
     roleId: 'r-approver',
     scope: 'global',
+    branchScope: ['b-spb', 'b-kzn', 'b-msk'],
     grantedBy: 'bootstrap',
     grantedAt: '2026-01-01T00:00:00.000Z',
   },
@@ -115,6 +147,7 @@ const SEED_GRANTS: readonly RoleAssignment[] = [
     userId: 'u-6',
     roleId: 'r-auditor',
     scope: 'global',
+    branchScope: 'all',
     grantedBy: 'bootstrap',
     grantedAt: '2026-01-01T00:00:00.000Z',
   },
@@ -181,6 +214,7 @@ export class AccessService implements AccessApi {
       roles: roles.map((role) => role.id),
       permissions: [...permissions],
       scopes: [...new Set(grants.map((grant) => grant.scope))],
+      branchScopes: [...new Set(grants.map((grant) => grant.branchScope))],
     });
     return Promise.resolve();
   }
@@ -259,7 +293,7 @@ export class AccessService implements AccessApi {
     return Promise.resolve(
       this.createRequest(
         'GRANT_ROLE',
-        { userId: input.userId, roleId: input.roleId, scope: input.scope },
+        { userId: input.userId, roleId: input.roleId, scope: input.scope, branchScope: input.branchScope ?? [] },
         input.reason,
       ),
     );
@@ -279,6 +313,26 @@ export class AccessService implements AccessApi {
         'REVOKE_ROLE',
         { assignmentId, userId: assignment.userId, roleId: assignment.roleId },
         'Отзыв роли',
+      ),
+    );
+  }
+
+  public updateBranchScope(assignmentId: string, branchScope: BranchScope, reason: string): Promise<AccessRequest> {
+    const assignment = this.allGrantState().find((grant) => grant.id === assignmentId);
+    if (!assignment) {
+      return Promise.reject(new Error(`Назначение ${assignmentId} не найдено`));
+    }
+    if (assignment.userId === this.currentActor()) {
+      return Promise.reject(new Error('Нельзя менять филиалы в своём назначении'));
+    }
+
+    // Даже для 'all' клиент лишь создаёт заявку: сервер обязан применить
+    // dual-control и записать аудит до активации такого доступа.
+    return Promise.resolve(
+      this.createRequest(
+        'UPDATE_BRANCH_SCOPE',
+        { assignmentId, userId: assignment.userId, roleId: assignment.roleId, branchScope },
+        reason,
       ),
     );
   }
@@ -344,6 +398,25 @@ export class AccessService implements AccessApi {
     return !scope || scopeAllows(scopes, scope);
   }
 
+  public hasBranchPermission(permission: Permission, resource: BranchResourceContext): boolean {
+    const snapshot = this.snapshot();
+    if (!snapshot?.permissions.includes(permission) || resource.branchIds.length === 0) {
+      return false;
+    }
+
+    const requiredScope = resource.departmentId ? departmentScope(resource.departmentId) : undefined;
+
+    const scopes = this.allGrantState()
+      .filter((grant) => grant.userId === snapshot.userId)
+      .filter((grant) =>
+        this.roleState().some((role) => role.id === grant.roleId && role.permissions.includes(permission)),
+      )
+      .filter((grant) => !requiredScope || scopeAllows([grant.scope], requiredScope))
+      .map((grant) => grant.branchScope);
+
+    return branchScopeAllowsAll(scopes, resource.branchIds);
+  }
+
   private roleCodesForUser(userId: UserId): string[] {
     const roleIds = new Set(
       this.allGrantState()
@@ -372,7 +445,7 @@ export class AccessService implements AccessApi {
   }
 
   private applyRequest(request: AccessRequest): void {
-    const { userId, roleId, assignmentId, permissions, scope, roleDefinition } = request.target;
+    const { userId, roleId, assignmentId, permissions, scope, branchScope, roleDefinition } = request.target;
 
     switch (request.kind) {
       case 'GRANT_ROLE':
@@ -384,6 +457,7 @@ export class AccessService implements AccessApi {
               userId,
               roleId,
               scope,
+              branchScope: branchScope ?? [],
               grantedBy: request.requestedBy,
               grantedAt: new Date().toISOString(),
             },
@@ -394,6 +468,19 @@ export class AccessService implements AccessApi {
       case 'REVOKE_ROLE':
         if (assignmentId) {
           this.allGrantState.update((grants) => grants.filter((grant) => grant.id !== assignmentId));
+        }
+        break;
+
+      case 'UPDATE_BRANCH_SCOPE':
+        if (assignmentId && branchScope) {
+          const before = this.allGrantState().find((grant) => grant.id === assignmentId);
+          this.allGrantState.update((grants) =>
+            grants.map((grant) => (grant.id === assignmentId ? { ...grant, branchScope } : grant)),
+          );
+          this.writeAudit('BRANCH_SCOPE_UPDATED', 'RoleAssignment', assignmentId, before, {
+            ...before,
+            branchScope,
+          });
         }
         break;
 

@@ -5,6 +5,7 @@ import { provideRouter, Routes } from '@angular/router';
 import { provideTestAccess } from './access.testing';
 import { provideTestAccessibility } from './accessibility.testing';
 import { provideTestAuth } from './auth.testing';
+import { provideTestBranches } from './branches.testing';
 import { provideTestPortal } from './portal.testing';
 import { provideTestSidenav } from './sidenav.testing';
 import { provideTestTransloco } from './transloco.testing';
@@ -23,6 +24,7 @@ export function provideTestApp(routes: Routes = []): (Provider | EnvironmentProv
     ...provideTestPortal(),
     ...provideTestAccessibility(),
     ...provideTestAuth(),
+    ...provideTestBranches(),
     ...provideTestUsers(),
     ...provideTestAccess(),
   ];
