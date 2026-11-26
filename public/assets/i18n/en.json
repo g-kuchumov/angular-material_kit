@@ -184,6 +184,11 @@
       "users:read:self": "Read own profile",
       "users:read:all": "Read user directory",
       "users:manage-status": "Manage user status",
+      "branches:read": "Read branch catalog",
+      "dormitories:read": "Read dormitories",
+      "dormitories:update": "Update dormitories",
+      "students:read": "Read students",
+      "students:update": "Update students",
       "roles:read": "Read roles",
       "roles:create": "Create roles",
       "roles:update": "Update roles",
@@ -201,6 +206,27 @@
         "hr": "HR",
         "finance": "Finance"
       }
+    },
+    "branches": {
+      "title": "Branch access",
+      "note": "The matrix shows effective access to branch data. The backend makes the final decision; client checks are UX only.",
+      "allGranted": "You have access to all branches",
+      "branch": "Branch",
+      "students": "Students",
+      "dormitories": "Dormitories",
+      "levels": {
+        "none": "No access",
+        "read": "Read",
+        "write": "Write"
+      },
+      "checkTitle": "Check access to a set of branches",
+      "resource": "Section",
+      "action": "Action",
+      "all": "All branches",
+      "choose": "Select at least one branch or «All branches»",
+      "allowed": "Access allowed",
+      "denied": "Access denied",
+      "empty": "No branches found"
     },
     "roles": {
       "title": "Roles and permissions",
@@ -243,6 +269,7 @@
       "kinds": {
         "GRANT_ROLE": "Grant role",
         "REVOKE_ROLE": "Revoke role",
+        "UPDATE_BRANCH_SCOPE": "Update branch scope",
         "CREATE_ROLE": "Create role",
         "UPDATE_ROLE": "Update role permissions",
         "DELETE_ROLE": "Delete role"

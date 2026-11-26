@@ -9,6 +9,7 @@ export const APP_SIDENAV_NODES: readonly SidenavNode[] = [
     children: [
       createSidenavNode({ id: 'profile', label: 'My profile', icon: 'person', route: 'users/me' }),
       createSidenavNode({ id: 'users', label: 'Users', icon: 'group', route: 'users' }),
+      createSidenavNode({ id: 'branches', label: 'Branches', icon: 'account_tree', route: 'access/branches' }),
       createSidenavNode({ id: 'roles', label: 'Roles', icon: 'badge', route: 'access/roles' }),
       createSidenavNode({ id: 'grants', label: 'Grants', icon: 'key', route: 'access/grants' }),
       createSidenavNode({ id: 'approvals', label: 'Approvals', icon: 'fact_check', route: 'access/approvals' }),

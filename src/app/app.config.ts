@@ -13,6 +13,7 @@ import { provideAccess } from '@amk/domain-access-data-access';
 import { ACCESSIBILITY_API } from '@amk/domain-accessibility-api';
 import { provideAccessibility } from '@amk/domain-accessibility-data-access';
 import { provideAuth } from '@amk/domain-auth-data-access';
+import { provideBranches } from '@amk/domain-branches-data-access';
 import { provideSidenav } from '@amk/domain-navigation-data-access';
 import { providePortal } from '@amk/domain-portal-data-access';
 import { provideUsers } from '@amk/domain-users-data-access';
@@ -33,6 +34,7 @@ export const appConfig: ApplicationConfig = {
     ...provideSidenav(APP_SIDENAV_NODES),
     ...providePortal(),
     ...provideAuth(),
+    ...provideBranches(),
     ...provideUsers(),
     ...provideAccess(),
     ...provideAppTransloco(),

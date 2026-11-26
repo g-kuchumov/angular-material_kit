@@ -1,0 +1,60 @@
+.branches-card {
+  margin: 1rem;
+}
+
+.branches-note,
+.branches-all,
+.branches-verdict {
+  margin: 0.75rem 0;
+}
+
+.branches-all {
+  font-weight: 500;
+}
+
+.branches-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th,
+  td {
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    text-align: left;
+  }
+
+  th {
+    font-weight: 600;
+  }
+}
+
+.branches-check-title {
+  margin-top: 1.5rem;
+}
+
+.branches-check {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.branches-branch-checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  width: 100%;
+}
+
+.branches-verdict {
+  width: 100%;
+  font-weight: 600;
+
+  &.allowed {
+    color: #2e7d32;
+  }
+
+  &.denied {
+    color: #c62828;
+  }
+}

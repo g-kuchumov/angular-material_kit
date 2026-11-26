@@ -1,0 +1,78 @@
+<ng-container *transloco="let t">
+  <mat-card class="branches-card">
+    <mat-card-header>
+      <mat-card-title>{{ t('access.branches.title') }}</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <p class="branches-note">{{ t('access.branches.note') }}</p>
+
+      @if (allBranchesGranted()) {
+        <p class="branches-all">{{ t('access.branches.allGranted') }}</p>
+      }
+
+      @if (rows().length) {
+        <table class="branches-table">
+          <thead>
+            <tr>
+              <th>{{ t('access.branches.branch') }}</th>
+              <th>{{ t('access.branches.students') }}</th>
+              <th>{{ t('access.branches.dormitories') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of rows(); track row.branch.id) {
+              <tr>
+                <td>{{ row.branch.name }} ({{ row.branch.code }})</td>
+                <td>{{ t(levelKey(row.students)) }}</td>
+                <td>{{ t(levelKey(row.dormitories)) }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      } @else {
+        <p>{{ t('access.branches.empty') }}</p>
+      }
+
+      <h3 class="branches-check-title">{{ t('access.branches.checkTitle') }}</h3>
+
+      <div class="branches-check">
+        <mat-form-field appearance="outline">
+          <mat-label id="branch-resource-label">{{ t('access.branches.resource') }}</mat-label>
+          <mat-select [formControl]="resourceControl" aria-labelledby="branch-resource-label">
+            <mat-option value="students">{{ t('access.branches.students') }}</mat-option>
+            <mat-option value="dormitories">{{ t('access.branches.dormitories') }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label id="branch-action-label">{{ t('access.branches.action') }}</mat-label>
+          <mat-select [formControl]="actionControl" aria-labelledby="branch-action-label">
+            <mat-option value="read">{{ t('access.branches.levels.read') }}</mat-option>
+            <mat-option value="update">{{ t('access.branches.levels.write') }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-checkbox [formControl]="allBranchesControl">
+          {{ t('access.branches.all') }}
+        </mat-checkbox>
+
+        <div class="branches-branch-checks">
+          @for (branch of branches(); track branch.id) {
+            <mat-checkbox
+              [checked]="selectedBranches().includes(branch.id)"
+              [disabled]="allBranches()"
+              (change)="toggleBranch(branch.id, $event)"
+            >
+              {{ branch.name }} ({{ branch.code }})
+            </mat-checkbox>
+          }
+        </div>
+
+        <p class="branches-verdict" [class.allowed]="verdict() === true" [class.denied]="verdict() === false">
+          {{ t(verdictKey()) }}
+        </p>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</ng-container>

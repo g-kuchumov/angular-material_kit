@@ -36,6 +36,11 @@ export const routes: Routes = [
         loadComponent: () => import('@amk/features-users-list').then((m) => m.UsersList),
       },
       {
+        path: 'access/branches',
+        canMatch: [permissionGuard('branches:read')],
+        loadComponent: () => import('@amk/features-access-branches').then((m) => m.AccessBranches),
+      },
+      {
         path: 'access/roles',
         canMatch: [permissionGuard('roles:read')],
         loadComponent: () => import('@amk/features-access-roles').then((m) => m.AccessRoles),
