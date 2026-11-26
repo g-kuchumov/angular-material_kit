@@ -1,0 +1,22 @@
+{
+  "name": "domain-users-model",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/domain/users/model/src",
+  "prefix": "amk",
+  "tags": ["scope:domain", "type:model"],
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "options": {
+        "lintFilePatterns": ["libs/domain/users/model/src/**/*.ts", "libs/domain/users/model/src/**/*.html"]
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc -p libs/domain/users/model/tsconfig.lib.json --noEmit"
+      }
+    }
+  }
+}

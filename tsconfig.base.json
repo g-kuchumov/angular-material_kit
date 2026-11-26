@@ -28,7 +28,10 @@
       "@amk/domain-portal-api": ["./libs/domain/portal/api/src/index.ts"],
       "@amk/domain-portal-data-access": ["./libs/domain/portal/data-access/src/index.ts"],
       "@amk/domain-accessibility-api": ["./libs/domain/accessibility/api/src/index.ts"],
-      "@amk/domain-accessibility-data-access": ["./libs/domain/accessibility/data-access/src/index.ts"]
+      "@amk/domain-accessibility-data-access": ["./libs/domain/accessibility/data-access/src/index.ts"],
+      "@amk/domain-users-model": ["./libs/domain/users/model/src/index.ts"],
+      "@amk/domain-users-api": ["./libs/domain/users/api/src/index.ts"],
+      "@amk/domain-users-data-access": ["./libs/domain/users/data-access/src/index.ts"]
     }
   }
 }
