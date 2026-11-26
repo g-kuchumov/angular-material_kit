@@ -4,14 +4,18 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { provideRouter } from '@angular/router';
 
+import { LanguageService, provideLanguageService } from '@amk/core-language';
+import { CustomPaginatorIntl } from '@amk/core-paginator';
+import { provideThemeService, ThemeService } from '@amk/core-theme';
+import { provideAppTransloco } from '@amk/core-transloco';
+import { OverlayScrollbarService } from '@amk/core-ui';
+import { ACCESSIBILITY_API } from '@amk/domain-accessibility-api';
+import { provideAccessibility } from '@amk/domain-accessibility-data-access';
+import { provideSidenav } from '@amk/domain-navigation-data-access';
+import { providePortal } from '@amk/domain-portal-data-access';
 import { MAT_ICON_DEFAULT_OPTIONS } from '@angular/material/icon';
+import { APP_SIDENAV_NODES } from './app.navigation';
 import { routes } from './app.routes';
-import { AccessibilityService, provideAccessibilityService } from './core/services/accessibility';
-import { LanguageService, provideLanguageService } from './core/services/language';
-import { CustomPaginatorIntl } from './core/services/paginator/paginator-intl';
-import { provideThemeService, ThemeService } from './core/services/theme';
-import { provideAppTransloco } from './core/services/transloco';
-import { OverlayScrollbarService } from './shared/directives/overlay-scrollbar.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -22,7 +26,9 @@ export const appConfig: ApplicationConfig = {
     { provide: MatPaginatorIntl, useClass: CustomPaginatorIntl },
     ...provideLanguageService,
     ...provideThemeService,
-    ...provideAccessibilityService,
+    ...provideAccessibility(),
+    ...provideSidenav(APP_SIDENAV_NODES),
+    ...providePortal(),
     ...provideAppTransloco(),
     {
       provide: MAT_ICON_DEFAULT_OPTIONS,
@@ -31,7 +37,7 @@ export const appConfig: ApplicationConfig = {
     provideAppInitializer(() => {
       inject(OverlayScrollbarService);
       inject(ThemeService);
-      inject(AccessibilityService);
+      inject(ACCESSIBILITY_API);
       inject(LanguageService).init();
     }),
   ],

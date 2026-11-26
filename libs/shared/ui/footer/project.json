@@ -1,0 +1,30 @@
+{
+  "name": "shared-ui-footer",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/shared/ui/footer/src",
+  "prefix": "amk",
+  "tags": ["scope:shared", "type:ui"],
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "options": {
+        "lintFilePatterns": ["libs/shared/ui/footer/src/**/*.ts", "libs/shared/ui/footer/src/**/*.html"]
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc -p libs/shared/ui/footer/tsconfig.lib.json --noEmit"
+      }
+    },
+    "test": {
+      "executor": "@angular/build:unit-test",
+      "options": {
+        "buildTarget": "angular-material_kit:build:development",
+        "tsConfig": "libs/shared/ui/footer/tsconfig.spec.json",
+        "include": ["**/*.spec.ts", "**/*.test.ts"]
+      }
+    }
+  }
+}

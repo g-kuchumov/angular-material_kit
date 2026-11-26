@@ -1,0 +1,34 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "preserve",
+    "skipLibCheck": true,
+    "paths": {
+      "@amk/shared-testing": ["./libs/shared/testing/src/index.ts"],
+      "@amk/shared-util-overlay-scrollbar": ["./libs/shared/util/overlay-scrollbar/src/index.ts"],
+      "@amk/core-ui": ["./libs/core/ui/src/index.ts"],
+      "@amk/shared-ui-logo": ["./libs/shared/ui/logo/src/index.ts"],
+      "@amk/shared-ui-footer": ["./libs/shared/ui/footer/src/index.ts"],
+      "@amk/shared-ui-menus": ["./libs/shared/ui/menus/src/index.ts"],
+      "@amk/shared-ui-breadcrumbs": ["./libs/shared/ui/breadcrumbs/src/index.ts"],
+      "@amk/shared-ui-accessibility": ["./libs/shared/ui/accessibility/src/index.ts"],
+      "@amk/shared-ui-toolbar": ["./libs/shared/ui/toolbar/src/index.ts"],
+      "@amk/shared-ui-sidenav": ["./libs/shared/ui/sidenav/src/index.ts"],
+      "@amk/domain-navigation-api": ["./libs/domain/navigation/api/src/index.ts"],
+      "@amk/domain-navigation-data-access": ["./libs/domain/navigation/data-access/src/index.ts"],
+      "@amk/core-language": ["./libs/core/language/src/index.ts"],
+      "@amk/core-theme": ["./libs/core/theme/src/index.ts"],
+      "@amk/core-paginator": ["./libs/core/paginator/src/index.ts"],
+      "@amk/core-transloco": ["./libs/core/transloco/src/index.ts"],
+      "@amk/features-auth": ["./libs/features/auth/src/index.ts"],
+      "@amk/features-settings": ["./libs/features/settings/src/index.ts"],
+      "@amk/domain-portal-api": ["./libs/domain/portal/api/src/index.ts"],
+      "@amk/domain-portal-data-access": ["./libs/domain/portal/data-access/src/index.ts"],
+      "@amk/domain-accessibility-api": ["./libs/domain/accessibility/api/src/index.ts"],
+      "@amk/domain-accessibility-data-access": ["./libs/domain/accessibility/data-access/src/index.ts"]
+    }
+  }
+}

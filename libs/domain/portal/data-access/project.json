@@ -1,0 +1,33 @@
+{
+  "name": "domain-portal-data-access",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/domain/portal/data-access/src",
+  "prefix": "amk",
+  "tags": ["scope:portal", "type:data-access"],
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/domain/portal/data-access/src/**/*.ts",
+          "libs/domain/portal/data-access/src/**/*.html"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@angular/build:unit-test",
+      "options": {
+        "buildTarget": "angular-material_kit:build:development",
+        "tsConfig": "libs/domain/portal/data-access/tsconfig.spec.json",
+        "include": ["**/*.spec.ts", "**/*.test.ts"]
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc -p libs/domain/portal/data-access/tsconfig.lib.json --noEmit"
+      }
+    }
+  }
+}

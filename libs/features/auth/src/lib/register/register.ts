@@ -1,0 +1,51 @@
+import { Footer } from '@amk/shared-ui-footer';
+import { Logo } from '@amk/shared-ui-logo';
+import { Component } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButton } from '@angular/material/button';
+import { MatCard, MatCardContent, MatCardHeader, MatCardTitle } from '@angular/material/card';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { RouterLink } from '@angular/router';
+import { TranslocoDirective } from '@ngneat/transloco';
+
+@Component({
+  selector: 'amk-register',
+  imports: [
+    ReactiveFormsModule,
+    MatCard,
+    MatCardHeader,
+    MatCardTitle,
+    MatCardContent,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatError,
+    MatButton,
+    MatCheckbox,
+    TranslocoDirective,
+    Footer,
+    Logo,
+    RouterLink,
+  ],
+  templateUrl: './register.html',
+  styleUrl: './register.scss',
+})
+export class Register {
+  public readonly form = new FormGroup({
+    name: new FormControl('', [Validators.required, Validators.minLength(2)]),
+    email: new FormControl('', [Validators.required, Validators.email]),
+    password: new FormControl('', [Validators.required, Validators.minLength(6)]),
+    confirmPassword: new FormControl('', [Validators.required, Validators.minLength(6)]),
+    agreeTerms: new FormControl(false, [Validators.requiredTrue]),
+  });
+
+  public onSubmit(): void {
+    if (this.form.invalid) {
+      return;
+    }
+
+    // TODO: отправить данные регистрации на сервер
+  }
+}

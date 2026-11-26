@@ -1,0 +1,22 @@
+{
+  "name": "features-auth",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/features/auth/src",
+  "prefix": "amk",
+  "tags": ["scope:feature", "type:feature"],
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "options": {
+        "lintFilePatterns": ["libs/features/auth/src/**/*.ts", "libs/features/auth/src/**/*.html"]
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc -p libs/features/auth/tsconfig.lib.json --noEmit"
+      }
+    }
+  }
+}

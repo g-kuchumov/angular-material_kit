@@ -1,0 +1,25 @@
+{
+  "name": "shared-util-overlay-scrollbar",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/shared/util/overlay-scrollbar/src",
+  "prefix": "amk",
+  "tags": ["scope:shared", "type:util"],
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/shared/util/overlay-scrollbar/src/**/*.ts",
+          "libs/shared/util/overlay-scrollbar/src/**/*.html"
+        ]
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc -p libs/shared/util/overlay-scrollbar/tsconfig.lib.json --noEmit"
+      }
+    }
+  }
+}

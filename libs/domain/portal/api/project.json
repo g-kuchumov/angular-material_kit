@@ -1,0 +1,22 @@
+{
+  "name": "domain-portal-api",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/domain/portal/api/src",
+  "prefix": "amk",
+  "tags": ["scope:portal", "type:domain-api"],
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "options": {
+        "lintFilePatterns": ["libs/domain/portal/api/src/**/*.ts", "libs/domain/portal/api/src/**/*.html"]
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc -p libs/domain/portal/api/tsconfig.lib.json --noEmit"
+      }
+    }
+  }
+}

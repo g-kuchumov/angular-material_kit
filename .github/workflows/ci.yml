@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: [master, feat_nx-monorepo]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Nx affected нужно compare с базовой веткой, поэтому история обязательна.
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Detect affected projects
+        uses: nrwl/nx-set-shas@v4
+
+      - name: Lint, typecheck, test and build affected projects
+        run: npx nx affected -t lint,typecheck,test,build --base="$NX_BASE" --head="$NX_HEAD" --skip-nx-cache

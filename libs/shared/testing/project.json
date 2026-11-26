@@ -1,0 +1,30 @@
+{
+  "name": "shared-testing",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/shared/testing/src",
+  "prefix": "amk",
+  "tags": ["scope:shared", "type:testing"],
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "options": {
+        "lintFilePatterns": ["libs/shared/testing/src/**/*.ts", "libs/shared/testing/src/**/*.html"]
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc -p libs/shared/testing/tsconfig.lib.json --noEmit"
+      }
+    },
+    "test": {
+      "executor": "@angular/build:unit-test",
+      "options": {
+        "buildTarget": "angular-material_kit:build:development",
+        "tsConfig": "libs/shared/testing/tsconfig.spec.json",
+        "include": ["**/*.spec.ts", "**/*.test.ts"]
+      }
+    }
+  }
+}

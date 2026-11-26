@@ -4,6 +4,7 @@ const tseslint = require('typescript-eslint');
 const angular = require('angular-eslint');
 const eslintConfigPrettier = require('eslint-config-prettier');
 const eslintPluginPrettier = require('eslint-plugin-prettier');
+const nx = require('@nx/eslint-plugin');
 
 module.exports = (async () => {
   const rxjsXPlugin = await import('eslint-plugin-rxjs-x');
@@ -11,6 +12,7 @@ module.exports = (async () => {
 
   return tseslint.config(
     { ignores: ['dist/**', '.angular/**', 'node_modules/**'] },
+    ...nx.configs['flat/base'],
     {
       files: ['**/*.ts'],
       extends: [
@@ -34,6 +36,130 @@ module.exports = (async () => {
       },
       processor: angular.processInlineTemplates,
       rules: {
+        // Жёсткие архитектурные границы Nx: проект может зависеть только от разрешённых типов библиотек.
+        '@nx/enforce-module-boundaries': [
+          'error',
+          {
+            enforceBuildableLibDependency: true,
+            banTransitiveDependencies: true,
+            allow: [],
+            depConstraints: [
+              {
+                sourceTag: 'type:app',
+                onlyDependOnLibsWithTags: [
+                  'type:feature',
+                  'type:core',
+                  'type:data-access',
+                  'type:domain-api',
+                  'type:ui',
+                  'type:util',
+                  'type:model',
+                  'type:testing',
+                ],
+              },
+              {
+                sourceTag: 'type:feature',
+                onlyDependOnLibsWithTags: [
+                  'type:ui',
+                  'type:core',
+                  'type:domain-api',
+                  'type:util',
+                  'type:model',
+                  'type:testing',
+                ],
+              },
+              {
+                sourceTag: 'type:data-access',
+                onlyDependOnLibsWithTags: ['type:domain-api', 'type:core', 'type:util', 'type:model', 'type:testing'],
+              },
+              {
+                sourceTag: 'type:domain-api',
+                onlyDependOnLibsWithTags: ['type:model', 'type:util', 'type:testing'],
+                bannedExternalImports: [
+                  '@angular/material',
+                  '@angular/forms',
+                  '@angular/common/http',
+                  '@ngneat/transloco',
+                ],
+              },
+              {
+                sourceTag: 'type:ui',
+                onlyDependOnLibsWithTags: ['type:ui', 'type:domain-api', 'type:util', 'type:model', 'type:testing'],
+                bannedExternalImports: ['@angular/common/http'],
+              },
+              {
+                sourceTag: 'type:core',
+                onlyDependOnLibsWithTags: ['type:core', 'type:util', 'type:model', 'type:testing'],
+              },
+              {
+                sourceTag: 'type:util',
+                onlyDependOnLibsWithTags: ['type:util', 'type:model', 'type:testing'],
+                bannedExternalImports: ['@angular/*', '@ngneat/transloco'],
+              },
+              {
+                sourceTag: 'type:model',
+                onlyDependOnLibsWithTags: ['type:model', 'type:testing'],
+                bannedExternalImports: ['@angular/*', '@ngneat/transloco', 'rxjs'],
+              },
+              {
+                sourceTag: 'type:testing',
+                onlyDependOnLibsWithTags: ['type:domain-api', 'type:core', 'type:util', 'type:model', 'type:testing'],
+              },
+              // Scope-границы поверх type-ограничений: доменная реализация не должна
+              // тянуть чужие домены, а оболочка — feature-слои. Ограничения складываются:
+              // проект должен пройти и type-, и scope-правило одновременно.
+              // scope:domain — общий тег бизнес-доменов (model/api/data-access):
+              // фичи и тестовые дубли видят их api, но не конкретную реализацию.
+              {
+                sourceTag: 'scope:app',
+                onlyDependOnLibsWithTags: [
+                  'scope:app',
+                  'scope:core',
+                  'scope:feature',
+                  'scope:domain',
+                  'scope:navigation',
+                  'scope:portal',
+                  'scope:accessibility',
+                  'scope:shared',
+                ],
+              },
+              {
+                sourceTag: 'scope:core',
+                onlyDependOnLibsWithTags: ['scope:core', 'scope:shared'],
+              },
+              {
+                sourceTag: 'scope:feature',
+                onlyDependOnLibsWithTags: ['scope:core', 'scope:shared', 'scope:domain'],
+              },
+              {
+                sourceTag: 'scope:shared',
+                onlyDependOnLibsWithTags: [
+                  'scope:shared',
+                  'scope:domain',
+                  'scope:navigation',
+                  'scope:portal',
+                  'scope:accessibility',
+                ],
+              },
+              {
+                sourceTag: 'scope:domain',
+                onlyDependOnLibsWithTags: ['scope:domain', 'scope:shared'],
+              },
+              {
+                sourceTag: 'scope:navigation',
+                onlyDependOnLibsWithTags: ['scope:navigation', 'scope:shared'],
+              },
+              {
+                sourceTag: 'scope:portal',
+                onlyDependOnLibsWithTags: ['scope:portal', 'scope:shared'],
+              },
+              {
+                sourceTag: 'scope:accessibility',
+                onlyDependOnLibsWithTags: ['scope:accessibility', 'scope:shared'],
+              },
+            ],
+          },
+        ],
         '@angular-eslint/directive-selector': [
           'error',
           {

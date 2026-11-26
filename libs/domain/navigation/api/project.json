@@ -1,0 +1,22 @@
+{
+  "name": "domain-navigation-api",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/domain/navigation/api/src",
+  "prefix": "amk",
+  "tags": ["scope:navigation", "type:domain-api"],
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "options": {
+        "lintFilePatterns": ["libs/domain/navigation/api/src/**/*.ts", "libs/domain/navigation/api/src/**/*.html"]
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc -p libs/domain/navigation/api/tsconfig.lib.json --noEmit"
+      }
+    }
+  }
+}

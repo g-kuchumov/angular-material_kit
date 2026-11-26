@@ -1,0 +1,22 @@
+{
+  "name": "shared-ui-accessibility",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/shared/ui/accessibility/src",
+  "prefix": "amk",
+  "tags": ["scope:shared", "type:ui"],
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "options": {
+        "lintFilePatterns": ["libs/shared/ui/accessibility/src/**/*.ts", "libs/shared/ui/accessibility/src/**/*.html"]
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc -p libs/shared/ui/accessibility/tsconfig.lib.json --noEmit"
+      }
+    }
+  }
+}
