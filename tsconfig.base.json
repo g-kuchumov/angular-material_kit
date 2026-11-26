@@ -43,7 +43,10 @@
       "@amk/features-access-roles": ["./libs/features/access/roles/src/index.ts"],
       "@amk/features-access-grants": ["./libs/features/access/grants/src/index.ts"],
       "@amk/features-access-approvals": ["./libs/features/access/approvals/src/index.ts"],
-      "@amk/features-access-audit": ["./libs/features/access/audit/src/index.ts"]
+      "@amk/features-access-audit": ["./libs/features/access/audit/src/index.ts"],
+      "@amk/domain-branches-model": ["./libs/domain/branches/model/src/index.ts"],
+      "@amk/domain-branches-api": ["./libs/domain/branches/api/src/index.ts"],
+      "@amk/domain-branches-data-access": ["./libs/domain/branches/data-access/src/index.ts"]
     }
   }
 }

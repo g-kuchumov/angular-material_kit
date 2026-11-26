@@ -1,0 +1,22 @@
+{
+  "name": "domain-branches-model",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/domain/branches/model/src",
+  "prefix": "amk",
+  "tags": ["scope:domain", "type:model"],
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "options": {
+        "lintFilePatterns": ["libs/domain/branches/model/src/**/*.ts", "libs/domain/branches/model/src/**/*.html"]
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc -p libs/domain/branches/model/tsconfig.lib.json --noEmit"
+      }
+    }
+  }
+}
